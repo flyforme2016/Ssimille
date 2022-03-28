@@ -1,29 +1,73 @@
+/* eslint-disable prettier/prettier */
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Button, View, Text} from 'react-native';
-import Login from './pages/Login';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-function Home({navigation}) {
-  return (
-    <>
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text>Home page입니다!</Text>
-        <Button title="Login" onPress={() => navigation.navigate('Login')} />
-      </View>
-    </>
-  );
-}
+import Home from './pages/Home';
+import Profile from './pages/Profile';
+import Userlist from './pages/Userlist';
+import Chatroom from './pages/Chatroom';
+import Community from './pages/Comunity';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Login" component={Login} />
-      </Stack.Navigator>
+      <Tab.Navigator>
+        <Tab.Screen
+          name="SSIMILLE"
+          component={Home}
+          listeners={({navigation}) => ({
+            tabPress: e => {
+              e.preventDefault();
+              navigation.navigate('Home');
+            },
+          })}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          listeners={({navigation}) => ({
+            tabPress: e => {
+              e.preventDefault();
+              navigation.navigate('Profile');
+            },
+          })}
+        />
+        <Tab.Screen
+          name="Userlist"
+          component={Userlist}
+          listeners={({navigation}) => ({
+            tabPress: e => {
+              e.preventDefault();
+              navigation.navigate('Userlist');
+            },
+          })}
+        />
+        <Tab.Screen
+          name="Chatroom"
+          component={Chatroom}
+          listeners={({navigation}) => ({
+            tabPress: e => {
+              e.preventDefault();
+              navigation.navigate('Chatroom');
+            },
+          })}
+        />
+        <Tab.Screen
+          name="Community"
+          component={Community}
+          listeners={({navigation}) => ({
+            tabPress: e => {
+              e.preventDefault();
+              navigation.navigate('Community');
+            },
+          })}
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }

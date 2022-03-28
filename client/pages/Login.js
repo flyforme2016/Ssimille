@@ -1,5 +1,6 @@
-import * as React from 'react';
-import {Button, View} from 'react-native';
+/* eslint-disable prettier/prettier */
+import React from 'react';
+import {Button, Text, View} from 'react-native';
 import KakaoSDK from '@actbase/react-kakaosdk';
 
 const kakaoLogin = async () => {
@@ -14,9 +15,9 @@ const kakaoLogin = async () => {
 
 const Login = () => {
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Login page입니다!</Text>
-      <Button title="login button" onPress={kakaoLogin} />
+    <View>
+      <Text>SSIMILLE</Text>
+      <Button title="kakao" onPress={kakaoLogin} />
     </View>
   );
 };
