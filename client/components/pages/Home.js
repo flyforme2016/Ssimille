@@ -4,11 +4,11 @@ import {Text} from 'react-native';
 import styled from 'styled-components';
 
 const Container = styled.View`
-  flex: 2;
+  flex: 1;
   color: purple;
 `;
 const Myzone = styled.View`
-  flex: 1;
+  flex: 1.5;
   background-color: white;
 `;
 const Playlist = styled.View`
@@ -18,10 +18,6 @@ const Playlist = styled.View`
 const Friendlist = styled.View`
   flex: 2;
   background-color: tomato;
-`;
-const Navbar = styled.View`
-  flex: 1;
-  background-color: gray;
 `;
 
 const Home = () => {
@@ -42,7 +38,6 @@ const Home = () => {
           <Friendlist>
             <Text>오늘의 친구 추천</Text>
           </Friendlist>
-          <Navbar />
         </Container>
       )}
     </Container>

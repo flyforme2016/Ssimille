@@ -2,8 +2,8 @@
 import React from 'react';
 import {Text} from 'react-native';
 
-const Community = () => {
-  return <Text>Community</Text>;
+const Notice = () => {
+  return <Text>Notice</Text>;
 };
 
-export default Community;
+export default Notice;

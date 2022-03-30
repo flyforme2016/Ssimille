@@ -4,11 +4,11 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import Home from './pages/Home';
-import Profile from './pages/Profile';
-import Userlist from './pages/Userlist';
-import Chatroom from './pages/Chatroom';
-import Community from './pages/Comunity';
+import Home from './components/pages/Home';
+import Profile from './components/pages/Profile';
+import Userlist from './components/pages/Userlist';
+import Chatroom from './components/pages/Chatroom';
+import Community from './components/pages/Comunity';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -18,22 +18,12 @@ function App() {
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen
-          name="SSIMILLE"
-          component={Home}
+          name="Community"
+          component={Community}
           listeners={({navigation}) => ({
             tabPress: e => {
               e.preventDefault();
-              navigation.navigate('Home');
-            },
-          })}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={Profile}
-          listeners={({navigation}) => ({
-            tabPress: e => {
-              e.preventDefault();
-              navigation.navigate('Profile');
+              navigation.navigate('Community');
             },
           })}
         />
@@ -48,6 +38,16 @@ function App() {
           })}
         />
         <Tab.Screen
+          name="Home"
+          component={Home}
+          listeners={({navigation}) => ({
+            tabPress: e => {
+              e.preventDefault();
+              navigation.navigate('Home');
+            },
+          })}
+        />
+        <Tab.Screen
           name="Chatroom"
           component={Chatroom}
           listeners={({navigation}) => ({
@@ -57,13 +57,14 @@ function App() {
             },
           })}
         />
+
         <Tab.Screen
-          name="Community"
-          component={Community}
+          name="Profile"
+          component={Profile}
           listeners={({navigation}) => ({
             tabPress: e => {
               e.preventDefault();
-              navigation.navigate('Community');
+              navigation.navigate('Profile');
             },
           })}
         />
