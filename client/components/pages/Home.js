@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {Text} from 'react-native';
+import {Text, ScrollView} from 'react-native';
 import styled from 'styled-components';
 
 const Container = styled.View`
