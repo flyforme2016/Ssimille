@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {Text, ScrollView} from 'react-native';
+import {Text, Button} from 'react-native';
 import styled from 'styled-components';
 
 const Container = styled.View`
@@ -8,8 +8,10 @@ const Container = styled.View`
   color: purple;
 `;
 const Myzone = styled.View`
-  flex: 1.5;
+  flex: 1;
   background-color: white;
+  align-items: center;
+  justify-content: center;
 `;
 const Playlist = styled.View`
   flex: 3;
