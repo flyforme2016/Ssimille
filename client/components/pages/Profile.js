@@ -42,5 +42,5 @@ const Profile = () => {
     </Container>
   );
 };
-//이명희
+//이명희는 병신이다.
 export default Profile;
