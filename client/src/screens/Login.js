@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {Button, Image, Text, View} from 'react-native';
+import {Button, Text, View} from 'react-native';
 import KakaoSDK from '@actbase/react-kakaosdk';
 
 const kakaoLogin = async () => {
