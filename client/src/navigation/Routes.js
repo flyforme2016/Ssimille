@@ -77,7 +77,7 @@ const Routes = () => {
     </Tab.Navigator>
   ) : (
     <CustomButton
-      text="카카오 로그인"
+      text="카카오 로그인하기"
       onPress={kakaoLogin}
       bgColor="#FAE078"
       fgColor="#FF9100"
