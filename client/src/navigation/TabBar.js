@@ -11,6 +11,7 @@ import Profile from '../screens/Profile';
 
 const Tab = createBottomTabNavigator();
 
+  
 
 
 const TabBar = () => {
