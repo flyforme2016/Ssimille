@@ -3,9 +3,8 @@
 import React from 'react';
 import {SafeAreaView as SafeAreaProvider, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-
 import {LogBox} from 'react-native';
-import TabBar from './src/navigation/TabBar';
+import Routes from './src/navigation/Routes';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
 
@@ -13,7 +12,7 @@ const App = () => {
   return (
     <SafeAreaProvider style={styles.root}>
       <NavigationContainer>
-        <TabBar />
+        <Routes />
       </NavigationContainer>
     </SafeAreaProvider>
   );

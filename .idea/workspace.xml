@@ -7,13 +7,14 @@
     <list default="true" id="7612c69c-f1f6-435c-a79e-2f9fbe5e7c8d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/components/auth/Login.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/components/notice/Notice.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/components/pages/Chatroom.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/components/pages/Comunity.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/components/pages/Home.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/components/pages/Profile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/components/pages/Userlist.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/android/app/src/main/java/com/ssimille/MainApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/src/main/java/com/ssimille/MainApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/ios/Podfile" beforeDir="false" afterPath="$PROJECT_DIR$/client/ios/Podfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/ios/Ssimille.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/client/ios/Ssimille.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/ios/Ssimille/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/client/ios/Ssimille/Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/navigation/Routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/Routes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/navigation/TabBar.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Login.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
