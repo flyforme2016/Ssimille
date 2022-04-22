@@ -74,5 +74,5 @@ const TabBar = () => {
     </Tab.Navigator>
   );
 };
-
+   
 export default TabBar;
