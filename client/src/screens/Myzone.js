@@ -3,8 +3,8 @@ import React from 'react';
 import {Text} from 'react-native';
 import styled from 'styled-components/native';
 
-const Notice = () => {
-  return <Text>Notice</Text>;
+const Myzone = () => {
+  return <Text>Myzone</Text>;
 };
 
-export default Notice;
+export default Myzone;

@@ -1,26 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {Text} from 'react-native';
-import styled from 'styled-components';
-
-const Container = styled.View`
-  flex: 1;
-  color: purple;
-  //flex-direction: row;
-`;
-const Profilcecontainer = styled.View`
-  flex: 2;
-`;
-const Box1 = styled.View`
-  flex: 1;
-  background-color: tomato;
-  border: 2px solid black;
-`;
-const Box2 = styled.View`
-  flex: 4;
-  background-color: skyblue;
-  border: 2px solid black;
-`;
+import styled from 'styled-components/native';
 
 const Profile = () => {
   return (
@@ -42,5 +23,23 @@ const Profile = () => {
     </Container>
   );
 };
+
+const Container = styled.ScrollView`
+  flex: 1;
+  background-color: lightgrey;
+`;
+const Profilcecontainer = styled.View`
+  flex: 2;
+`;
+const Box1 = styled.View`
+  flex: 1;
+  background-color: tomato;
+  border: 2px solid black;
+`;
+const Box2 = styled.View`
+  flex: 4;
+  background-color: skyblue;
+  border: 2px solid black;
+`;
 
 export default Profile;

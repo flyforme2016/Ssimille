@@ -1,7 +1,19 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {Text} from 'react-native';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
+
+const Userlist = () => {
+  return (
+    <Container>
+      <Friendlist>
+        <Text>친구목록</Text>
+        <Box />
+        <Box />
+      </Friendlist>
+    </Container>
+  );
+};
 
 const Container = styled.View`
   flex: 1;
@@ -15,17 +27,5 @@ const Box = styled.View`
   background-color: skyblue;
   border: 2px solid black;
 `;
-
-const Userlist = () => {
-  return (
-    <Container>
-      <Friendlist>
-        <Text>친구목록</Text>
-        <Box />
-        <Box />
-      </Friendlist>
-    </Container>
-  );
-};
 
 export default Userlist;
