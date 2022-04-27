@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {Text} from 'react-native';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
 const Container = styled.View`
   flex: 1;
@@ -16,7 +16,7 @@ const Box = styled.View`
   border: 2px solid black;
 `;
 
-const Chatroom = ({navigation}) => {
+const Chatroom = () => {
   return (
     <Container>
       <Chatlist>
