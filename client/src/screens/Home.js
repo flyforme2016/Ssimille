@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Dimensions, RefreshControl} from 'react-native';
 import Swiper from 'react-native-web-swiper';
@@ -41,6 +42,13 @@ const Home = ({navigation: {navigate}}) => {
         <Btn onPress={() => navigate('Stack', {screen: 'Myzone'})}>
           <Text>MY ZONE</Text>
         </Btn>
+        <Btn
+          onPress={() => {
+            AsyncStorage.removeItem('userNumber');
+            console.log('Storage 삭제완료');
+          }}>
+          <Text>LOGOUT</Text>
+        </Btn>
       </Myzone>
 
       <Text>친구들의 추천</Text>
@@ -54,7 +62,7 @@ const Home = ({navigation: {navigate}}) => {
       <Text>오늘의 친구 추천</Text>
       <Swiper
         loop
-        timeout={2}
+        // timeout={2}
         containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
         <Friendlist />
         <Friendlist style={{backgroundColor: 'white'}} />

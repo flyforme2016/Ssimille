@@ -5,27 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7612c69c-f1f6-435c-a79e-2f9fbe5e7c8d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/android/app/src/main/java/com/ssimille/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/src/main/java/com/ssimille/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/android/app/src/main/java/com/ssimille/MainApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/src/main/java/com/ssimille/MainApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/img/kakao.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ios/Podfile" beforeDir="false" afterPath="$PROJECT_DIR$/client/ios/Podfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ios/Ssimille.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/client/ios/Ssimille.xcodeproj/project.pbxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ios/Ssimille/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/client/ios/Ssimille/Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/android/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/gradle.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/navigation/Routes.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/navigation/TabBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/TabBar.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/screens/Chatroom.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Chatroom.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Comunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Comunity.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/screens/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Notice.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Notice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Login.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/screens/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Userlist.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Userlist.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/git" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -1,8 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import React, {useState} from 'react';
-import KakaoSDK from '@actbase/react-kakaosdk';
-
+import React, {useEffect, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/Home';
@@ -10,26 +8,24 @@ import Community from '../screens/Comunity';
 import Userlist from '../screens/Userlist';
 import Chatroom from '../screens/Chatroom';
 import Profile from '../screens/Profile';
-import CustomButton from '../components/CustomButtons';
+import KakaoLogin from '../screens/KakaoLogin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 
 const TabBar = () => {
-  //카카오 로그인
-  const [accessToken, setAccessToken] = useState(true);
+  const [loginState, setLoginState] = useState(true);
 
-  const kakaoLogin = async () => {
-    try {
-      await KakaoSDK.init('71a2f9a5ab9311f766693e041769838a');
-      const tokens = await KakaoSDK.login();
-      console.log(tokens);
-      setAccessToken(tokens.access_token);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const loginResult = () => {
+  //   AsyncStorage.getItem('userNumber', result => {
+  //     setLoginState(result);
+  //   });
+  // };
+  // useEffect(() => {
+  //   loginResult();
+  // }, []);
 
-  return accessToken ? (
+  return loginState ? (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={({route}) => ({
@@ -77,14 +73,10 @@ const TabBar = () => {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Userlist" component={Userlist} />
       <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="KakaoLogin" component={KakaoLogin} />
     </Tab.Navigator>
   ) : (
-    <CustomButton
-      text="카카오 로그인하기"
-      onPress={kakaoLogin}
-      bgColor="#FAE078"
-      fgColor="#FF9100"
-    />
+    <KakaoLogin />
   );
 };
 

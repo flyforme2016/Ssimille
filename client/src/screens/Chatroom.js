@@ -16,7 +16,7 @@ const Box = styled.View`
   border: 2px solid black;
 `;
 
-const Chatroom = ({navigation}) => {
+const Chatroom = () => {
   return (
     <Container>
       <Chatlist>
