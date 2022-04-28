@@ -21,6 +21,7 @@ const NavBar = () => {
   );
 };
 
+
 const Stats = ({count , item}) => {
   return (
   <View style = {{marginLeft : 25, marginRight : 25}}>
