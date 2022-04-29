@@ -24,10 +24,9 @@ const TabBar = () => {
   // useEffect(() => {
   //   loginResult();
   // }, []);
-
   return loginState ? (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Profile"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
@@ -73,7 +72,6 @@ const TabBar = () => {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Userlist" component={Userlist} />
       <Tab.Screen name="Profile" component={Profile} />
-      <Tab.Screen name="KakaoLogin" component={KakaoLogin} />
     </Tab.Navigator>
   ) : (
     <KakaoLogin />
