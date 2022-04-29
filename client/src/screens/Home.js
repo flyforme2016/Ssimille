@@ -77,13 +77,6 @@ const Home = ({navigation: {navigate}}) => {
         <Playlist />
         <Playlist style={{backgroundColor: 'white'}} />
       </Swiper>
-
-      <Swiper loop containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
-        <Playlist />
-        <Playlist style={{backgroundColor: 'white'}} />
-        <Playlist />
-        <Playlist style={{backgroundColor: 'white'}} />
-      </Swiper>
     </Container>
   );
 };
