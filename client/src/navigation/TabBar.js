@@ -73,6 +73,7 @@ const TabBar = () => {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Userlist" component={Userlist} />
       <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="KakaoLogin" component={KakaoLogin} />
     </Tab.Navigator>
   ) : (
     <KakaoLogin />

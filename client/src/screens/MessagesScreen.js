@@ -18,43 +18,43 @@ import styled from 'styled-components/native';
 const Messages = [
   {
     id: '1',
-    userName: 'Jenny Doe',
+    userName: '이명희',
     userImg: require('../../assets/sample/1.jpg'),
     messageTime: '4 mins ago',
     messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+      '안녕하세요 저랑 음악취향이 같으셔서 친추 걸어봤습니다.',
   },
   {
     id: '2',
-    userName: 'John Doe',
+    userName: '김기정',
     userImg: require('../../assets/sample/2.jpg'),
     messageTime: '2 hours ago',
     messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+      '엿이나 까잡수세요',
   },
   {
     id: '3',
-    userName: 'Ken William',
+    userName: '윤승희',
     userImg: require('../../assets/sample/3.jpg'),
     messageTime: '1 hours ago',
     messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+      '저는 바보입니다 그게 확실해요',
   },
   {
     id: '4',
-    userName: 'Selina Paul',
+    userName: '윤석열',
     userImg: require('../../assets/sample/4.jpg'),
     messageTime: '1 day ago',
     messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+      '홀리몰리 과카몰리',
   },
   {
     id: '5',
-    userName: 'Christy Alex',
+    userName: '이재명',
     userImg: require('../../assets/sample/5.jpg'),
     messageTime: '2 days ago',
     messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+      '나좀 도와줘',
   },
 ];
 
