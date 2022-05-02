@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/Home';
 import Community from '../screens/Comunity';
 import Userlist from '../screens/Userlist';
-import Chatroom from '../screens/Chatroom';
+import MessagesScreen from '../screens/MessagesScreen';
 import Profile from '../screens/Profile';
 import KakaoLogin from '../screens/KakaoLogin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,7 +27,7 @@ const TabBar = () => {
 
   return loginState ? (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Profile"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
@@ -57,7 +57,7 @@ const TabBar = () => {
             iconName = focused ? 'home' : 'home-outline';
           } else if (rn === 'Community') {
             iconName = focused ? 'ios-list' : 'ios-list';
-          } else if (rn === 'Chat') {
+          } else if (rn === 'MessagesScreen') {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
           } else if (rn === 'Userlist') {
             iconName = focused ? 'people' : 'people-outline';
@@ -69,11 +69,10 @@ const TabBar = () => {
         },
       })}>
       <Tab.Screen name="Community" component={Community} />
-      <Tab.Screen name="Chat" component={Chatroom} />
+      <Tab.Screen name="MessagesScreen" component={MessagesScreen} />
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Userlist" component={Userlist} />
       <Tab.Screen name="Profile" component={Profile} />
-      <Tab.Screen name="KakaoLogin" component={KakaoLogin} />
     </Tab.Navigator>
   ) : (
     <KakaoLogin />

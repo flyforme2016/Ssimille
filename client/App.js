@@ -8,12 +8,14 @@ import {Asset} from 'expo-asset';
 import {
   Image,
   SafeAreaView as SafeAreaProvider,
+  StatusBar,
   StyleSheet,
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {LogBox} from 'react-native';
 import Navigation from './src/navigation/Navigation';
+
 
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
@@ -52,6 +54,7 @@ const App = () => {
   // } else {
   return (
     <SafeAreaProvider style={styles.root}>
+      <StatusBar hidden={true} />
       <NavigationContainer>
         <Navigation />
       </NavigationContainer>

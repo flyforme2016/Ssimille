@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7612c69c-f1f6-435c-a79e-2f9fbe5e7c8d" name="Default Changelist" comment="" />
+    <list default="true" id="7612c69c-f1f6-435c-a79e-2f9fbe5e7c8d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/client/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/CustomButtons.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/CustomButtons.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/navigation/Stack.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/Stack.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/navigation/TabBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/TabBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

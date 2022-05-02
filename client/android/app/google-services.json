@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "438016180202",
+    "project_id": "ssimille-d0717",
+    "storage_bucket": "ssimille-d0717.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:438016180202:android:421fd14d5a0c83503e7c93",
+        "android_client_info": {
+          "package_name": "com.ssimille"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "438016180202-acfdbviouh6ccr4ho3455o58fc3uqn0a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2st4INhdZXkQJaIXssCzBQxc6G10ZMgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "438016180202-acfdbviouh6ccr4ho3455o58fc3uqn0a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
