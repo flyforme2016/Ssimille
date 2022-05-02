@@ -10,7 +10,7 @@ const MORE = {
   height: 30,
 };
 const AVARTA = {
-  uri: 'https://ssimille-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfileImg/defaultProfileImage.jfif',
+  uri: 'https://ssimille-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfileImg/defaultProfileImg.png',
   width: 70,
   height: 70,
 };
@@ -46,7 +46,7 @@ const Profile = ({navigation: {navigate}}) => {
             key: value,
           },
         }).then(res => {
-          console.log('res: ', res.body);
+          console.log('res: ', res['data']);
         }).catch(err=>{
           console.log('err: ', err);
         })
