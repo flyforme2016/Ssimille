@@ -34,25 +34,26 @@ const Stats = ({count, item}) => {
   );
 };
 
-
 const Profile = ({navigation: {navigate}}) => {
-
-  const getProfileElment = async() =>{
+  const getProfileElment = async () => {
     try {
       const value = await AsyncStorage.getItem('userNumber');
-      if(value !== null){
-        const response = await axios.post('http://192.168.0.106:3000/userProfile', {
-          params: {
-            key: value,
-          },
-        }).then(res => {
-          console.log('res: ', res['data']);
-        }).catch(err=>{
-          console.log('err: ', err);
-        })
+      if (value !== null) {
+        const response = await axios
+          .get('http://192.168.0.106:3000/userProfile', {
+            params: {
+              key: value,
+            },
+          })
+          .then(res => {
+            console.log('res: ', res['data']);
+          })
+          .catch(err => {
+            console.log('err: ', err);
+          });
       }
     } catch (error) {
-        console.log('error: ', error);
+      console.log('error: ', error);
     }
   };
 

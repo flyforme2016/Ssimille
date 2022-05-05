@@ -2,6 +2,8 @@
   package="com.ssimille">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
       android:name=".MainApplication"
@@ -34,5 +36,8 @@
             </intent-filter>
       
       </activity>
+      <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyBXgk5--h1lKQsHwhBjiaAg9NMVt74qUnE"/>
     </application>
 </manifest>
