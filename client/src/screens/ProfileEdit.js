@@ -1,12 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {
-  View,
-  StatusBar,
-  Image,
-  ScrollView,
-  TouchableHighlight,
-} from 'react-native';
+import {Image, ScrollView} from 'react-native';
 import styled from 'styled-components/native';
 
 import Music from '../profilemusic.png';
@@ -38,15 +32,13 @@ const ProfileEdit = ({navigation: {navigate}}) => {
   return (
     <Container>
       <NavBar>
-  
-      <NavText bold size="25px">
-        PROFILE EDIT
-      </NavText>
-      <Setting onPress={() => navigate('Stack', {screen: 'Profile'})}>
-      <Image source={SUBMIT} />
-      </Setting>
-    </NavBar>
-
+        <NavText bold size="25px">
+          PROFILE EDIT
+        </NavText>
+        <Setting onPress={() => navigate('Stack', {screen: 'Profile'})}>
+          <Image source={SUBMIT} />
+        </Setting>
+      </NavBar>
 
       <ScrollView contentContainerStyle={{alignItems: 'center'}}>
         <Image source={AVARTA} />
@@ -57,7 +49,7 @@ const ProfileEdit = ({navigation: {navigate}}) => {
           style={{height: 150, width: 300}}
         />
         <NavBarView>
-          <Text style={{marginTop: 30,height :70 }}>애청곡 편집 </Text>
+          <Text style={{marginTop: 30, height: 70}}>애청곡 편집 </Text>
           <Logo2 source={PLUS} />
         </NavBarView>
         <Logo1 source={Music} />
@@ -67,7 +59,6 @@ const ProfileEdit = ({navigation: {navigate}}) => {
 };
 const Container = styled.View`
   flex: 1;
-
 `;
 const NavBarView = styled.View`
   height: 76px;
@@ -120,7 +111,6 @@ const NavBar = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
- 
 `;
 
 export default ProfileEdit;

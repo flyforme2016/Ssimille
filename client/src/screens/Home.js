@@ -5,11 +5,14 @@ import {ActivityIndicator, Dimensions, RefreshControl} from 'react-native';
 import Swiper from 'react-native-web-swiper';
 import styled from 'styled-components/native';
 import logo from '../logo.png';
+import getCurrentLocation from '../api/getCurrentLocation';
 
 const Home = ({navigation: {navigate}}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
+    setInterval(getCurrentLocation, 300000);
     getData();
   }, []);
 
@@ -128,11 +131,11 @@ const Btn = styled.TouchableOpacity`
 `;
 const Playlist = styled.View`
   flex: 1;
-  background-color: skyblue;
+  background-color: #9b59b6;
 `;
 const Friendlist = styled.View`
   flex: 1;
-  background-color: tomato;
+  background-color: #9b59b6;
 `;
 const Text = styled.Text`
   font-size: 18;
