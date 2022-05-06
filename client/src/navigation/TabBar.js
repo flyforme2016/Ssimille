@@ -27,7 +27,7 @@ const TabBar = () => {
 
   return loginState ? (
     <Tab.Navigator
-      initialRouteName="Profile"
+      initialRouteName="MessagesScreen"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
