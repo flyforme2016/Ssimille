@@ -7,7 +7,6 @@ import Geolocation from '@react-native-community/geolocation';
 import {PermissionsAndroid} from 'react-native';
 import axios from 'axios';
 
-const API_KEY = ' 1c1252b4d425329642c458690fe99854';
 const Myzone = () => {
   const [location, setLocation] = useState();
   const getCurrentLocation = async () => {
@@ -55,10 +54,7 @@ const Myzone = () => {
         //     },
         //     url: 'https://dapi.kakao.com//v2/local/search/address.json?x=37&y=126',
         //   })
-        //   .get(
-        //     'http://dapi.kakao.com//v2/local/search/address.${JSON}',
-        //     // 'http://api.vworld.kr/req/data?request=GetFeature&data=LT_C_ADEMD_INFO&key=1A792DA1-27F3-3BC7-A9CE-53F0251138C2&geomFilter=point(14132749.177031 4494202.5212524)&crs=EPSG:900913&geometry=false',
-        //   )
+
         .then(res => {
           const data = res.data.documents[0];
           console.log(res.data.documents[0]);
