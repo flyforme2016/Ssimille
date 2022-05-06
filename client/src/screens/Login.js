@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
-
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Button, TextInput, Image, SafeAreaView, TouchableOpacity, StatusBar, Alert } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase";
+const backImage = require("../../assets/sample/backImage.png");
 
 export default function Login({ navigation }) {
 
@@ -20,7 +20,7 @@ export default function Login({ navigation }) {
   
   return (
     <View style={styles.container}>
-
+      <Image source={backImage} style={styles.backImage} />
       <View style={styles.whiteSheet} />
       <SafeAreaView style={styles.form}>
         <Text style={styles.title}>Log In</Text>

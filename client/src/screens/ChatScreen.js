@@ -1,105 +1,84 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect, useCallback} from 'react';
-import {View, ScrollView, Text, Button, StyleSheet} from 'react-native';
-import {Bubble, GiftedChat, Send} from 'react-native-gifted-chat';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback
+} from 'react';
+import { GiftedChat } from 'react-native-gifted-chat';
+import {
+  collection,
+  addDoc,
+  orderBy,
+  query,
+  onSnapshot
+} from 'firebase/firestore';
 
-const ChatScreen = () => {
+import { auth, database } from '../config/firebase';
+
+
+
+export default function Chat() {
+
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-      {
-        _id: 2,
-        text: 'Hello world',
-        createdAt: new Date(),
-        user: {
-          _id: 1,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ]);
-  }, []);
+
+  useLayoutEffect(() => {
+
+      const collectionRef = collection(database, 'chats');
+      const q = query(collectionRef, orderBy('createdAt', 'desc'));
+
+  const unsubscribe = onSnapshot(q, querySnapshot => {
+      console.log('querySnapshot unsusbscribe');
+        setMessages(
+          querySnapshot.docs.map(doc => ({
+            _id: doc.data()._id,
+            createdAt: doc.data().createdAt.toDate(),
+            text: doc.data().text,
+            user: doc.data().user
+          }))
+        );
+      });
+  return unsubscribe;
+    }, []);
 
   const onSend = useCallback((messages = []) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, messages),
-    );
-  }, []);
+      setMessages(previousMessages =>
+        GiftedChat.append(previousMessages, messages)
+      );
+      // setMessages([...messages, ...messages]);
+      const { _id, createdAt, text, user } = messages[0];    
+      addDoc(collection(database, 'chats'), {
+        _id,
+        createdAt,
+        text,
+        user
+      });
+    }, []);
 
-  const renderSend = (props) => {
     return (
-      <Send {...props}>
-        <View>
-          <MaterialCommunityIcons
-            name="send-circle"
-            style={{marginBottom: 5, marginRight: 5}}
-            size={32}
-            color="#2e64e5"
-          />
-        </View>
-      </Send>
-    );
-  };
-
-  const renderBubble = (props) => {
-    return (
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          right: {
-            backgroundColor: '#2e64e5',
-          },
-        }}
-        textStyle={{
-          right: {
-            color: '#fff',
-          },
-        }}
-      />
-    );
-  };
-
-  const scrollToBottomComponent = () => {
-    return(
-      <FontAwesome name='angle-double-down' size={22} color='#333' />
-    );
-  }
-
-  return (
-    <GiftedChat
+      // <>
+      //   {messages.map(message => (
+      //     <Text key={message._id}>{message.text}</Text>
+      //   ))}
+      // </>
+      <GiftedChat
       messages={messages}
-      onSend={(messages) => onSend(messages)}
-      user={{
-        _id: 1,
+      showAvatarForEveryMessage={false}
+      showUserAvatar={false}
+      onSend={messages => onSend(messages)}
+      messagesContainerStyle={{
+        backgroundColor: '#fff'
       }}
-      renderBubble={renderBubble}
-      alwaysShowSend
-      renderSend={renderSend}
-      scrollToBottom
-      scrollToBottomComponent={scrollToBottomComponent}
+      textInputStyle={{
+        backgroundColor: '#fff',
+        borderRadius: 20,
+      }}
+      user={{
+        _id: auth?.currentUser?.email,
+        avatar: 'https://i.pravatar.cc/300'
+      }}
     />
-  );
-};
+    );
+}
 
-export default ChatScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

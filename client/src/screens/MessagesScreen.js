@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList,Image,TouchableOpacity } from 'react-native';
 import {
   Container,
   Card,
@@ -14,7 +14,17 @@ import {
   TextSection,
 } from '../../styles/MessageStyles';
 import styled from 'styled-components/native';
+import { auth } from '../config/firebase';
+import { signOut } from 'firebase/auth';
+const SUBMIT = {
+  uri: 'https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_exit2-128.png',
+  width: 30,
+  height: 30,
+};
 
+const onSignOut = () => {
+  signOut(auth).catch(error => console.log('Error logging out: ', error));
+};
 const Messages = [
   {
     id: '1',
@@ -63,7 +73,12 @@ const MessagesScreen = ({navigation: {navigate}}) => {
       <Container>
       
        <NavText>채팅창</NavText>
-     
+       <Setting
+            
+              onPress={onSignOut}
+            >
+       <Image source={SUBMIT} />
+       </Setting>
         <FlatList 
           data={Messages}
           keyExtractor={item=>item.id}
@@ -104,4 +119,11 @@ const NavText = styled.Text`
   font-size: 30;
   padding: 15px;
  
+`;
+const Setting = styled.TouchableOpacity`
+
+  background-color: white;
+  position: relative;
+  top : -50px;
+  left: 160px;
 `;
