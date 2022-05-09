@@ -1,11 +1,8 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import {Image, ScrollView} from 'react-native';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
-
-import Music from '../profilemusic.png';
-import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButtons';
+import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 
 const SUBMIT = {
   uri: 'https://cdn0.iconfinder.com/data/icons/ui-elements-03/64/Upload-arrow-up-submit-128.png',
@@ -29,88 +26,120 @@ const COMMENTS = {
 };
 
 const ProfileEdit = ({navigation: {navigate}}) => {
+  const [ProfileImg, setProfileImg] = useState();
+
+  const [changeName, setChangeName] = useState();
+  const [changeIntro, setChangeIntro] = useState();
+  //닉네임 & 소개글 변경 함수
+  const handleName = event => {
+    setChangeName(event.target.value);
+  };
+  const handleIntro = event => {
+    setChangeIntro(event.target.value);
+  };
+  //프로필 사진 변경 함수
+  const getProfileImage = async () => {
+    try {
+      const response = await MultipleImagePicker.openPicker({
+        selectedAssets: ProfileImg,
+        mediaType: 'image',
+        singleSelectedMode: true,
+        isExportThumbnail: true,
+        isCrop: true,
+        isCropCircle: true,
+      });
+      console.log('response: ', response);
+      await setProfileImg(response);
+    } catch (e) {
+      console.log(e.code, e.message);
+    }
+  };
+  //submit하면 서버에 전송하는 함수
+  const handleProfileEdit = async event => {
+    event.preventDefault();
+    try {
+      const formdata = new FormData();
+
+      await ProfileImg.map(image => {
+        formdata.append('multipleImg', {
+          uri: image.path,
+          type: image.mime,
+          name: image.fileName,
+        });
+      });
+
+      console.log('formdata: ', formdata);
+
+      const requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow',
+        // headers :{'Content-Type': 'multipart/form-data'}
+      };
+
+      await fetch(
+        'http://192.168.0.106:3000/s3/uploadMultipleImg',
+        requestOptions,
+      )
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .then(navigate('TabBar', {screen: 'Profile'}));
+    } catch (e) {
+      console.log(e.code, e.message);
+    }
+  };
   return (
     <Container>
       <NavBar>
-        <NavText bold size="25px">
-          PROFILE EDIT
-        </NavText>
-        <Setting onPress={() => navigate('Stack', {screen: 'Profile'})}>
-          <Image source={SUBMIT} />
-        </Setting>
+        <NavText>PROFILE EDIT</NavText>
       </NavBar>
-
-      <ScrollView contentContainerStyle={{alignItems: 'center'}}>
-        <Image source={AVARTA} />
-        <CustomInput placeholder="이명희" style={{height: 50, width: 150}} />
-        <CustomButton text="프로필뮤직변경" />
-        <CustomInput
-          placeholder="안녕하세요 인천에 살고있는 26살 이명희 입니다!"
-          style={{height: 150, width: 300}}
-        />
-        <NavBarView>
-          <Text style={{marginTop: 30, height: 70}}>애청곡 편집 </Text>
-          <Logo2 source={PLUS} />
-        </NavBarView>
-        <Logo1 source={Music} />
-      </ScrollView>
+      <ImgPreview source={ProfileImg ? ProfileImg : AVARTA} />
+      <CustomButton text="사진 가져오기" onPress={getProfileImage} />
+      <CustomButton text="프로필뮤직변경" />
+      <EditInput
+        placeholder="이명희"
+        value={changeName}
+        onChangeText={handleName}
+      />
+      <EditInput
+        placeholder="안녕하세요 인천에 살고있는 26살 이명희 입니다!"
+        value={changeIntro}
+        onChangeText={handleIntro}
+        line={5}
+      />
+      <CustomButton onPress={handleProfileEdit} text="프로필 변경" />
     </Container>
   );
 };
 const Container = styled.View`
   flex: 1;
-`;
-const NavBarView = styled.View`
-  height: 76px;
-  margin: 0px 16px;
-  flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-`;
-const Text = styled.Text`
-  color: ${props => (props.color ? props.color : '#9b59b6')};
-  font-size: ${props => (props.size ? props.size : '22px')};
-  line-height: ${props => (props.height ? props.height : '24px')};
-  font-weight: ${props => (props.bold ? 'bold' : 'normal')};
-  position: relative;
-  left: 15px;
-`;
-
-const NavText = styled.Text`
-  color: #9b59b6;
-  font-size: 24;
-  padding: 8px;
-  position: relative;
-  left: 50px;
-`;
-
-const Logo = styled.Image`
-  width: 100;
-  height: 100;
-`;
-
-const Logo1 = styled.Image`
-  width: 300;
-  height: 270;
-`;
-
-const Logo2 = styled.Image`
-  position: relative;
-  left: 80px;
-  bottom: 5px;
-`;
-
-const Setting = styled.TouchableOpacity`
-  width: 100;
-  background-color: white;
-  position: relative;
-  left: 130px;
+  margin: 10px;
+  padding: 10px;
 `;
 
 const NavBar = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+`;
+const NavText = styled.Text`
+  color: #9b59b6;
+  font-size: 24;
+  padding: 8px;
+`;
+const ImgPreview = styled.Image`
+  width: 100;
+  height: 100;
+`;
+
+const EditInput = styled.TextInput`
+  margin: 10px;
+  border: 2px solid gray;
+  border-radius: 10px;
+  background-color: white;
+  width: 200;
 `;
 
 export default ProfileEdit;

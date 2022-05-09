@@ -9,6 +9,7 @@ import axios from 'axios';
 
 const Myzone = () => {
   const [location, setLocation] = useState();
+  const [locationName, setLocationName] = useState('위치 확인중');
   const getCurrentLocation = async () => {
     // 위치 권한 허용 확인
     const granted = await PermissionsAndroid.request(
@@ -35,9 +36,10 @@ const Myzone = () => {
     }
   };
   // 현재위치를 행정동으로 바꿔주는 함수
+
   const getLocationName = async () => {
     try {
-      const response = await axios({
+      const res = await axios({
         method: 'GET',
         url: 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x= 126.9766&y=37.5629',
         headers: {
@@ -45,28 +47,15 @@ const Myzone = () => {
           Authorization: 'KakaoAK 1c1252b4d425329642c458690fe99854',
           'Content-Type': 'application/json;',
         },
-      })
-        // try {
-        //   const response = await axios({
-        //     method: 'get',
-        //     headers: {
-        //       Authorization: `KakaoAK 1c1252b4d425329642c458690fe99854`,
-        //     },
-        //     url: 'https://dapi.kakao.com//v2/local/search/address.json?x=37&y=126',
-        //   })
-
-        .then(res => {
-          const data = res.data.documents[0];
-          console.log(res.data.documents[0]);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      });
+      const currentInfo = res.data.documents[0];
+      setLocationName(currentInfo.address_name);
+      console.log(currentInfo);
+      return currentInfo;
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
-
   useEffect(() => {
     getCurrentLocation();
     getLocationName();
@@ -96,7 +85,7 @@ const Myzone = () => {
               longitude: location.longitude,
             }}
           />
-          <Label>{location.latitude}</Label>
+          <Label>{locationName}</Label>
         </MapView>
       )}
     </Container>
@@ -114,4 +103,5 @@ const Btn = Styled.TouchableOpacity`
   width: 100;
   height: 30;
 `;
+
 export default Myzone;

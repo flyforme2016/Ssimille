@@ -27,14 +27,13 @@ const TabBar = () => {
 
   return loginState ? (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Profile"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
 
         tabBarStyle: {
           position: 'absolute',
-          bottom: 0,
           borderRadius: 10,
           backgroundColor: 'white',
           height: 65,
@@ -73,7 +72,8 @@ const TabBar = () => {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Userlist" component={Userlist} />
       <Tab.Screen name="Profile" component={Profile} />
-      <Tab.Screen name="KakaoLogin" component={KakaoLogin} />
+
+      {/* <Tab.Screen name="KakaoLogin" component={KakaoLogin} /> */}
     </Tab.Navigator>
   ) : (
     <KakaoLogin />
