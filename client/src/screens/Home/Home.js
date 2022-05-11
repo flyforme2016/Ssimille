@@ -4,34 +4,36 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Dimensions, RefreshControl} from 'react-native';
 import Swiper from 'react-native-web-swiper';
 import styled from 'styled-components/native';
-import logo from '../logo.png';
+import logo from '../../logo.png';
 
 const Home = ({navigation: {navigate}}) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    getData();
-  }, []);
+  const [loading, setLoading] = useState(false);
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
-  //새로고침 하면 데이터 다시 받아오는 함수
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await getData();
-    setRefreshing(false);
-  };
-  const getData = () => {
-    //spotify api 연결해서 데이터 받아오기
-    setLoading(false);
-  };
-  return loading ? (
-    <Loader>
-      <ActivityIndicator />
-    </Loader>
-  ) : (
-    <Container
-      refreshControl={
-        <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
-      }>
+  // //새로고침 하면 데이터 다시 받아오는 함수
+  // const onRefresh = async () => {
+  //   setRefreshing(true);
+  //   await getData();
+  //   setRefreshing(false);
+  // };
+  // const getData = () => {
+  //   //spotify api 연결해서 데이터 받아오기
+  //   setLoading(false);
+  // };
+  // return loading ? (
+  //   <Loader>
+  //     <ActivityIndicator />
+  //   </Loader>
+  // ) : (
+  // <Container
+  //   refreshControl={
+  //     <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+  //   }>
+  return (
+    <Container>
       <TopBar>
         <Logo source={logo} />
         <Notice onPress={() => navigate('Stack', {screen: 'Notice'})}>
@@ -69,13 +71,6 @@ const Home = ({navigation: {navigate}}) => {
         <Friendlist />
         <Friendlist style={{backgroundColor: 'white'}} />
         <Friendlist />
-      </Swiper>
-
-      <Swiper loop containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
-        <Playlist />
-        <Playlist style={{backgroundColor: 'white'}} />
-        <Playlist />
-        <Playlist style={{backgroundColor: 'white'}} />
       </Swiper>
     </Container>
   );

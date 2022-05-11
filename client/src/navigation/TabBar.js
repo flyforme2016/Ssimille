@@ -3,12 +3,12 @@
 import React, {useEffect, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Home from '../screens/Home';
-import Community from '../screens/Comunity';
-import Userlist from '../screens/Userlist';
-import Chatroom from '../screens/Chatroom';
-import Profile from '../screens/Profile';
+import Home from '../screens/Home/Home';
+import Community from '../screens/Community/Comunity';
+import Userlist from '../screens/Userlist/Userlist';
+import Chatroom from '../screens/ChatScreen/ChatScreen';
 import KakaoLogin from '../screens/KakaoLogin';
+import Profile from '../screens/Profile/Profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
@@ -26,7 +26,7 @@ const TabBar = () => {
   // }, []);
   return loginState ? (
     <Tab.Navigator
-      initialRouteName="Profile"
+      initialRouteName="Home"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
