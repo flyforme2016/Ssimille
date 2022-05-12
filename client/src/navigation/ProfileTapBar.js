@@ -1,9 +1,7 @@
-/* eslint-disable prettier/prettier */
-
 import React from 'react';
 import styled from 'styled-components/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import Ionic from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const LIKE = {
   uri: 'https://cdn1.iconfinder.com/data/icons/basic-ui-element-2-2-line/512/Basic_UI_Elements_-_2.1_-_line-22-128.png',
@@ -79,11 +77,11 @@ const ProfileTabBar = () => {
             iconName = focused ? 'ios-apps-sharp' : 'ios-apps-sharp';
             color = focused ? '#b7b4df' : 'gray';
           } else if (route.name === 'Musics') {
-            iconName = focused ? 'ios-person' : 'ios-person-outline';
+            iconName = focused ? 'headset' : 'headset-outline';
             color = focused ? '#b7b4df' : 'gray';
           }
 
-          return <Ionic name={iconName} color={color} size={22} />;
+          return <Ionicons name={iconName} color={color} size={22} />;
         },
       })}>
       <Tab.Screen name="Posts" component={Posts} />
@@ -100,9 +98,6 @@ const View = styled.View`
   background-color: #ffffff;
 `;
 const Container = styled.ScrollView.attrs(() => ({
-  //   width: '100%',
-  //   height: '100%',
-
   contentContainerStyle: {
     alignItems: 'center',
   },

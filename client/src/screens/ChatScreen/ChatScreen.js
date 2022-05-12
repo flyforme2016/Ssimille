@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, {useState, useEffect, useCallback} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Bubble, GiftedChat, Send} from 'react-native-gifted-chat';

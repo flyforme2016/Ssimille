@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
-import styled from 'styled-components/native';
+import styled, {withTheme} from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Community = ({navigation: {navigate}}) => {
@@ -10,10 +9,10 @@ const Community = ({navigation: {navigate}}) => {
         <NavText>Community</NavText>
         <UploadBtn
           onPress={() => navigate('Stack', {screen: 'CommunityUpload'})}>
-          <Ionicons name="settings-outline" size={35} />
+          <Ionicons name="duplicate" size={35} color="#b7b4df" />
         </UploadBtn>
       </NavBar>
-
+      <NavDivider />
       <Card>
         <UserInfo>
           <UserImg />
@@ -85,35 +84,40 @@ const Community = ({navigation: {navigate}}) => {
 };
 
 const Container = styled.ScrollView.attrs(() => ({
-  // width: '100%',
-  // height: '100%',
-  backgroundColor: '#b7b4df',
+  backgroundColor: 'white',
   contentContainerStyle: {
     alignItems: 'center',
   },
 }))``;
 
+const NavDivider = styled.View`
+  border-bottom-color: gray;
+  border-bottom-width: 1px;
+  width: 90%;
+  align-self: center;
+`;
 const NavBar = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin: 10px;
 `;
 const NavText = styled.Text`
   color: #9b59b6;
   font-size: 24;
-  padding: 8px;
+  padding: 10px;
 `;
 const UploadBtn = styled.TouchableOpacity`
-  width: 50px;
-  height: 50px;
+  width: 60;
+  position: relative;
+  //right: -1px;
 `;
 
 const Card = styled.View`
   background-color: #f8f8f8;
   width: 90%;
-  margin-bottom: 20px;
+  margin: 20px 0 5px 0;
   border-radius: 10px;
+  elevation: 3;
 `;
 
 const UserInfo = styled.View`

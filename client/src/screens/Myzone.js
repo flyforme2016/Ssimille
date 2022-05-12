@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import React, {useEffect, useState} from 'react';
 import Styled from 'styled-components/native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Dimensions, RefreshControl} from 'react-native';

@@ -5,8 +5,8 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/Home/Home';
 import Community from '../screens/Community/Comunity';
-import Userlist from '../screens/Userlist/Userlist';
-import Chatroom from '../screens/ChatScreen/ChatScreen';
+import FriendList from '../screens/FriendList/FriendList';
+import MessagesScreen from '../screens/ChatScreen/MessagesScreen';
 import KakaoLogin from '../screens/KakaoLogin';
 import Profile from '../screens/Profile/Profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -26,7 +26,7 @@ const TabBar = () => {
   // }, []);
   return loginState ? (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Profile"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
@@ -56,9 +56,9 @@ const TabBar = () => {
             iconName = focused ? 'home' : 'home-outline';
           } else if (rn === 'Community') {
             iconName = focused ? 'ios-list' : 'ios-list';
-          } else if (rn === 'Chat') {
+          } else if (rn === 'MessagesScreen') {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-          } else if (rn === 'Userlist') {
+          } else if (rn === 'FriendList') {
             iconName = focused ? 'people' : 'people-outline';
           } else if (rn === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
@@ -68,9 +68,9 @@ const TabBar = () => {
         },
       })}>
       <Tab.Screen name="Community" component={Community} />
-      <Tab.Screen name="Chat" component={Chatroom} />
+      <Tab.Screen name="MessagesScreen" component={MessagesScreen} />
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Userlist" component={Userlist} />
+      <Tab.Screen name="FriendList" component={FriendList} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   ) : (

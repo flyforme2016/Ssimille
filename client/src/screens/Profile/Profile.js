@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import React from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
@@ -45,10 +43,10 @@ const Profile = ({navigation: {navigate}}) => {
           <Ionicons name="settings-outline" size={35} />
         </Btn>
       </NavBar>
+      <Divider />
 
       <ProfileView>
         <ProfilePic source={AVARTA} />
-
         <ProfileText>사용자이름</ProfileText>
         <ProfileText>노래이름</ProfileText>
         <ProfileText>한줄소개글</ProfileText>
@@ -63,25 +61,28 @@ const Container = styled.View`
   flex: 1;
   background-color: #ffffff;
 `;
-
+const Divider = styled.View`
+  border-bottom-color: gray;
+  border-bottom-width: 1px;
+  width: 90%;
+  align-self: center;
+  elevation: 3;
+`;
 const NavBar = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  border: 2px solid #9b59b6;
 `;
 const NavText = styled.Text`
   color: #9b59b6;
   font-size: 24;
-  padding: 8px;
-  position: relative;
-  left: 50px;
+  padding: 10px;
 `;
 
 const Btn = styled.TouchableOpacity`
-  width: 100;
-  background-color: white;
-  position: relative;
+  width: 60px;
+  position: absolute;
+  right: -1px;
 `;
 
 const ProfileView = styled.View`

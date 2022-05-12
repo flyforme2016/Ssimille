@@ -5,21 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7612c69c-f1f6-435c-a79e-2f9fbe5e7c8d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/.eslintrc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/.prettierrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/.prettierrc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/assets/sample/1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/assets/sample/2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/assets/sample/3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/assets/sample/4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/assets/sample/5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/assets/sample/6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/assets/sample/userProfile.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/CustomButtons.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/CustomButtons.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/navigation/Navigation.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/Navigation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/navigation/ProfileTapBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/ProfileTapBar.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/navigation/Stack.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/Stack.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/navigation/TabBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/TabBar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Chatroom.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Comunity.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Home.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/MessagesScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/MessagesScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/Comunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/Comunity.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Home/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/screens/Myzone.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Myzone.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/ProfileEdit.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Userlist.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Notice.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Notice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/Profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Userlist/Userlist.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
