@@ -38,6 +38,26 @@
             </intent-filter>
       
       </activity>
+            <activity
+            android:exported="true"
+            android:name="com.spotify.sdk.android.authentication.AuthCallbackActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:scheme="com.ssimille"
+                    android:host="callback"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
          <meta-data
           android:name="com.google.android.geo.API_KEY"
           android:value="AIzaSyBXgk5--h1lKQsHwhBjiaAg9NMVt74qUnE"/>

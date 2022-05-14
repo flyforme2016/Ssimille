@@ -54,9 +54,6 @@ const Home = ({navigation: {navigate}}) => {
 
       <Text>친구들의 추천</Text>
       <Swiper loop containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
-        <Playlist />
-        <Playlist style={{backgroundColor: 'white'}} />
-        <Playlist />
         <Playlist style={{backgroundColor: 'white'}} />
       </Swiper>
 
@@ -65,11 +62,7 @@ const Home = ({navigation: {navigate}}) => {
         loop
         // timeout={2}
         containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
-        <Friendlist />
         <Friendlist style={{backgroundColor: 'white'}} />
-        <Friendlist />
-        <Friendlist style={{backgroundColor: 'white'}} />
-        <Friendlist />
       </Swiper>
     </Container>
   );
