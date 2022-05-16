@@ -1,9 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Dimensions, RefreshControl} from 'react-native';
-import Swiper from 'react-native-web-swiper';
 import styled from 'styled-components/native';
+import Swiper from 'react-native-web-swiper';
 import logo from '../../logo.png';
+import SpotifyLogin from '../SpotifyLogin';
 
 const Home = ({navigation: {navigate}}) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -32,39 +33,53 @@ const Home = ({navigation: {navigate}}) => {
   //     <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
   //   }>
   return (
-    <Container>
-      <TopBar>
-        <Logo source={logo} />
-        <Notice onPress={() => navigate('Stack', {screen: 'Notice'})}>
-          <Text>Notice</Text>
-        </Notice>
-      </TopBar>
-      <Myzone>
-        <Btn onPress={() => navigate('Stack', {screen: 'Myzone'})}>
-          <Text>MY ZONE</Text>
-        </Btn>
-        <Btn
-          onPress={() => {
-            AsyncStorage.removeItem('userNumber');
-            console.log('Storage 삭제완료');
-          }}>
-          <Text>LOGOUT</Text>
-        </Btn>
-      </Myzone>
-
-      <Text>친구들의 추천</Text>
-      <Swiper loop containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
-        <Playlist style={{backgroundColor: 'white'}} />
-      </Swiper>
-
-      <Text>오늘의 친구 추천</Text>
-      <Swiper
-        loop
-        // timeout={2}
-        containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
-        <Friendlist style={{backgroundColor: 'white'}} />
-      </Swiper>
-    </Container>
+    <>
+      <Container>
+        <TopBar>
+          <Logo source={logo} />
+          <Notice onPress={() => navigate('Stack', {screen: 'Notice'})}>
+            <Text>Notice</Text>
+          </Notice>
+        </TopBar>
+        <Myzone>
+          <Btn onPress={() => navigate('Stack', {screen: 'Myzone'})}>
+            <Text>MY ZONE</Text>
+          </Btn>
+          <Btn
+            onPress={() => {
+              AsyncStorage.removeItem('userNumber');
+              console.log('Storage 삭제완료');
+            }}>
+            <Text>LOGOUT</Text>
+          </Btn>
+        </Myzone>
+        <Swiper
+          loop
+          containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
+          <Playlist />
+          <Playlist style={{backgroundColor: 'white'}} />
+          <Playlist />
+          <Playlist style={{backgroundColor: 'white'}} />
+        </Swiper>
+        <Swiper
+          loop
+          containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
+          <Playlist />
+          <Playlist style={{backgroundColor: 'white'}} />
+          <Playlist />
+          <Playlist style={{backgroundColor: 'white'}} />
+        </Swiper>
+        <Swiper
+          loop
+          containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
+          <Playlist />
+          <Playlist style={{backgroundColor: 'white'}} />
+          <Playlist />
+          <Playlist style={{backgroundColor: 'white'}} />
+        </Swiper>
+      </Container>
+      <SpotifyLogin />
+    </>
   );
 };
 
@@ -106,16 +121,13 @@ const Btn = styled.TouchableOpacity`
   justify-content: center;
   border: 2px solid grey;
 `;
+
+const Text = styled.Text`
+  font-size: 18;
+`;
 const Playlist = styled.View`
   flex: 1;
   background-color: skyblue;
-`;
-const Friendlist = styled.View`
-  flex: 1;
-  background-color: tomato;
-`;
-const Text = styled.Text`
-  font-size: 18;
 `;
 
 export default Home;
