@@ -26,7 +26,7 @@ const TabBar = () => {
   // }, []);
   return loginState ? (
     <Tab.Navigator
-      initialRouteName="Profile"
+      initialRouteName="Home"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,

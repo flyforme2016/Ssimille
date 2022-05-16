@@ -109,7 +109,6 @@ const NavText = styled.Text`
 const UploadBtn = styled.TouchableOpacity`
   width: 60;
   position: relative;
-  //right: -1px;
 `;
 
 const Card = styled.View`

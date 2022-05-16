@@ -5,7 +5,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-
 import {LogBox} from 'react-native';
 import Navigation from './src/navigation/Navigation';
 
