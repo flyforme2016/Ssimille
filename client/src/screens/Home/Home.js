@@ -2,88 +2,72 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Dimensions, RefreshControl} from 'react-native';
 import styled from 'styled-components/native';
-import Swiper from 'react-native-web-swiper';
 import logo from '../../logo.png';
-import SpotifyLogin from '../SpotifyLogin';
+import {remote} from 'react-native-spotify-remote';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import SpotifyTab from '../SpotifyTab';
 
 const Home = ({navigation: {navigate}}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  // useEffect(() => {
-  //   getData();
-  // }, []);
 
-  // //새로고침 하면 데이터 다시 받아오는 함수
-  // const onRefresh = async () => {
-  //   setRefreshing(true);
-  //   await getData();
-  //   setRefreshing(false);
-  // };
-  // const getData = () => {
-  //   //spotify api 연결해서 데이터 받아오기
-  //   setLoading(false);
-  // };
-  // return loading ? (
-  //   <Loader>
-  //     <ActivityIndicator />
-  //   </Loader>
-  // ) : (
-  // <Container
-  //   refreshControl={
-  //     <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
-  //   }>
-  return (
-    <>
-      <Container>
-        <TopBar>
-          <Logo source={logo} />
-          <Notice onPress={() => navigate('Stack', {screen: 'Notice'})}>
-            <Text>Notice</Text>
-          </Notice>
-        </TopBar>
-        <Myzone>
-          <Btn onPress={() => navigate('Stack', {screen: 'Myzone'})}>
-            <Text>MY ZONE</Text>
-          </Btn>
-          <Btn
-            onPress={() => {
-              AsyncStorage.removeItem('userNumber');
-              console.log('Storage 삭제완료');
-            }}>
-            <Text>LOGOUT</Text>
-          </Btn>
-        </Myzone>
-        <Swiper
-          loop
-          containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
-          <Playlist />
-          <Playlist style={{backgroundColor: 'white'}} />
-          <Playlist />
-          <Playlist style={{backgroundColor: 'white'}} />
-        </Swiper>
-        <Swiper
-          loop
-          containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
-          <Playlist />
-          <Playlist style={{backgroundColor: 'white'}} />
-          <Playlist />
-          <Playlist style={{backgroundColor: 'white'}} />
-        </Swiper>
-        <Swiper
-          loop
-          containerStyle={{width: '100%', height: SCREEN_HEIGHT / 3}}>
-          <Playlist />
-          <Playlist style={{backgroundColor: 'white'}} />
-          <Playlist />
-          <Playlist style={{backgroundColor: 'white'}} />
-        </Swiper>
-      </Container>
-      <SpotifyLogin />
-    </>
+  //새로고침 하면 데이터 다시 받아오는 함수
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getData();
+    setRefreshing(false);
+  };
+  const getData = async () => {
+    try {
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
+  return loading ? (
+    <Loader>
+      <ActivityIndicator />
+    </Loader>
+  ) : (
+    <Container
+      refreshControl={
+        <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+      }>
+      <TopBar>
+        <Logo source={logo} />
+        <Notice onPress={() => navigate('Stack', {screen: 'Notice'})}>
+          <Ionicons name="alert-circle-outline" size={30} />
+        </Notice>
+      </TopBar>
+      <MyzoneContainer>
+        <Btn onPress={() => navigate('Stack', {screen: 'Myzone'})}>
+          <Text>MY ZONE</Text>
+        </Btn>
+      </MyzoneContainer>
+      <Btn
+        onPress={async () => {
+          console.log(await AsyncStorage.getItem('userNumber'));
+          // await AsyncStorage.removeItem('userNumber');
+          // await console.log('Storage 삭제완료');
+        }}>
+        <Text>logout</Text>
+      </Btn>
+      <SpotifyTab />
+      <RecommendText>음악 추천</RecommendText>
+      <AlbumRecommendContainer>
+        <AlbumContainer>
+          <AlbumImg source={require('../../assets/sample/5.jpg')} />
+          <AlBumInfo>name</AlBumInfo>
+          <AlBumInfo>artist</AlBumInfo>
+        </AlbumContainer>
+      </AlbumRecommendContainer>
+    </Container>
   );
 };
-
-const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const Loader = styled.View`
   flex: 1;
@@ -96,23 +80,19 @@ const Container = styled.ScrollView`
   background-color: lightgrey;
 `;
 const TopBar = styled.View`
-  flex: 1;
   flex-direction: row;
   justify-content: space-between;
 `;
 const Logo = styled.Image`
   background-color: white;
-  width: 150;
-  height: 70;
+  width: 100;
+  height: 50;
 `;
 const Notice = styled.TouchableOpacity`
-  width: 100;
-  background-color: white;
   align-items: center;
   justify-content: center;
-  border: 2px solid grey;
 `;
-const Myzone = styled.View`
+const MyzoneContainer = styled.View`
   flex: 1;
 `;
 const Btn = styled.TouchableOpacity`
@@ -125,9 +105,28 @@ const Btn = styled.TouchableOpacity`
 const Text = styled.Text`
   font-size: 18;
 `;
-const Playlist = styled.View`
-  flex: 1;
-  background-color: skyblue;
+
+// 여기까지 기능 테스트용 코드
+const RecommendText = styled.Text`
+  margin: 5px;
+  font-size: 16px;
+`;
+const AlbumRecommendContainer = styled.View`
+  margin: 12px;
+  padding: 8px;
+  flex-direction: row;
+`;
+const AlbumContainer = styled.View`
+  padding: 12px;
+  border: 2px gray;
+`;
+const AlbumImg = styled.Image`
+  width: 100;
+  height: 100;
+`;
+const AlBumInfo = styled.Text`
+  padding-top: 3px;
+  font-size: 12px;
 `;
 
 export default Home;

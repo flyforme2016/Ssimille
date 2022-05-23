@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import {View, LogBox, Text} from 'react-native';
 import {WebView} from 'react-native-webview';
+import getSpotifyToken from '../api/getSpotifyToken';
 
 LogBox.ignoreLogs(['Remote debugger']);
 
@@ -14,22 +15,25 @@ const KakaoLogin = ({navigation: {navigate}}) => {
     const startIndex = url.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
     if (startIndex !== -1) {
       const authCode = url.substring(startIndex + exp.length);
-      console.log('access code :: ' + authCode);
-
-      await axios
-        .post('http://192.168.0.105:3000/oauth/kakao/callback', {
-          params: {
-            code: authCode,
-          },
-        })
-        .then(res =>
-          AsyncStorage.setItem(
-            'userNumber',
-            JSON.stringify(res['data']['userId']),
-          ),
-        );
-
-      navigate('Home', {screen: 'Home'});
+      //console.log('access code :: ' + authCode);
+      try {
+        await axios
+          .post('http://192.168.0.105:3000/kakao/oauth/callback', {
+            params: {
+              code: authCode,
+            },
+          })
+          .then(async res => {
+            await AsyncStorage.setItem(
+              'userNumber',
+              JSON.stringify(res.data.userId),
+            );
+            await getSpotifyToken();
+          });
+        navigate('TabBar', {screen: 'Home'});
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -41,7 +45,7 @@ const KakaoLogin = ({navigation: {navigate}}) => {
         scalesPageToFit={false}
         style={{marginTop: 30}}
         source={{
-          uri: 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=http://192.168.0.105:3000/oauth/kakao/callback',
+          uri: 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=http://192.168.0.105:3000//kakao/oauth/callback',
         }}
         injectedJavaScript={runFirst}
         javaScriptEnabled={true}

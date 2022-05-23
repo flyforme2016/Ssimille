@@ -1,32 +1,32 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProfileTabBar from '../../navigation/ProfileTapBar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const AVARTA = {
-  uri: 'https://ssimille-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfileImg/defaultProfileImg.png',
-  width: 70,
-  height: 70,
-};
-
 const Profile = ({navigation: {navigate}}) => {
+  const [userImg, setUserImg] = useState();
+  const [userName, setUserName] = useState();
+  const [profileMusic, setProfileMusic] = useState();
+  const [userTag, setUserTag] = useState([]);
   const getProfileElment = async () => {
     try {
       const value = await AsyncStorage.getItem('userNumber');
       if (value !== null) {
-        const response = await axios
-          .get('http://192.168.0.106:3000/userProfile', {
+        await axios
+          .get('http://192.168.0.105:3000/profile/getMyProfile', {
             params: {
               key: value,
             },
           })
           .then(res => {
-            console.log('res: ', res['data']);
-          })
-          .catch(err => {
-            console.log('err: ', err);
+            console.log('res: ', res.data);
+            const userInfo = res.data;
+            setUserName(userInfo.nickname);
+            setUserImg(userInfo.profile_image_url);
+            setProfileMusic(userInfo.profile_music_uri);
+            setUserTag(userInfo.tag1_cd);
           });
       }
     } catch (error) {
@@ -46,10 +46,10 @@ const Profile = ({navigation: {navigate}}) => {
       <Divider />
 
       <ProfileView>
-        <ProfilePic source={AVARTA} />
-        <ProfileText>사용자이름</ProfileText>
-        <ProfileText>노래이름</ProfileText>
-        <ProfileText>한줄소개글</ProfileText>
+        <ProfilePic source={{uri: userImg}} />
+        <ProfileText>{userName}</ProfileText>
+        <ProfileText>{profileMusic}</ProfileText>
+        <ProfileText>{userTag}</ProfileText>
       </ProfileView>
 
       <ProfileTabBar />
@@ -91,6 +91,8 @@ const ProfileView = styled.View`
 `;
 
 const ProfilePic = styled.Image`
+  width: 70;
+  height: 70;
   padding: 15px;
   margin: 10px;
 `;

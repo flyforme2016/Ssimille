@@ -1,10 +1,10 @@
 import React from 'react';
-import SpotifyLogin from './SpotifyLogin';
+import SpotifyTab from './SpotifyTab';
 
 const Notice = () => {
   return (
     <>
-      <SpotifyLogin />
+      <SpotifyTab />
     </>
   );
 };
