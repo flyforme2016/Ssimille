@@ -80,16 +80,11 @@ const ProfileEdit = ({navigation: {navigate}}) => {
       </NavBar>
       <ImgPreview source={ProfileImg ? ProfileImg : AVARTA} />
       <CustomButton text="사진 가져오기" onPress={getProfileImage} />
-      <CustomButton text="프로필뮤직변경" />
+      <EditInput placeholder="이름" value={changeName} onChange={handleName} />
       <EditInput
-        placeholder="이명희"
-        value={changeName}
-        onChangeText={handleName}
-      />
-      <EditInput
-        placeholder="안녕하세요 인천에 살고있는 26살 이명희 입니다!"
+        placeholder="안녕하세요!"
         value={changeIntro}
-        onChangeText={handleIntro}
+        onChange={handleIntro}
       />
       <CustomButton onPress={handleProfileEdit} text="프로필 변경" />
     </Container>

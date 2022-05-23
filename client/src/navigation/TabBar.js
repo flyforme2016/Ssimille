@@ -1,21 +1,15 @@
-/* eslint-disable prettier/prettier */
-
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/Home/Home';
 import Community from '../screens/Community/Comunity';
 import FriendList from '../screens/FriendList/FriendList';
 import MessagesScreen from '../screens/ChatScreen/MessagesScreen';
-import KakaoLogin from '../screens/KakaoLogin';
 import Profile from '../screens/Profile/Profile';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 
 const TabBar = () => {
-  const [loginState, setLoginState] = useState(true);
-
   // const loginResult = () => {
   //   AsyncStorage.getItem('userNumber', result => {
   //     setLoginState(result);
@@ -24,9 +18,9 @@ const TabBar = () => {
   // useEffect(() => {
   //   loginResult();
   // }, []);
-  return loginState ? (
+  return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Community"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
@@ -73,8 +67,6 @@ const TabBar = () => {
       <Tab.Screen name="FriendList" component={FriendList} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
-  ) : (
-    <KakaoLogin />
   );
 };
 

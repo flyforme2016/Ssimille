@@ -1,26 +1,22 @@
-/* eslint-disable prettier/prettier */
-
 import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
 import {PermissionsAndroid} from 'react-native';
 
-export const getCurrentLocation = async () => {
-  const granted = await PermissionsAndroid.request(
-    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-  );
-  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    console.log('권한 얻기 성공');
-    Geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
+export const getLocationName = async () => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${longitude}&y=${latitude}`,
+      headers: {
+        Host: 'dapi.kakao.com',
+        Authorization: 'KakaoAK 1c1252b4d425329642c458690fe99854',
+        'Content-Type': 'application/json;',
       },
-      error => {
-        console.log(error.message);
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    );
-  } else {
-    console.log('권한얻기 실패 :', granted);
+    });
+    const currentInfo = res.data.documents[0];
+    //console.log(currentInfo);
+    return currentInfo;
+  } catch (error) {
+    return error;
   }
 };
-
-export default getCurrentLocation;
