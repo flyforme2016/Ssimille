@@ -9,7 +9,7 @@ import Onboarding from '../screens/Start/Start';
 const Nav = createNativeStackNavigator();
 
 const Navigation = () => {
-  return !AsyncStorage.getItem('userNumber') ? (
+  return AsyncStorage.getItem('userNumber') ? (
     <Nav.Navigator
       screenOptions={{
         presentation: 'modal',

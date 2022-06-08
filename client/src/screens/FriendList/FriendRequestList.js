@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
+const data = [];
 const FriendRequestList = ({navigation: {navigate}}) => {
   // 누르면 상대 프로필 보여지는 함수
   const showProfileScreen = () => {
@@ -10,71 +11,44 @@ const FriendRequestList = ({navigation: {navigate}}) => {
   const handleFriendRequest = () => {};
   return (
     <Container>
-      <Card>
-        <UserInfo>
-          <UserImg>
-            <Avatar source={require('../../assets/sample/1.jpg')} />
-          </UserImg>
-          <InfoBox>
-            <UserName>Name</UserName>
-            <UserMusic>Music</UserMusic>
-          </InfoBox>
-        </UserInfo>
-        <BtnContainer>
-          <Btn onpress={showProfileScreen}>
-            <ChatText>프로필보기</ChatText>
-          </Btn>
-          <Btn onpress={handleFriendRequest}>
-            <ChatText>수락하기</ChatText>
-          </Btn>
-        </BtnContainer>
-      </Card>
-      <Card>
-        <UserInfo>
-          <UserImg>
-            <Avatar source={require('../../assets/sample/1.jpg')} />
-          </UserImg>
-          <InfoBox>
-            <UserName>Name</UserName>
-            <UserMusic>Music</UserMusic>
-          </InfoBox>
-        </UserInfo>
-        <BtnContainer>
-          <Btn onpress={showProfileScreen}>
-            <ChatText>프로필보기</ChatText>
-          </Btn>
-          <Btn onpress={handleFriendRequest}>
-            <ChatText>수락하기</ChatText>
-          </Btn>
-        </BtnContainer>
-      </Card>
-      <Card>
-        <UserInfo>
-          <UserImg>
-            <Avatar source={require('../../assets/sample/1.jpg')} />
-          </UserImg>
-          <InfoBox>
-            <UserName>Name</UserName>
-            <UserMusic>Music</UserMusic>
-          </InfoBox>
-        </UserInfo>
-        <BtnContainer>
-          <Btn onpress={showProfileScreen}>
-            <ChatText>프로필보기</ChatText>
-          </Btn>
-          <Btn onpress={handleFriendRequest}>
-            <ChatText>수락하기</ChatText>
-          </Btn>
-        </BtnContainer>
-      </Card>
+      <FriendList
+        data={data}
+        keyExtractor={item => item.id + ''}
+        horizontal={false}
+        renderItem={({item}) => (
+          <Card>
+            <UserInfo>
+              <UserImg>
+                <Avatar source={require('../../assets/sample/1.jpg')} />
+              </UserImg>
+              <InfoBox>
+                <UserName>Name</UserName>
+                <UserMusic>Music</UserMusic>
+              </InfoBox>
+            </UserInfo>
+            <BtnContainer>
+              <Btn onpress={showProfileScreen}>
+                <ChatText>프로필보기</ChatText>
+              </Btn>
+              <Btn onpress={handleFriendRequest}>
+                <ChatText>수락하기</ChatText>
+              </Btn>
+            </BtnContainer>
+          </Card>
+        )}
+      />
     </Container>
   );
 };
 
 const Container = styled.View`
-  margin-top: 10px;
-  justify-content: center;
+  align-items: center;
 `;
+const FriendList = styled.FlatList`
+  background-color: #ffffff;
+  margin-top: 20px;
+`;
+
 const Card = styled.View`
   padding: 15px 10px;
   border-radius: 20px;

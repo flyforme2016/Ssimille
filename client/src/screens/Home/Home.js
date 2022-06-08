@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Dimensions, RefreshControl} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
-import {remote} from 'react-native-spotify-remote';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SpotifyTab from '../SpotifyTab';
 

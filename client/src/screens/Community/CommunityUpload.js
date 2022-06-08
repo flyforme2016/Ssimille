@@ -2,13 +2,14 @@ import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CommunityUpload = ({navigation: {navigate}}) => {
   const [uploadImg, setUploadImg] = useState();
   const [postContent, setPostContent] = useState();
 
-  const handlePostContent = e => {
-    const {text} = e.nativeEvent;
+  const handlePostContent = text => {
     setPostContent(text);
   };
   //게시글에 사진 추가하는 함수
@@ -27,7 +28,31 @@ const CommunityUpload = ({navigation: {navigate}}) => {
       console.log(e.code, e.message);
     }
   };
-  const handleUploadPost = async event => {
+
+  const searchMusic = async () => {
+    const name = 'bts';
+    const token =
+      'BQDgtwxbj0aEKKwHTs-UyWFJ_4NNXBoeAtMoi1eal3N3Hu4wL1eCD5l9w2qWJFf0zYRQf4ktxV5GcYGalju3ElT0FZ8jEDdRy3sZXFfNra-Cx0tJoaeKm7fVpHkhg-jJljh1a4IOZVhB3MfkctTBCQS5XlyALwh7z8ONoe0';
+
+    const {data} = await axios
+      .get('https://api.spotify.com/v1/search', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          q: name,
+          type: 'track',
+        },
+      })
+      .then(res => {
+        console.log('res.data: ', res.data);
+      })
+      .catch(err => {
+        console.log('err: ', err);
+      });
+  };
+
+  const submitPhotos = async event => {
     event.preventDefault();
     try {
       const formdata = new FormData();
@@ -49,14 +74,42 @@ const CommunityUpload = ({navigation: {navigate}}) => {
       };
 
       await fetch(
-        'http://192.168.0.106:3000/s3/uploadMultipleImg',
+        'http://192.168.0.105:3000/s3/uploadMultipleImg',
         requestOptions,
       )
         .then(response => response.text())
-        .then(result => console.log(result))
-        .then(navigate('TabBar', {screen: 'Community'}));
+        .then(result => console.log(result));
     } catch (e) {
       console.log(e.code, e.message);
+    }
+  };
+
+  const onSubmitPost = async () => {
+    const kakao = await AsyncStorage.getItem('userNumber');
+    try {
+      submitPhotos();
+      await axios
+        .post('http://192.168.0.105:3000/url', {
+          params: {
+            key: kakao,
+            locationDepth1: 'testLocationDepth1',
+            engLocationDepth1: 'testEngLocationDepth1',
+            musicUri: 'testMusicUri',
+            albumTitle: 'testAlbumTitle',
+            albumImg: 'testAlbumImg',
+            albumArtistName: 'testAlbumArtistName',
+            inputText: postContent,
+            image1: 'testImage1',
+            image2: 'testImage2',
+            image3: 'testImage3',
+            image4: 'testImage4',
+            image5: 'testImage5',
+          },
+        })
+        .then(result => console.log(result, '업로드 완료'))
+        .then(navigate('TabBar', {screen: 'Community'}));
+    } catch (err) {
+      console.log(err);
     }
   };
   return (
@@ -75,13 +128,18 @@ const CommunityUpload = ({navigation: {navigate}}) => {
             onChangeText={handlePostContent}
           />
           <Divider />
-          <ImgUploadBtn onpress={handleImgUpload}>
+          <MusicUploadBtn onPress={searchMusic}>
             <Ionicons name="add" size={25} />
+            <BtnText>음악 올리기</BtnText>
+          </MusicUploadBtn>
+          <Divider />
+          <ImgUploadBtn onPress={handleImgUpload}>
+            <Ionicons name="camera-outline" size={25} />
             <BtnText>사진 가져오기</BtnText>
           </ImgUploadBtn>
         </UploadContainer>
       </Card>
-      <SubmitBtn onpress={handleUploadPost}>
+      <SubmitBtn onPress={onSubmitPost}>
         <Ionicons name="checkmark-outline" size={25} />
         <BtnText> 업로드하기 </BtnText>
       </SubmitBtn>
@@ -139,6 +197,12 @@ const Divider = styled.View`
   width: 90%;
   margin-top: 15px;
   align-self: center;
+`;
+
+const MusicUploadBtn = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: center;
+  padding: 8px;
 `;
 const ImgUploadBtn = styled.TouchableOpacity`
   flex-direction: row;

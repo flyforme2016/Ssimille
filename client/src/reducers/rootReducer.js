@@ -1,8 +1,10 @@
 import {combineReducers} from 'redux';
-import profileImgReducer from './profileImgReducer';
+import uploadProfileImgReducer from './uploadProfileImgReducer';
+import updateProfileImgReducer from './updateProfileImgReducer';
 
 const rootReducer = combineReducers({
-  profileImg: profileImgReducer,
+  uploadProfileImg: uploadProfileImgReducer,
+  updateProfileImg: updateProfileImgReducer,
 });
 
 export default rootReducer;

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import {View, LogBox, Text} from 'react-native';
+import {View, LogBox} from 'react-native';
 import {WebView} from 'react-native-webview';
 import getSpotifyToken from '../api/getSpotifyToken';
 
@@ -18,7 +18,7 @@ const KakaoLogin = ({navigation: {navigate}}) => {
       //console.log('access code :: ' + authCode);
       try {
         await axios
-          .post('http://192.168.0.105:3000/kakao/oauth/callback', {
+          .post('http://192.168.0.104:3000/kakao/oauth/callback', {
             params: {
               code: authCode,
             },
@@ -29,23 +29,22 @@ const KakaoLogin = ({navigation: {navigate}}) => {
               JSON.stringify(res.data.userId),
             );
             await getSpotifyToken();
+            console.log('로그인 성공');
           });
-        navigate('TabBar', {screen: 'Home'});
       } catch (err) {
         console.log(err);
       }
+      navigate('TabBar', {screen: 'Home'});
     }
   };
 
   return (
     <View style={{flex: 1}}>
-      <Text>로그인 화면</Text>
       <WebView
         originWhitelist={['*']}
         scalesPageToFit={false}
-        style={{marginTop: 30}}
         source={{
-          uri: 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=http://192.168.0.105:3000//kakao/oauth/callback',
+          uri: 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=http://192.168.0.104:3000//kakao/oauth/callback',
         }}
         injectedJavaScript={runFirst}
         javaScriptEnabled={true}

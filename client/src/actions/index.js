@@ -1,6 +1,15 @@
 import types from './ActionTypes';
 
-export const updateProfileImg = payload => ({
-  type: types.UPDATE_PROFILE_IMG,
-  payload,
-});
+exports.uploadProfileImgAction = parameter => {
+  return {
+    type: types.UPLOAD_PROFILE_IMG,
+    payload: parameter,
+  };
+};
+
+exports.updateProfileImgAction = parameter => {
+  return {
+    type: types.UPDATE_PROFILE_IMG,
+    payload: parameter,
+  };
+};

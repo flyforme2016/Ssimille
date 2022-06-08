@@ -26,11 +26,8 @@ const TabBar = () => {
         headerShown: false,
 
         tabBarStyle: {
-          position: 'absolute',
-          bottom: 0,
           borderRadius: 10,
           backgroundColor: 'white',
-          height: 65,
         },
 
         tabBarActiveTintColor: '#b7b4df',

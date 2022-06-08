@@ -4,9 +4,10 @@ const initialState = {
   profileImg: null,
 };
 
-const profileImgReducer = (state = initialState, action) => {
+const uploadProfileImgReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.UPDATE_PROFILE_IMG:
+    case types.UPLOAD_PROFILE_IMG:
+      console.log('Enter upload profile image reducer');
       return {
         ...state,
         profileImg: action.payload,
@@ -16,4 +17,4 @@ const profileImgReducer = (state = initialState, action) => {
   }
 };
 
-export default profileImgReducer;
+export default uploadProfileImgReducer;
