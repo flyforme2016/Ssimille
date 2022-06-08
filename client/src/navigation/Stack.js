@@ -18,7 +18,7 @@ const Stack = () => {
       }}>
       <NativeStack.Screen name="Notice" component={Notice} />
       <NativeStack.Screen name="Myzone" component={Myzone} />
-      {/* <NativeStack.Screen nema="ChatScreen" component={ChatScreen} />*/}
+      {/* <NativeStack.Screen name="ChatScreen" component={ChatScreen} />*/}
       <NativeStack.Screen name="ProfileEdit" component={ProfileEdit} />
       <NativeStack.Screen name="CommunityUpload" component={CommunityUpload} />
       <NativeStack.Screen name="KakaoLogin" component={KakaoLogin} />
