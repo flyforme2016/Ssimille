@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Dimensions, RefreshControl} from 'react-native';
+import {ActivityIndicator, RefreshControl} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import SpotifyTab from '../SpotifyTab';
+import SpotifyTab from '../../components/SpotifyTab';
 
 const Home = ({navigation: {navigate}}) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -23,6 +23,7 @@ const Home = ({navigation: {navigate}}) => {
       console.log(err);
     }
   };
+
   useEffect(() => {
     getData();
   }, []);
@@ -32,39 +33,39 @@ const Home = ({navigation: {navigate}}) => {
       <ActivityIndicator />
     </Loader>
   ) : (
-    <Container
-      refreshControl={
-        <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
-      }>
-      <TopBar>
-        <Logo source={logo} />
-        <Notice onPress={() => navigate('Stack', {screen: 'Notice'})}>
-          <Ionicons name="alert-circle-outline" size={30} />
-        </Notice>
-      </TopBar>
-      <MyzoneContainer>
-        <Btn onPress={() => navigate('Stack', {screen: 'Myzone'})}>
-          <Text>MY ZONE</Text>
+    <>
+      <Container
+        refreshControl={
+          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+        }>
+        <TopBar>
+          <Logo source={logo} />
+          <Notice onPress={() => navigate('Stack', {screen: 'Notice'})}>
+            <Ionicons name="alert-circle-outline" size={30} />
+          </Notice>
+        </TopBar>
+        <MyzoneContainer>
+          <Btn onPress={() => navigate('Stack', {screen: 'Myzone'})}>
+            <Text>MY ZONE</Text>
+          </Btn>
+        </MyzoneContainer>
+        <Btn
+          onPress={async () => {
+            console.log(await AsyncStorage.getItem('userNumber'));
+          }}>
+          <Text>usertoken</Text>
         </Btn>
-      </MyzoneContainer>
-      <Btn
-        onPress={async () => {
-          console.log(await AsyncStorage.getItem('userNumber'));
-          // await AsyncStorage.removeItem('userNumber');
-          // await console.log('Storage 삭제완료');
-        }}>
-        <Text>logout</Text>
-      </Btn>
+        <RecommendText>음악 추천</RecommendText>
+        <AlbumRecommendContainer>
+          <AlbumContainer>
+            <AlbumImg source={require('../../assets/sample/5.jpg')} />
+            <AlBumInfo>name</AlBumInfo>
+            <AlBumInfo>artist</AlBumInfo>
+          </AlbumContainer>
+        </AlbumRecommendContainer>
+      </Container>
       <SpotifyTab />
-      <RecommendText>음악 추천</RecommendText>
-      <AlbumRecommendContainer>
-        <AlbumContainer>
-          <AlbumImg source={require('../../assets/sample/5.jpg')} />
-          <AlBumInfo>name</AlBumInfo>
-          <AlBumInfo>artist</AlBumInfo>
-        </AlbumContainer>
-      </AlbumRecommendContainer>
-    </Container>
+    </>
   );
 };
 

@@ -18,10 +18,8 @@ const KakaoLogin = ({navigation: {navigate}}) => {
       //console.log('access code :: ' + authCode);
       try {
         await axios
-          .post('http://192.168.0.104:3000/kakao/oauth/callback', {
-            params: {
-              code: authCode,
-            },
+          .post('http://192.168.0.124:3000/kakao/oauth/callback', {
+            code: authCode,
           })
           .then(async res => {
             await AsyncStorage.setItem(
@@ -29,7 +27,6 @@ const KakaoLogin = ({navigation: {navigate}}) => {
               JSON.stringify(res.data.userId),
             );
             await getSpotifyToken();
-            console.log('로그인 성공');
           });
       } catch (err) {
         console.log(err);
@@ -44,7 +41,7 @@ const KakaoLogin = ({navigation: {navigate}}) => {
         originWhitelist={['*']}
         scalesPageToFit={false}
         source={{
-          uri: 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=http://192.168.0.104:3000//kakao/oauth/callback',
+          uri: 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=http://192.168.0.124:3000//kakao/oauth/callback',
         }}
         injectedJavaScript={runFirst}
         javaScriptEnabled={true}

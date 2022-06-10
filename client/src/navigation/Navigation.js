@@ -1,15 +1,21 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import TabBar from './TabBar';
 import Stack from './Stack';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Onboarding from '../screens/Start/Start';
 
 const Nav = createNativeStackNavigator();
 
 const Navigation = () => {
-  return AsyncStorage.getItem('userNumber') ? (
+  const [token, setToken] = useState();
+
+  const loginState = async () => {
+    setToken(await AsyncStorage.getItem('userNumber'));
+    console.log('로그인확인');
+  };
+  loginState();
+  return typeof token !== null ? (
     <Nav.Navigator
       screenOptions={{
         presentation: 'modal',

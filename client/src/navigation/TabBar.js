@@ -20,7 +20,7 @@ const TabBar = () => {
   // }, []);
   return (
     <Tab.Navigator
-      initialRouteName="Community"
+      initialRouteName="Home"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
@@ -62,7 +62,13 @@ const TabBar = () => {
       <Tab.Screen name="MessagesScreen" component={MessagesScreen} />
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="FriendList" component={FriendList} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          unmountOnBlur: true,
+        }}
+      />
     </Tab.Navigator>
   );
 };

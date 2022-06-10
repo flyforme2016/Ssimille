@@ -1,34 +1,40 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 
 const data = [
   {
     id: 0,
     name: '윤승희',
+    music: 'Music',
   },
   {
     id: 1,
     name: '윤승희2',
+    music: 'Music',
+  },
+  {
+    id: 2,
+    name: '윤승희2',
+    music: 'Music',
   },
 ];
 
 const CurrentFriendList = ({navigation: {navigate}}) => {
-  const [friendData, setFriendData] = useState();
+  const [friendData, setFriendData] = useState({});
 
   // 누르면 각 유저별 채팅화면으로 넘어가는 함수
   const moveChatScreen = () => {
     navigate('TabBar', {screen: 'ChatScreen'});
   };
   // 누르면 상대 프로필 보여지는 함수
-
   const showProfileScreen = async () => {
     const value = await AsyncStorage.getItem('userNumber');
     try {
       if (value !== null) {
         await axios
-          .get('http://192.168.0.105:3000/friend/getFriendList', {
+          .get('http://192.168.0.124:3000/friend/getFriendList', {
             params: {
               key: value,
             },
@@ -61,7 +67,7 @@ const CurrentFriendList = ({navigation: {navigate}}) => {
               </UserImg>
               <InfoBox>
                 <UserName>{item.name}</UserName>
-                <UserMusic>Music</UserMusic>
+                <UserMusic>{item.music}</UserMusic>
               </InfoBox>
             </UserInfo>
             <BtnContainer>

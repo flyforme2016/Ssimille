@@ -6,12 +6,10 @@ import {
   SafeAreaView,
   TouchableOpacity,
   FlatList,
-  ImageBackground,
-  Dimensions,
 } from 'react-native';
 import {COLORS, SIZES} from '../../components/index';
+import {OnboardingDatas} from '../../datas';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
-import data from '../../components/onboarding';
 import styled from 'styled-components/native';
 
 const Onboarding = ({navigation: {navigate}}) => {
@@ -28,7 +26,7 @@ const Onboarding = ({navigation: {navigate}}) => {
   }, [currentPage, viewableItems]);
 
   const handleNext = () => {
-    if (currentPage === data.length - 1) return;
+    if (currentPage === OnboardingDatas.length - 1) return;
 
     flatlistRef.current.scrollToIndex({
       animated: true,
@@ -48,7 +46,7 @@ const Onboarding = ({navigation: {navigate}}) => {
   const handleSkipToEnd = () => {
     flatlistRef.current.scrollToIndex({
       animate: true,
-      index: data.length - 1,
+      index: OnboardingDatas.length - 1,
     });
   };
 
@@ -76,7 +74,7 @@ const Onboarding = ({navigation: {navigate}}) => {
               style={{
                 fontSize: 18,
                 color: COLORS.black,
-                opacity: currentPage == data.length - 1 ? 0 : 1,
+                opacity: currentPage == OnboardingDatas.length - 1 ? 0 : 1,
               }}>
               Skip
             </Text>
@@ -94,7 +92,7 @@ const Onboarding = ({navigation: {navigate}}) => {
           <Pagview>
             {
               // No. of dots
-              [...Array(data.length)].map((_, index) => (
+              [...Array(OnboardingDatas.length)].map((_, index) => (
                 <View key={index} />
               ))
             }
@@ -102,7 +100,7 @@ const Onboarding = ({navigation: {navigate}}) => {
 
           {/* Next or GetStarted button */}
           {/* Show or Hide Next button & GetStarted button by screen */}
-          {currentPage != data.length - 1 ? (
+          {currentPage != OnboardingDatas.length - 1 ? (
             <Next onPress={handleNext} activeOpacity={0.8}>
               <AntDesignIcons
                 name="right"
@@ -169,7 +167,7 @@ const Onboarding = ({navigation: {navigate}}) => {
 
       {/* FLATLIST with pages */}
       <FlatList
-        data={data}
+        data={OnboardingDatas}
         pagingEnabled
         horizontal
         showsHorizontalScrollIndicator={false}

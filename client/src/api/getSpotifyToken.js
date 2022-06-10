@@ -15,17 +15,16 @@ const spotifyConfig = {
 
 const getSpotifyToken = async () => {
   try {
-    console.log('try login');
     const session = await SpotifyAuth.authorize(spotifyConfig);
-    await SpotifyRemote.connect(session.accessToken)
-      .then(async () => {
-        const value = session.accessToken;
-        await AsyncStorage.setItem('spotifyToken', value);
-        console.log('success authorize');
-      })
-      .catch(err => {
-        console.log('err', err);
-      });
+    await SpotifyRemote.connect(session.accessToken);
+    // .then(async () => {
+    //   const value = session.accessToken;
+    //   await AsyncStorage.setItem('spotifyToken', value);
+    //   console.log('success authorize');
+    // })
+    // .catch(err => {
+    //   console.log('err', err);
+    // });
     return session;
   } catch (err) {
     console.error(err);

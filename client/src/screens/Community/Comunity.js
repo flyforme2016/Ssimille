@@ -2,19 +2,24 @@ import React from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommunityTabBar from './CommunityTabBar';
+import SpotifyTab from '../../components/SpotifyTab';
+
 const Community = ({navigation: {navigate}}) => {
   return (
-    <Container>
-      <NavBar>
-        <NavText>Community</NavText>
-        <UploadBtn
-          onPress={() => navigate('Stack', {screen: 'CommunityUpload'})}>
-          <Ionicons name="duplicate" size={35} color="#b7b4df" />
-        </UploadBtn>
-      </NavBar>
-      <NavDivider />
-      <CommunityTabBar />
-    </Container>
+    <>
+      <Container>
+        <NavBar>
+          <NavText>Community</NavText>
+          <UploadBtn
+            onPress={() => navigate('Stack', {screen: 'CommunityUpload'})}>
+            <Ionicons name="duplicate" size={35} color="#b7b4df" />
+          </UploadBtn>
+        </NavBar>
+        <NavDivider />
+        <CommunityTabBar />
+      </Container>
+      <SpotifyTab />
+    </>
   );
 };
 

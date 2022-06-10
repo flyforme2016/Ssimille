@@ -1,24 +1,22 @@
-import React, {useState, useEffect, useLayoutEffect} from 'react';
+import React, {useState, useLayoutEffect} from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProfileTabBar from './ProfileTapBar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useSelector} from 'react-redux';
-import postProfileImg from '../../api/postProfileImg';
+import {useIsFocused} from '@react-navigation/native';
+import SpotifyTab from '../../components/SpotifyTab';
 
 const Profile = ({navigation: {navigate}}) => {
   const [userData, setUserData] = useState({});
+  const isFocused = useIsFocused();
 
-  const {profileImg} = useSelector(state => state.updateProfileImg);
-
-  const test = async () => {
-    console.log(await AsyncStorage.getItem('userNumber'));
-  };
-  test();
-
+  useLayoutEffect(() => {
+    getProfileElment();
+  }, [isFocused]);
   const getProfileElment = async () => {
     try {
+      console.log('start getProfileElement');
       const value = await AsyncStorage.getItem('userNumber');
       if (value !== null) {
         // await axios
@@ -34,84 +32,67 @@ const Profile = ({navigation: {navigate}}) => {
         //   .then(res => {
         //     console.log('Test editProfile');
         //   });
-        if (!userData.nickname) {
-          await axios
-            .get('http://192.168.0.104:3000/profile/getMyProfile', {
-              params: {
-                key: value,
-              },
-            })
-            .then(res => {
-              console.log('res: ', res.data);
-              const userInfo = res.data;
-              setUserData(userInfo);
-            });
-        }
-        // await axios
-        //   .get('http://192.168.0.105:3000/profile/getMyProfile', {
-        //     params: {
-        //       key: value,
-        //     },
-        //   })
-        //   .then(res => {
-        //     console.log('res: ', res.data);
-        //     const userInfo = res.data;
-        //     setUserData(userInfo);
-        //   });
+        await axios
+          .get('http://192.168.0.124:3000/profile/getMyProfile', {
+            params: {
+              key: value,
+            },
+          })
+          .then(res => {
+            console.log('res: ', res.data);
+            const userInfo = res.data;
+            setUserData(userInfo);
+          });
       }
     } catch (error) {
       console.log('error: ', error);
     }
   };
-  if (profileImg) {
-    console.log('profileImg null? : ', profileImg);
-    postProfileImg(profileImg);
-  }
-  getProfileElment();
 
   return (
-    <Container>
-      <NavBar>
-        <NavText>PROFILE</NavText>
-        <Btn onPress={() => navigate('Stack', {screen: 'ProfileEdit'})}>
-          <Ionicons name="settings-outline" size={35} />
-        </Btn>
-      </NavBar>
-      <Divider />
+    <>
+      <Container>
+        <NavBar>
+          <NavText>PROFILE</NavText>
+          <Btn onPress={() => navigate('Stack', {screen: 'ProfileEdit'})}>
+            <Ionicons name="settings-outline" size={35} />
+          </Btn>
+        </NavBar>
+        <Divider />
 
-      <ProfileView>
-        <ProfilePic
-          source={{uri: profileImg ? profileImg : userData.profile_image}}
-        />
-        <ProfileText>{userData.nickname}</ProfileText>
-        <Follow>
-          <Followview>
-            <Followtext>POST</Followtext>
-            <Followtext>{userData.post_count}</Followtext>
-          </Followview>
-          <Followview>
-            <Followtext>FREIND</Followtext>
-            <Followtext>{userData.friend_count}</Followtext>
-          </Followview>
-          <Followview>
-            <Followtext>SONG</Followtext>
-            <Followtext>{userData.song_count}</Followtext>
-          </Followview>
-        </Follow>
-        <ProfileText2>
-          {userData.profile_music_uri !== null
-            ? userData.profile_music_uri
-            : '프로필뮤직을 설정해주세요'}
-        </ProfileText2>
-        <ProfileText3>
-          {userData.tag1_cd !== null
-            ? userData.tag1_cd
-            : 'hashTag를 설정해주세요'}
-        </ProfileText3>
-      </ProfileView>
+        <ProfileView>
+          <ProfilePic source={{uri: userData.profile_image}} />
+          <ProfileText>{userData.nickname}</ProfileText>
+          <Follow>
+            <Followview>
+              <Followtext>POST</Followtext>
+              <Followtext>{userData.post_count}</Followtext>
+            </Followview>
+            <Followview>
+              <Followtext>FREIND</Followtext>
+              <Followtext>{userData.friend_count}</Followtext>
+            </Followview>
+            <Followview>
+              <Followtext>SONG</Followtext>
+              <Followtext>{userData.song_count}</Followtext>
+            </Followview>
+          </Follow>
+          <ProfileText2>
+            {userData.profile_music_uri !== null
+              ? userData.profile_music_uri
+              : '프로필뮤직을 설정해주세요'}
+          </ProfileText2>
+          <ProfileText3>
+            {userData.tag1_cd !== null
+              ? userData.tag1_cd
+              : 'hashTag를 설정해주세요'}
+          </ProfileText3>
+        </ProfileView>
 
-      <ProfileTabBar />
-    </Container>
+        <ProfileTabBar />
+      </Container>
+      <SpotifyTab />
+    </>
   );
 };
 

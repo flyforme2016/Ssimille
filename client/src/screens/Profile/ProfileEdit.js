@@ -6,6 +6,8 @@ import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
 import {HashTagIds} from '../../datas';
+import postProfileImg from '../../api/postProfileImg';
+
 const AVARTA =
   'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png';
 const SUBMIT = {
@@ -17,7 +19,7 @@ const SUBMIT = {
 const ProfileEdit = ({navigation: {navigate}}) => {
   const {profileImg} = useSelector(state => state.uploadProfileImg); //profileImg
   const dispatch = useDispatch();
-  const [idx, setIdx] = React.useState([]); //hasgTag
+  const [idx, setIdx] = React.useState([]); //hashTag
   const [changeName, setChangeName] = useState(); //nickname
 
   //닉네임 변경 함수
@@ -59,21 +61,25 @@ const ProfileEdit = ({navigation: {navigate}}) => {
         method: 'POST',
         body: formdata,
         redirect: 'follow',
-        // headers :{'Content-Type': 'multipart/form-data'}
+
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+        },
       };
 
-      await fetch(
-        'http://192.168.0.104:3000/s3/uploadProfileImg',
-        requestOptions,
-      )
-        .then(response => response.text())
-        .then(result => dispatch(actions.updateProfileImgAction(result)))
-        .then(navigate('TabBar', {screen: 'Profile'}));
-    } catch (e) {
-      console.log(e.code, e.message);
+      const result = await (
+        await fetch(
+          'http://192.168.0.124:3000/s3/uploadProfileImg',
+          requestOptions,
+        )
+      ).json();
+      postProfileImg(result.imgUrl);
+    } catch (error) {
+      console.log(error, error.message);
     }
+    navigate('TabBar', {screen: 'Profile'});
   };
-  console.log(idx);
   return (
     <Container>
       <NavBar>

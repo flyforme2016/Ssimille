@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import getPostTime from '../../api/getPostTime';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const Data = [
   {
@@ -40,9 +42,31 @@ const Data = [
   },
 ];
 const TotalCommunity = ({navigation: {navigate}}) => {
-  const [like, setLike] = useState(false);
+  const [likePress, setLikePress] = useState(false);
+  const [postData, setPostData] = useState();
+
   const handleLike = async () => {
-    await setLike(!like);
+    // await axios
+    //   .get('http://192.168.0.104:3000/profile/getMyProfile', {
+    //     params: {
+    //       key: value,
+    //     },
+    //   })
+    //   .then(res => {
+    //     console.log('res: ', res.data);
+    //     const userInfo = res.data;
+    //     setUserData(userInfo);
+    //   });
+
+    const value = await AsyncStorage.getItem('userNumber');
+    if (value !== null) {
+      await axios.post('http://192.168.0.104:3000/profile/getMyProfile', {
+        params: {
+          key: value,
+        },
+      });
+      await setLikePress(!likePress);
+    }
   };
   return (
     <Container>
@@ -65,7 +89,7 @@ const TotalCommunity = ({navigation: {navigate}}) => {
             <Divider />
             <InterContainer>
               <Interaction onPress={handleLike}>
-                {item.like ? (
+                {item.like || likePress ? (
                   <Ionicons name="heart" color="red" size={25} />
                 ) : (
                   <Ionicons name="heart-outline" size={25} />

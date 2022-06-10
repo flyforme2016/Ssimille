@@ -1,11 +1,15 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import SpotifyTab from '../../components/SpotifyTab';
 import FriendListTabBar from './FriendListTabBar';
 const FriendList = () => {
   return (
-    <Container>
-      <FriendListTabBar />
-    </Container>
+    <>
+      <Container>
+        <FriendListTabBar />
+      </Container>
+      <SpotifyTab />
+    </>
   );
 };
 
