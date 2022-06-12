@@ -5,6 +5,7 @@ import getSpotifyToken from '../api/getSpotifyToken';
 import MarqueeView from 'react-native-marquee-view';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useIsFocused} from '@react-navigation/native';
+import axios from 'axios';
 
 const SpotifyTab = () => {
   const [playIcon, setPlayIcon] = useState(false);
@@ -14,21 +15,41 @@ const SpotifyTab = () => {
     track: {name: '', artist: {name: ''}, duration: ''},
     playbackPosition: null,
   });
+  const [coverImg, setCoverImg] = useState();
 
   useEffect(() => {
     const getMusic = async () => {
       await getSpotifyToken();
-      await getPlayingMusic();
-      await timer();
+      await setMusic();
     };
     const setMusic = async () => {
       await getPlayingMusic();
+      await searchImg();
       await timer();
     };
     if (playingMusic.playbackPosition === null) getMusic();
     else setMusic();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
+
+  const searchImg = async () => {
+    const apiKey = '8d9fa3281b6b3aad9ce7665f929b0048';
+
+    const res = await axios
+      .get(
+        `http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${apiKey}&artist=${playingMusic.track.artist.name}&track=${playingMusic.track.name}&format=json`,
+      )
+      .then(
+        async () => {
+          await setCoverImg(res.data.track.album.image[0]['#text']);
+          console.log('앨범커버 뽑기위한 api', playingMusic);
+        },
+        () => {
+          console.log('이미지 저장 실패ㅠ');
+        },
+      );
+    console.log(coverImg);
+  };
 
   // 현재 재생중인 노래 가져오기
   const getPlayingMusic = async () => {
@@ -42,7 +63,6 @@ const SpotifyTab = () => {
       },
       playbackPosition: infos.playbackPosition,
     });
-    console.log('노래바뀜', infos);
   };
   // 노래 변경시에 duration 재설정
   const timer = async () => {
@@ -54,7 +74,9 @@ const SpotifyTab = () => {
 
   return (
     <SpotifyTabBar>
-      <AlbumImg source={{uri: playingMusic.albumImg}} />
+      <AlbumImg
+        source={{url: coverImg ? coverImg : require('../assets/sample/1.jpg')}}
+      />
       <MusicInfo>
         {playingMusic.track.name.length > 20 ? (
           <MarqueeView speed={0.2}>
@@ -70,6 +92,7 @@ const SpotifyTab = () => {
           onPress={async () => {
             await remote.skipToPrevious();
             await getPlayingMusic();
+            await searchImg();
           }}
           type="play-back"
         />
@@ -102,6 +125,7 @@ const SpotifyTab = () => {
                 console.log('then 처리 실패 : 노래정보 업데이트 실패');
               },
             );
+            await searchImg();
           }}
           type="play-forward"
         />

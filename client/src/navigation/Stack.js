@@ -6,6 +6,7 @@ import CommunityUpload from '../screens/Community/CommunityUpload';
 import ChatScreen from '../screens/ChatScreen/ChatScreen';
 import ProfileEdit from '../screens/Profile/ProfileEdit';
 import KakaoLogin from '../screens/KakaoLogin';
+import SearchMusic from '../screens/SearchMusic';
 
 const NativeStack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ const Stack = () => {
       <NativeStack.Screen name="Myzone" component={Myzone} />
       <NativeStack.Screen name="ChatScreen" component={ChatScreen} />
       <NativeStack.Screen name="ProfileEdit" component={ProfileEdit} />
+      <NativeStack.Screen name="SearchMusic" component={SearchMusic} />
       <NativeStack.Screen name="CommunityUpload" component={CommunityUpload} />
       <NativeStack.Screen name="KakaoLogin" component={KakaoLogin} />
     </NativeStack.Navigator>

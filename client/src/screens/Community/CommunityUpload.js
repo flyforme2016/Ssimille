@@ -28,27 +28,34 @@ const CommunityUpload = ({navigation: {navigate}}) => {
       console.log(e.code, e.message);
     }
   };
-
   const searchMusic = async () => {
-    const name = 'bts';
-    const token =
-      'BQDgtwxbj0aEKKwHTs-UyWFJ_4NNXBoeAtMoi1eal3N3Hu4wL1eCD5l9w2qWJFf0zYRQf4ktxV5GcYGalju3ElT0FZ8jEDdRy3sZXFfNra-Cx0tJoaeKm7fVpHkhg-jJljh1a4IOZVhB3MfkctTBCQS5XlyALwh7z8ONoe0';
+    // const name = 'bts';
+    // const token =
+    //   'BQDgtwxbj0aEKKwHTs-UyWFJ_4NNXBoeAtMoi1eal3N3Hu4wL1eCD5l9w2qWJFf0zYRQf4ktxV5GcYGalju3ElT0FZ8jEDdRy3sZXFfNra-Cx0tJoaeKm7fVpHkhg-jJljh1a4IOZVhB3MfkctTBCQS5XlyALwh7z8ONoe0';
 
-    const {data} = await axios
-      .get('https://api.spotify.com/v1/search', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          q: name,
-          type: 'track',
-        },
-      })
+    // const {data} = await axios
+    //   .get('https://api.spotify.com/v1/search', {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //     params: {
+    //       q: name,
+    //       type: 'track',
+    //     },
+    //   })
+    //   .then(res => {
+    //     console.log('res.data: ', res.data);
+    //   })
+    //   .catch(err => {
+    //     console.log('err: ', err);
+    //   });
+    console.log('clicked');
+    await axios
+      .get(
+        'http://ws.audioscrobbler.com/2.0/?method=track.search&track=Believe&api_key=8d9fa3281b6b3aad9ce7665f929b0048&format=json',
+      )
       .then(res => {
         console.log('res.data: ', res.data);
-      })
-      .catch(err => {
-        console.log('err: ', err);
       });
   };
 
@@ -128,7 +135,8 @@ const CommunityUpload = ({navigation: {navigate}}) => {
             onChangeText={handlePostContent}
           />
           <Divider />
-          <MusicUploadBtn onPress={searchMusic}>
+          <MusicUploadBtn
+            onPress={() => navigate('Stack', {screen: 'SearchMusic'})}>
             <Ionicons name="add" size={25} />
             <BtnText>음악 올리기</BtnText>
           </MusicUploadBtn>

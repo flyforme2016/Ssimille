@@ -20,7 +20,7 @@ const TabBar = () => {
   // }, []);
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Community"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
