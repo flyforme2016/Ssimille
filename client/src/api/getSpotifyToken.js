@@ -14,21 +14,10 @@ const spotifyConfig = {
 };
 
 const getSpotifyToken = async () => {
-  try {
-    const session = await SpotifyAuth.authorize(spotifyConfig);
-    await SpotifyRemote.connect(session.accessToken);
-    // .then(async () => {
-    //   const value = session.accessToken;
-    //   await AsyncStorage.setItem('spotifyToken', value);
-    //   console.log('success authorize');
-    // })
-    // .catch(err => {
-    //   console.log('err', err);
-    // });
-    return session;
-  } catch (err) {
-    console.error(err);
-  }
+  const session = await SpotifyAuth.authorize(spotifyConfig);
+  await SpotifyRemote.connect(session.accessToken);
+  await AsyncStorage.setItem('spotifyToken', session.accessToken);
+  console.log('success authorize');
 };
 
 export default getSpotifyToken;

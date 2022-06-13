@@ -3,47 +3,13 @@ import React, {useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
 
-// const Data = [
-//   {
-//     id: 0,
-//     name: 'Believer',
-//     artist: 'Imagine Dragons',
-//     url: 'https://www.last.fm/music/Imagine+Dragons/_/Believer',
-//     streamable: 'FIXME',
-//     listeners: '602548',
-//   },
-//   {
-//     id: 1,
-//     name: 'Believe What I Say',
-//     artist: 'Kanye West',
-//     url: 'https://www.last.fm/music/Kanye+West/_/Believe+What+I+Say',
-//     streamable: 'FIXME',
-//     listeners: '346260',
-//   },
-//   {
-//     id: 2,
-//     name: 'Believe',
-//     artist: 'Cher',
-//     url: 'https://www.last.fm/music/Cher/_/Believe',
-//     streamable: 'FIXME',
-//     listeners: '636640',
-//   },
-//   {
-//     id: 3,
-//     name: 'I Believe in a Thing Called Love',
-//     artist: 'The Darkness',
-//     url: 'https://www.last.fm/music/The+Darkness/_/I+Believe+in+a+Thing+Called+Love',
-//     streamable: 'FIXME',
-//     listeners: '638431',
-//   },
-// ];
-
-const SearchMusic = () => {
+const SearchMusic = ({navigation}) => {
   const handleMusic = text => {
     setSearchName(text);
   };
   const [searchName, setSearchName] = useState();
   const [data, setData] = useState();
+
   const searchMusic = async () => {
     const apiKey = '8d9fa3281b6b3aad9ce7665f929b0048';
     await axios
@@ -52,7 +18,7 @@ const SearchMusic = () => {
       )
       .then(res => {
         setData(res.data.results.trackmatches.track);
-        //console.log(res.data);
+        // console.log(res.data.results.trackmatches);
       });
   };
   return (
@@ -72,18 +38,25 @@ const SearchMusic = () => {
       </SearchContainer>
       <MusicResultList
         data={data}
-        keyExtractor={item => item.id + ''}
+        keyExtractor={(item, index) => index.toString()}
         horizontal={false}
         renderItem={({item}) => (
           <Card>
-            <MusicInfoContainer>
+            <MusicInfoContainer
+              onPress={() => {
+                console.log(item);
+                navigation.navigate({
+                  name: 'CommunityUpload',
+                  params: {name: item.name, artist: item.artist},
+                  merge: true,
+                });
+              }}>
               <CoverImg source={{uri: item.image[0]['#text']}} />
               <MusicInfo>
                 <MusicName>{item.name}</MusicName>
-                <ArtistName> {item.artist}</ArtistName>
+                <ArtistName>{item.artist}</ArtistName>
               </MusicInfo>
             </MusicInfoContainer>
-            {/* <Divider /> */}
           </Card>
         )}
       />
@@ -122,7 +95,7 @@ const Card = styled.View`
   elevation: 3;
 `;
 
-const MusicInfoContainer = styled.View`
+const MusicInfoContainer = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: flex-start;
   padding: 15px;

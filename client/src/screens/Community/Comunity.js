@@ -18,7 +18,7 @@ const Community = ({navigation: {navigate}}) => {
         <NavDivider />
         <CommunityTabBar />
       </Container>
-      <SpotifyTab />
+      {/* <SpotifyTab /> */}
     </>
   );
 };
