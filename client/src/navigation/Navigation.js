@@ -12,7 +12,7 @@ const Navigation = () => {
 
   const loginState = async () => {
     setToken(await AsyncStorage.getItem('userNumber'));
-    console.log('로그인확인');
+    console.log('로그인확인', token);
   };
   loginState();
   return typeof token !== null ? (

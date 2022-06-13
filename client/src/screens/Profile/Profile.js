@@ -33,7 +33,7 @@ const Profile = ({navigation: {navigate}}) => {
         //     console.log('Test editProfile');
         //   });
         await axios
-          .get('http://192.168.0.124:3000/profile/getMyProfile', {
+          .get('http://192.168.0.125:3000/profile/getMyProfile', {
             params: {
               key: value,
             },

@@ -1,77 +1,81 @@
-import React, {useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import getPostTime from '../../api/getPostTime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {useIsFocused} from '@react-navigation/native';
 
-const Data = [
-  {
-    id: 0,
-    name: '윤승희',
-    time: '2022-05-24T01:20:00',
-    profileImg:
-      'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
-    detail: '이것은 테스트입니다..',
-    photo:
-      'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
-    music: '',
-    location: '',
-    like: false,
-    comments: 3,
-  },
-  {
-    id: 1,
-    name: '윤승희2',
-    time: '2022-05-29T01:20:00',
-    profileImg:
-      'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
-    detail: '이것은 테스트입니다..',
-    like: true,
-    comments: 5,
-  },
-  {
-    id: 2,
-    name: '윤승희3',
-    time: '2022-06-01T01:20:00',
-    profileImg:
-      'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
-    detail: '이것은 테스트입니다..',
-    like: true,
-    comments: 0,
-  },
-];
+// const Data = [
+//   {
+//     id: 0,
+//     name: '윤승희',
+//     time: '2022-05-24T01:20:00',
+//     profileImg:
+//       'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
+//     detail: '이것은 테스트입니다..',
+//     photo:
+//       'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
+//     music: '',
+//     location: '',
+//     like: false,
+//     comments: 3,
+//   },
+//   {
+//     id: 1,
+//     name: '윤승희2',
+//     time: '2022-05-29T01:20:00',
+//     profileImg:
+//       'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
+//     detail: '이것은 테스트입니다..',
+//     like: true,
+//     comments: 5,
+//   },
+//   {
+//     id: 2,
+//     name: '윤승희3',
+//     time: '2022-06-01T01:20:00',
+//     profileImg:
+//       'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
+//     detail: '이것은 테스트입니다..',
+//     like: true,
+//     comments: 0,
+//   },
+// ];
 const TotalCommunity = ({navigation: {navigate}}) => {
   const [likePress, setLikePress] = useState(false);
   const [postData, setPostData] = useState();
-
+  const isFocused = useIsFocused();
   const handleLike = async () => {
-    // await axios
-    //   .get('http://192.168.0.104:3000/profile/getMyProfile', {
-    //     params: {
-    //       key: value,
-    //     },
-    //   })
-    //   .then(res => {
-    //     console.log('res: ', res.data);
-    //     const userInfo = res.data;
-    //     setUserData(userInfo);
-    //   });
+    await setLikePress(!likePress);
+  };
 
+  const getData = async () => {
     const value = await AsyncStorage.getItem('userNumber');
-    if (value !== null) {
-      await axios.post('http://192.168.0.104:3000/profile/getMyProfile', {
+    await axios
+      .get('http://192.168.0.124:3000/post/getPostList', {
         params: {
           key: value,
         },
-      });
-      await setLikePress(!likePress);
-    }
+      })
+      .then(
+        res => {
+          console.log('res: ', res.data);
+          //setPostData(res.data);
+        },
+        err => {
+          console.log('게시글 정보 받아오기 실패', err);
+        },
+      );
   };
+
+  useLayoutEffect(() => {
+    getData();
+  }, [isFocused]);
   return (
     <Container>
       <PostList
-        data={Data}
+        data={postData}
         keyExtractor={item => item.id + ''}
         horizontal={false}
         renderItem={({item}) => (

@@ -5,7 +5,7 @@ import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const CommunityUpload = ({navigation: {navigate}}) => {
+const CommunityUpload = ({navigation, route}) => {
   const [uploadImg, setUploadImg] = useState();
   const [postContent, setPostContent] = useState();
 
@@ -28,37 +28,7 @@ const CommunityUpload = ({navigation: {navigate}}) => {
       console.log(e.code, e.message);
     }
   };
-  const searchMusic = async () => {
-    // const name = 'bts';
-    // const token =
-    //   'BQDgtwxbj0aEKKwHTs-UyWFJ_4NNXBoeAtMoi1eal3N3Hu4wL1eCD5l9w2qWJFf0zYRQf4ktxV5GcYGalju3ElT0FZ8jEDdRy3sZXFfNra-Cx0tJoaeKm7fVpHkhg-jJljh1a4IOZVhB3MfkctTBCQS5XlyALwh7z8ONoe0';
-
-    // const {data} = await axios
-    //   .get('https://api.spotify.com/v1/search', {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //     params: {
-    //       q: name,
-    //       type: 'track',
-    //     },
-    //   })
-    //   .then(res => {
-    //     console.log('res.data: ', res.data);
-    //   })
-    //   .catch(err => {
-    //     console.log('err: ', err);
-    //   });
-    console.log('clicked');
-    await axios
-      .get(
-        'http://ws.audioscrobbler.com/2.0/?method=track.search&track=Believe&api_key=8d9fa3281b6b3aad9ce7665f929b0048&format=json',
-      )
-      .then(res => {
-        console.log('res.data: ', res.data);
-      });
-  };
-
+  //사진 업로드
   const submitPhotos = async event => {
     event.preventDefault();
     try {
@@ -92,33 +62,37 @@ const CommunityUpload = ({navigation: {navigate}}) => {
   };
 
   const onSubmitPost = async () => {
-    const kakao = await AsyncStorage.getItem('userNumber');
+    const value = await AsyncStorage.getItem('userNumber');
     try {
       submitPhotos();
       await axios
-        .post('http://192.168.0.105:3000/url', {
+        .post('http://192.168.0.124:3000/post/uploadPost', {
           params: {
-            key: kakao,
-            locationDepth1: 'testLocationDepth1',
-            engLocationDepth1: 'testEngLocationDepth1',
-            musicUri: 'testMusicUri',
-            albumTitle: 'testAlbumTitle',
-            albumImg: 'testAlbumImg',
-            albumArtistName: 'testAlbumArtistName',
-            inputText: postContent,
-            image1: 'testImage1',
-            image2: 'testImage2',
-            image3: 'testImage3',
-            image4: 'testImage4',
-            image5: 'testImage5',
+            kakao_user_number: value,
+            del_ny: 0,
+            location_depth1: args[2].locationDepth1,
+            eng_location_depth1: args[2].engLocationDepth1,
+            music_uri: args[2].musicUri,
+            album_title: args[2].albumTtile,
+            album_image: args[2].albumImg,
+            album_artist_name: args[2].albumArtistName,
+            input_text: postContent,
+            like_count: 0,
+            reg_time: Date.now(),
           },
         })
-        .then(result => console.log(result, '업로드 완료'))
-        .then(navigate('TabBar', {screen: 'Community'}));
+        .then(
+          result => console.log(result, '업로드 완료'),
+          err => {
+            console.log('게시글 정보 받아오기 실패', err);
+          },
+        )
+        .then(navigation.navigate('TabBar', {screen: 'Community'}));
     } catch (err) {
       console.log(err);
     }
   };
+
   return (
     <Container>
       <Card>
@@ -136,10 +110,17 @@ const CommunityUpload = ({navigation: {navigate}}) => {
           />
           <Divider />
           <MusicUploadBtn
-            onPress={() => navigate('Stack', {screen: 'SearchMusic'})}>
+            onPress={() =>
+              navigation.navigate('Stack', {screen: 'SearchMusic'})
+            }>
             <Ionicons name="add" size={25} />
             <BtnText>음악 올리기</BtnText>
           </MusicUploadBtn>
+          {route.params ? (
+            <SelectedMusic>
+              선택한 노래 : {route.params.name} - {route.params.artist}
+            </SelectedMusic>
+          ) : null}
           <Divider />
           <ImgUploadBtn onPress={handleImgUpload}>
             <Ionicons name="camera-outline" size={25} />
@@ -154,6 +135,7 @@ const CommunityUpload = ({navigation: {navigate}}) => {
     </Container>
   );
 };
+
 const Container = styled.View`
   flex: 1;
   background-color: #b7b4df;
@@ -216,6 +198,10 @@ const ImgUploadBtn = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: center;
   padding: 8px;
+`;
+
+const SelectedMusic = styled.Text`
+  font-size: 12px;
 `;
 
 const SubmitBtn = styled.TouchableOpacity`
