@@ -18,6 +18,7 @@ const Profile = ({navigation: {navigate}}) => {
     try {
       console.log('start getProfileElement');
       const value = await AsyncStorage.getItem('userNumber');
+      console.log('UID: ', value);
       if (value !== null) {
         // await axios
         //   .post('http://192.165.0.104:3000/profile/editProfile', {

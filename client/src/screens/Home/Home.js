@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, RefreshControl} from 'react-native';
+import {ActivityIndicator, RefreshControl, LogBox} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';

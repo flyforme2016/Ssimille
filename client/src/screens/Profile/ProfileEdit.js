@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Text, Pressable} from 'react-native';
+import {Text, View, StyleSheet, Pressable} from 'react-native';
 import styled from 'styled-components/native';
 import CustomButton from '../../components/CustomButtons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
-import {HashTagIds} from '../../datas';
+import itemIds from '../../items';
 import postProfileImg from '../../api/postProfileImg';
+import RNFetchBlob from 'rn-fetch-blob'
 
 const AVARTA =
   'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png';
@@ -18,10 +19,14 @@ const SUBMIT = {
 
 const ProfileEdit = ({navigation: {navigate}}) => {
   const {profileImg} = useSelector(state => state.uploadProfileImg); //profileImg
+<<<<<<< HEAD
   const dispatch = useDispatch();
   const [idx, setIdx] = useState([]); //hashTag
+=======
+  const reduxDispatch = useDispatch();
+  const [idx, setIdx] = React.useState([]); //hasgTag
+>>>>>>> origin/gijeong_spotifyTab
   const [changeName, setChangeName] = useState(); //nickname
-
   //닉네임 변경 함수
   const handleName = e => {
     setChangeName(e.nativeEvent.text);
@@ -38,9 +43,9 @@ const ProfileEdit = ({navigation: {navigate}}) => {
         isCropCircle: true,
       });
       console.log('response: ', response);
-      dispatch(actions.uploadProfileImgAction(response));
+      reduxDispatch(actions.uploadProfileImgAction(response));
     } catch (e) {
-      console.log(e.code, e.message);
+      console.log('error: ', e.message);
     }
   };
   //submit하면 서버에 전송하는 함수
@@ -48,38 +53,29 @@ const ProfileEdit = ({navigation: {navigate}}) => {
     event.preventDefault();
     try {
       const formdata = new FormData();
-
+      const newImageUri = "file://" +profileImg.path
       formdata.append('profileImg', {
-        uri: profileImg.path,
+        uri: newImageUri,
         type: profileImg.mime,
-        name: profileImg.fileName,
+        name: profileImg.fileName,  
       });
-
       console.log('formdata: ', formdata);
 
-      const requestOptions = {
-        method: 'POST',
-        body: formdata,
-        redirect: 'follow',
+      const result = await (await RNFetchBlob.fetch('POST', 'http://192.168.0.124:3000/s3/uploadProfileImg', { 
+          'Content-Type' : 'multipart/form-data' 
+      }, [
+          { name : 'profileImg', filename : profileImg.fileName, data : RNFetchBlob.wrap(profileImg.path) },
+      ]).then(console.log('성공'))).json()
 
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Accept: 'application/json',
-        },
-      };
+      console.log('result: ', result)
+      postProfileImg(result.imgUrl)
 
-      const result = await (
-        await fetch(
-          'http://192.168.0.124:3000/s3/uploadProfileImg',
-          requestOptions,
-        )
-      ).json();
-      postProfileImg(result.imgUrl);
-    } catch (error) {
-      console.log(error, error.message);
+    } catch (e) {
+      console.log(e, e.message);
     }
-    navigate('TabBar', {screen: 'Profile'});
+    navigate('TabBar', {screen: 'Profile'})
   };
+  console.log(idx);
   return (
     <Container>
       <NavBar>
@@ -103,11 +99,12 @@ const ProfileEdit = ({navigation: {navigate}}) => {
       />
 
       <CustomButton text="프로필 뮤직 변경" />
+
       <CustomButton onPress={handleProfileEdit} text="프로필 변경" />
 
       <NavText>HashTag 설정</NavText>
-      <TagContainer>
-        {HashTagIds.map(data => {
+      <Container2>
+        {itemIds.map(data => {
           const isSelected = idx.includes(data);
           return (
             <Pressable
@@ -133,11 +130,26 @@ const ProfileEdit = ({navigation: {navigate}}) => {
             </Pressable>
           );
         })}
-      </TagContainer>
+      </Container2>
     </Container>
   );
 };
 
+// const Container = styled.View`
+//   flex: 1;
+//   justify-content: center;
+//   align-items: center;
+//   margin: 10px;
+//   padding: 10px;
+// `;
+const Container2 = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 0px;
+  padding: 10px;
+`;
 const Container = styled.ScrollView.attrs(() => ({
   margin: 10,
   padding: 10,
@@ -146,14 +158,7 @@ const Container = styled.ScrollView.attrs(() => ({
     justifycontent: 'center',
   },
 }))``;
-const TagContainer = styled.View`
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  margin: 0px;
-  padding: 10px;
-`;
+
 const NavBar = styled.View`
   flex-direction: row;
   justify-content: center;
@@ -169,6 +174,7 @@ const ImgPreview = styled.Image`
   height: 100;
   border-radius: 100;
 `;
+
 const EditInput = styled.TextInput`
   margin: 10px;
   border: 2px solid gray;
@@ -187,6 +193,11 @@ const Logo = styled.Image`
   height: 40;
   position: relative;
   left: 70px;
+  
+    '' /* position: relative;
+  top: -180px;
+  left: 60px; */
+  
 `;
 
 export default ProfileEdit;

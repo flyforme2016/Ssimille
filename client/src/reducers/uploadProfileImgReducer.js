@@ -7,7 +7,6 @@ const initialState = {
 const uploadProfileImgReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.UPLOAD_PROFILE_IMG:
-      console.log('Enter upload profile image reducer');
       return {
         ...state,
         profileImg: action.payload,

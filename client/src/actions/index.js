@@ -13,3 +13,17 @@ exports.updateProfileImgAction = parameter => {
     payload: parameter,
   };
 };
+
+exports.saveKakaoUidAction = parameter => {
+  return{
+    type: types.SAVE_KAKAO_UID,
+    payload: parameter
+  }
+}
+
+exports.saveSpotifyTokenAction = parameter => {
+  return{
+    type: types.SAVE_SPOTIFY_TOKEN,
+    payload: parameter
+  }
+}
