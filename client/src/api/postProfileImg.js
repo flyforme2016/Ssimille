@@ -1,22 +1,4 @@
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import axios from 'axios';
-
-// const postProfileImg = async parameter => {
-//   console.log('Enter postProfileImgApi');
-//   const value = await AsyncStorage.getItem('userNumber');
-//   if (value !== null) {
-//     await axios
-//       .post('http://192.168.0.104:3000/profile/updateProfileImg', {
-//         profileImg: parameter,
-//         key: value,
-//       })
-//       .then(result => console.log('result: ', result));
-//   }
-// };
-// export default postProfileImg;
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 
 const postProfileImg = async parameter => {
   console.log('Enter postProfileImgApi');
@@ -33,7 +15,7 @@ const postProfileImg = async parameter => {
       },
     };
     await fetch(
-      'http://192.168.0.104:3000/profile/updateProfileImg', //1.upload image API to S3
+      'http://192.168.0.124:3000/profile/updateProfileImg', //1.upload image API to S3
       requestOptions,
     )
       // .then(response => response.text())

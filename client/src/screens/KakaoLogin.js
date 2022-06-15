@@ -22,6 +22,7 @@ const KakaoLogin = ({navigation: {navigate}}) => {
             code: authCode,
           })
           .then(async res => {
+            dispatch(actions.saveKakaoUidAction(res.data.userId))
             await AsyncStorage.setItem(
               'userNumber',
               JSON.stringify(res.data.userId),
@@ -31,7 +32,7 @@ const KakaoLogin = ({navigation: {navigate}}) => {
       } catch (err) {
         console.log(err);
       }
-      navigate('TabBar', {screen: 'Home'});
+      navigate('Stack', {screen: 'SpotifyAuthentication'});
     }
   };
 
