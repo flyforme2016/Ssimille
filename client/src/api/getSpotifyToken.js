@@ -17,7 +17,7 @@ const getSpotifyToken = async () => {
   const session = await SpotifyAuth.authorize(spotifyConfig);
   await SpotifyRemote.connect(session.accessToken);
   await AsyncStorage.setItem('spotifyToken', session.accessToken);
-  console.log('success authorize');
+  console.log('success authorize', session.accessToken);
 };
 
 export default getSpotifyToken;

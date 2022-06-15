@@ -10,6 +10,7 @@ import {
   ApiScope,
 } from 'react-native-spotify-remote';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import getSpotifyToken from '../api/getSpotifyToken';
 
 const SpotifyTab = () => {
   const [playIcon, setPlayIcon] = useState(false);
@@ -24,7 +25,7 @@ const SpotifyTab = () => {
   const getMusic = async () => {
     await getSpotifyToken();
     await getPlayingMusic();
-    await getAlbumCover();
+    //await getAlbumCover();
     await timer();
   };
   useLayoutEffect(() => {
@@ -39,24 +40,24 @@ const SpotifyTab = () => {
   //   setMusic();
   // }, [playingMusic]);
 
-  const spotifyConfig = {
-    clientID: '9912bb2704184ec5acea5688b54c459b',
-    redirectURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
-    tokenRefreshURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
-    tokenSwapURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
-    scopes: [ApiScope.AppRemoteControlScope, ApiScope.UserFollowReadScope],
-  };
+  // const spotifyConfig = {
+  //   clientID: '9912bb2704184ec5acea5688b54c459b',
+  //   redirectURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
+  //   tokenRefreshURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
+  //   tokenSwapURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
+  //   scopes: [ApiScope.AppRemoteControlScope, ApiScope.UserFollowReadScope],
+  // };
 
-  const getSpotifyToken = async () => {
-    try {
-      const session = await SpotifyAuth.authorize(spotifyConfig);
-      await SpotifyRemote.connect(session.accessToken);
-      await AsyncStorage.setItem('spotifyToken', session.accessToken);
-      console.log('success authorize');
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const getSpotifyToken = async () => {
+  //   try {
+  //     const session = await SpotifyAuth.authorize(spotifyConfig);
+  //     await SpotifyRemote.connect(session.accessToken);
+  //     await AsyncStorage.setItem('spotifyToken', session.accessToken);
+  //     console.log('success authorize');
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const getAlbumCover = async () => {
     const SpotifyWebApi = require('spotify-web-api-node');
@@ -86,24 +87,6 @@ const SpotifyTab = () => {
       },
     );
   };
-  // const searchImg = async () => {
-  //   const apiKey = '8d9fa3281b6b3aad9ce7665f929b0048';
-
-  //   const res = await axios
-  //     .get(
-  //       `http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${apiKey}&artist=${playingMusic.track.artist.name}&track=${playingMusic.track.name}&format=json`,
-  //     )
-  //     .then(
-  //       async () => {
-  //         await setCoverImg(res.data.track.album.image[0]['#text']);
-  //         console.log('앨범커버 뽑기위한 api', playingMusic);
-  //       },
-  //       () => {
-  //         console.log('이미지 저장 실패ㅠ');
-  //       },
-  //     );
-  //   console.log(coverImg);
-  // };
 
   // 현재 재생중인 노래 가져오기
   const getPlayingMusic = async () => {

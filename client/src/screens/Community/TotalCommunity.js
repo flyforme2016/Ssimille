@@ -4,51 +4,15 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import getPostTime from '../../api/getPostTime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {useIsFocused} from '@react-navigation/native';
+import {Dimensions} from 'react-native';
+import Swiper from 'react-native-swiper';
+import getSpotifyToken from '../../api/getSpotifyToken';
+import {remote} from 'react-native-spotify-remote';
+const {width} = Dimensions.get('window');
 
-// const Data = [
-//   {
-//     id: 0,
-//     name: '윤승희',
-//     time: '2022-05-24T01:20:00',
-//     profileImg:
-//       'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
-//     detail: '이것은 테스트입니다..',
-//     photo:
-//       'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
-//     music: '',
-//     location: '',
-//     like: false,
-//     comments: 3,
-//   },
-//   {
-//     id: 1,
-//     name: '윤승희2',
-//     time: '2022-05-29T01:20:00',
-//     profileImg:
-//       'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
-//     detail: '이것은 테스트입니다..',
-//     like: true,
-//     comments: 5,
-//   },
-//   {
-//     id: 2,
-//     name: '윤승희3',
-//     time: '2022-06-01T01:20:00',
-//     profileImg:
-//       'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png',
-//     detail: '이것은 테스트입니다..',
-//     like: true,
-//     comments: 0,
-//   },
-// ];
-const TotalCommunity = ({navigation: {navigate}}) => {
+const TotalCommunity = ({navigation, route}) => {
   const [likePress, setLikePress] = useState(false);
   const [postData, setPostData] = useState();
-  const isFocused = useIsFocused();
-  const handleLike = async () => {
-    await setLikePress(!likePress);
-  };
 
   const getData = async () => {
     const value = await AsyncStorage.getItem('userNumber');
@@ -61,7 +25,7 @@ const TotalCommunity = ({navigation: {navigate}}) => {
       .then(
         res => {
           console.log('res: ', res.data);
-          //setPostData(res.data);
+          setPostData(res.data);
         },
         err => {
           console.log('게시글 정보 받아오기 실패', err);
@@ -71,38 +35,80 @@ const TotalCommunity = ({navigation: {navigate}}) => {
 
   useLayoutEffect(() => {
     getData();
-  }, [isFocused]);
+  }, []);
+
   return (
     <Container>
       <PostList
         data={postData}
-        keyExtractor={item => item.id + ''}
+        keyExtractor={item => item.post_seq + ''}
         horizontal={false}
         renderItem={({item}) => (
           <Card>
-            <UserInfo>
+            <UserInfo
+              onPress={() => {
+                navigation.navigate('Stack', {
+                  screen: 'UserProfile',
+                  params: {
+                    //값 확인
+                    key: item.kakao_user_number,
+                  },
+                });
+              }}>
               <UserImg source={{uri: item.profileImg}} />
               <UserInfoView>
-                <UserName>{item.name}</UserName>
+                <UserName>{item.nickname}</UserName>
                 <PostTime>{getPostTime(item.time)}</PostTime>
               </UserInfoView>
             </UserInfo>
-            <PostText> {item.detail}</PostText>
-            <PostImg source={{uri: item.photo}} />
-            <PostMusic />
+            <PostText> {item.input_text}</PostText>
             <Divider />
-            <InterContainer>
-              <Interaction onPress={handleLike}>
+
+            <Swiper height={200} loadMinimal={true} showsButtons={true}>
+              <AlbumImgBtn
+                onPress={async () => {
+                  await getSpotifyToken();
+                  await remote.playUri(item.music_uri);
+                }}>
+                <SelectedMusic>
+                  {item.album_title} - {item.album_artist_name}
+                </SelectedMusic>
+                <PostImg source={{uri: item.album_image}} />
+              </AlbumImgBtn>
+              <ImageContainer>
+                {/* 사용자가 올린 사진 추가 */}
+                <PostImg source={require('../../assets/sample/2.jpg')} />
+              </ImageContainer>
+            </Swiper>
+            <Divider />
+            <InterContainer
+              onPress={() => {
+                navigation.navigate('Stack', {
+                  screen: 'CommunityPost',
+                  params: {
+                    albumTitle: item.name,
+                    albumArtistName: item.artists[0].name,
+                    albumImg: item.album.images[0].url,
+                    musicUri: item.uri,
+                  },
+                  // merge: true,
+                });
+              }}>
+              <Interaction
+                onPress={() => {
+                  console.log(item.post_seq);
+                  setLikePress(!likePress);
+                }}>
                 {item.like || likePress ? (
                   <Ionicons name="heart" color="red" size={25} />
                 ) : (
                   <Ionicons name="heart-outline" size={25} />
                 )}
-                <InteractionText> Like </InteractionText>
+                <InteractionText> Like ({item.like_count})</InteractionText>
               </Interaction>
               <Interaction>
                 <Ionicons name="md-chatbubble-outline" size={25} />
-                <InteractionText> Comment ({item.comments}) </InteractionText>
+                <InteractionText>Comment ({item.commentCount})</InteractionText>
               </Interaction>
             </InterContainer>
           </Card>
@@ -128,7 +134,7 @@ const Card = styled.View`
   elevation: 3;
 `;
 
-const UserInfo = styled.View`
+const UserInfo = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: flex-start;
   padding: 15px;
@@ -157,12 +163,24 @@ const PostText = styled.Text`
   font-size: 14px;
   padding: 0 15px;
 `;
+const SelectedMusic = styled.Text`
+  font-size: 14px;
+`;
+
+const ImageContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+`;
 
 const PostImg = styled.Image`
-  width: 100;
-  margin: 15px;
+  width: 200;
+  height: 200;
+  margin: 5px;
 `;
-const PostMusic = styled.View``;
+const AlbumImgBtn = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+`;
 const Divider = styled.View`
   border-bottom-color: #dddddd;
   border-bottom-width: 1px;
@@ -170,7 +188,7 @@ const Divider = styled.View`
   margin-top: 15px;
   align-self: center;
 `;
-const InterContainer = styled.View`
+const InterContainer = styled.TouchableOpacity`
   width: 100%;
   flex-direction: row;
   justify-content: space-around;

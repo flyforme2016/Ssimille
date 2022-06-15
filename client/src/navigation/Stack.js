@@ -6,7 +6,8 @@ import CommunityUpload from '../screens/Community/CommunityUpload';
 import ChatScreen from '../screens/ChatScreen/ChatScreen';
 import ProfileEdit from '../screens/Profile/ProfileEdit';
 import KakaoLogin from '../screens/KakaoLogin';
-import SearchMusic from '../screens/SearchMusic';
+import SearchMusic from '../components/SearchMusic';
+import CommunityPost from '../components/CommunityPost';
 
 const NativeStack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ const Stack = () => {
       <NativeStack.Screen name="ProfileEdit" component={ProfileEdit} />
       <NativeStack.Screen name="SearchMusic" component={SearchMusic} />
       <NativeStack.Screen name="CommunityUpload" component={CommunityUpload} />
+      <NativeStack.Screen name="CommunityPost" component={CommunityPost} />
       <NativeStack.Screen name="KakaoLogin" component={KakaoLogin} />
     </NativeStack.Navigator>
   );

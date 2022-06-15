@@ -9,9 +9,6 @@ const CommunityUpload = ({navigation, route}) => {
   const [uploadImg, setUploadImg] = useState();
   const [postContent, setPostContent] = useState();
 
-  const handlePostContent = text => {
-    setPostContent(text);
-  };
   //게시글에 사진 추가하는 함수
   const handleImgUpload = async () => {
     try {
@@ -23,7 +20,7 @@ const CommunityUpload = ({navigation, route}) => {
         isCropCircle: true,
       });
       console.log('response: ', response);
-      await setUploadImg(response);
+      setUploadImg(response);
     } catch (e) {
       console.log(e.code, e.message);
     }
@@ -31,14 +28,13 @@ const CommunityUpload = ({navigation, route}) => {
   //사진 업로드
   const submitPhotos = async event => {
     event.preventDefault();
+    const formdata = new FormData();
     try {
-      const formdata = new FormData();
-
       await uploadImg.map(image => {
         formdata.append('multipleImg', {
-          uri: image.path,
-          type: image.mime,
-          name: image.fileName,
+          uri: uploadImg.path,
+          type: uploadImg.mime,
+          name: uploadImg.fileName,
         });
       });
 
@@ -48,43 +44,42 @@ const CommunityUpload = ({navigation, route}) => {
         method: 'POST',
         body: formdata,
         redirect: 'follow',
+        params: {},
       };
 
-      await fetch(
-        'http://192.168.0.105:3000/s3/uploadMultipleImg',
-        requestOptions,
+      const result = await (
+        await fetch(
+          'http://192.168.0.124:3000/s3/uploadProfileImg',
+          requestOptions,
+        )
       )
-        .then(response => response.text())
+        .json()
         .then(result => console.log(result));
     } catch (e) {
       console.log(e.code, e.message);
     }
   };
-
   const onSubmitPost = async () => {
     const value = await AsyncStorage.getItem('userNumber');
     try {
-      submitPhotos();
+      await submitPhotos();
       await axios
         .post('http://192.168.0.124:3000/post/uploadPost', {
-          params: {
-            kakao_user_number: value,
-            del_ny: 0,
-            location_depth1: args[2].locationDepth1,
-            eng_location_depth1: args[2].engLocationDepth1,
-            music_uri: args[2].musicUri,
-            album_title: args[2].albumTtile,
-            album_image: args[2].albumImg,
-            album_artist_name: args[2].albumArtistName,
-            input_text: postContent,
-            like_count: 0,
-            reg_time: Date.now(),
-          },
+          key: value,
+          locationDepth1: '인천광역시',
+          engLocationDepth1: 'incheon',
+          musicUri: route.params.musicUri,
+          albumTitle: route.params.albumTitle,
+          albumImg: route.params.albumImg,
+          albumArtistName: route.params.albumArtistName,
+          inputText: postContent,
+          //사진 파라미터 값 :
+          //JSON.stringify({uploadImg.fileName})
         })
         .then(
           result => console.log(result, '업로드 완료'),
           err => {
-            console.log('게시글 정보 받아오기 실패', err);
+            console.log('게시글 전송실패', err);
           },
         )
         .then(navigation.navigate('TabBar', {screen: 'Community'}));
@@ -94,45 +89,70 @@ const CommunityUpload = ({navigation, route}) => {
   };
 
   return (
-    <Container>
-      <Card>
-        <UserInfo>
-          <UserImg source={require('../../assets/sample/1.jpg')} />
-          <UserInfoText>
-            <UserName>윤승희</UserName>
-          </UserInfoText>
-        </UserInfo>
-        <UploadContainer>
-          <PostText
-            placeholder="내용을 입력해주세요"
-            value={postContent}
-            onChangeText={handlePostContent}
-          />
-          <Divider />
-          <MusicUploadBtn
-            onPress={() =>
-              navigation.navigate('Stack', {screen: 'SearchMusic'})
-            }>
-            <Ionicons name="add" size={25} />
-            <BtnText>음악 올리기</BtnText>
-          </MusicUploadBtn>
-          {route.params ? (
-            <SelectedMusic>
-              선택한 노래 : {route.params.name} - {route.params.artist}
-            </SelectedMusic>
-          ) : null}
-          <Divider />
-          <ImgUploadBtn onPress={handleImgUpload}>
-            <Ionicons name="camera-outline" size={25} />
-            <BtnText>사진 가져오기</BtnText>
-          </ImgUploadBtn>
-        </UploadContainer>
-      </Card>
-      <SubmitBtn onPress={onSubmitPost}>
-        <Ionicons name="checkmark-outline" size={25} />
-        <BtnText> 업로드하기 </BtnText>
-      </SubmitBtn>
-    </Container>
+    <>
+      <Container>
+        <Card>
+          <UserInfo>
+            <UserImg source={require('../../assets/sample/1.jpg')} />
+            <UserInfoText>
+              <UserName>윤승희</UserName>
+            </UserInfoText>
+          </UserInfo>
+          <UploadContainer>
+            <PostText
+              multiline={true}
+              autoFocus={true}
+              numberOfLines={8}
+              placeholder="내용을 입력해주세요"
+              value={postContent}
+              onChangeText={text => setPostContent(text)}
+            />
+            <Divider />
+            <MusicUploadBtn
+              onPress={() =>
+                navigation.navigate('Stack', {screen: 'SearchMusic'})
+              }>
+              <Ionicons name="add" size={25} />
+              <BtnText>
+                {!route.params ? '음악 올리기 ' : '음악 수정하기'}
+              </BtnText>
+            </MusicUploadBtn>
+            {route.params ? (
+              <SelectContainer>
+                <SelectedImg source={{uri: route.params.albumImg}} />
+                <SelectedMusic>
+                  {route.params.albumTitle} - {route.params.albumArtistName}
+                </SelectedMusic>
+              </SelectContainer>
+            ) : null}
+            <Divider />
+            <ImgUploadBtn onPress={handleImgUpload}>
+              <Ionicons name="camera-outline" size={25} />
+              <BtnText>사진 가져오기</BtnText>
+            </ImgUploadBtn>
+            <SelectContainer>
+              {uploadImg
+                ? uploadImg.map(data => {
+                    return (
+                      <SelectedImg
+                        source={{
+                          uri:
+                            'file://' +
+                            (uploadImg?.crop?.cropPath ?? data.path),
+                        }}
+                      />
+                    );
+                  })
+                : null}
+            </SelectContainer>
+          </UploadContainer>
+        </Card>
+        <SubmitBtn onPress={onSubmitPost}>
+          <Ionicons name="checkmark-outline" size={25} />
+          <BtnText> 업로드하기 </BtnText>
+        </SubmitBtn>
+      </Container>
+    </>
   );
 };
 
@@ -145,8 +165,7 @@ const Container = styled.View`
 const Card = styled.View`
   background-color: #f8f8f8;
   width: 90%;
-  height: 80%;
-  margin: 20px;
+  margin-top: 12px;
   padding: 12px;
   border-radius: 10px;
 `;
@@ -177,10 +196,10 @@ const UploadContainer = styled.View`
 `;
 const PostText = styled.TextInput`
   width: 90%;
-  height: 60%;
   border: 1px solid #dddddd;
+  //text-align: center;
+  padding: 10px;
 `;
-
 const Divider = styled.View`
   border-bottom-color: #dddddd;
   border-bottom-width: 1px;
@@ -199,11 +218,19 @@ const ImgUploadBtn = styled.TouchableOpacity`
   justify-content: center;
   padding: 8px;
 `;
-
+const SelectContainer = styled.View`
+  align-items: center;
+  flex-direction: row;
+`;
 const SelectedMusic = styled.Text`
   font-size: 12px;
 `;
 
+const SelectedImg = styled.Image`
+  margin: 0 10px;
+  width: 40px;
+  height: 40px;
+`;
 const SubmitBtn = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: center;

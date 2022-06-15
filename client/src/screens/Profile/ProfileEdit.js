@@ -19,7 +19,7 @@ const SUBMIT = {
 const ProfileEdit = ({navigation: {navigate}}) => {
   const {profileImg} = useSelector(state => state.uploadProfileImg); //profileImg
   const dispatch = useDispatch();
-  const [idx, setIdx] = React.useState([]); //hashTag
+  const [idx, setIdx] = useState([]); //hashTag
   const [changeName, setChangeName] = useState(); //nickname
 
   //닉네임 변경 함수

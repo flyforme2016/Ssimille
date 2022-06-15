@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import TabBar from './TabBar';
 import Stack from './Stack';
@@ -12,15 +12,18 @@ const Navigation = () => {
 
   const loginState = async () => {
     setToken(await AsyncStorage.getItem('userNumber'));
-    console.log('로그인확인', token);
+    console.log('로그인확인', await token);
   };
-  loginState();
-  return typeof token !== null ? (
+  useLayoutEffect(() => {
+    loginState();
+  }, []);
+  return token == null || undefined ? (
     <Nav.Navigator
       screenOptions={{
         presentation: 'modal',
         headerShown: false,
       }}>
+      <Nav.Screen name="Start" component={Onboarding} />
       <Nav.Screen name="TabBar" component={TabBar} />
       <Nav.Screen name="Stack" component={Stack} />
     </Nav.Navigator>
@@ -30,7 +33,6 @@ const Navigation = () => {
         presentation: 'modal',
         headerShown: false,
       }}>
-      <Nav.Screen name="Start" component={Onboarding} />
       <Nav.Screen name="TabBar" component={TabBar} />
       <Nav.Screen name="Stack" component={Stack} />
     </Nav.Navigator>
