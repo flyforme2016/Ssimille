@@ -10,13 +10,8 @@ import Navigation from './src/navigation/Navigation';
 import {Provider} from 'react-redux';
 import store from './src/store';
 
-<<<<<<< HEAD
 LogBox.ignoreLogs(['Expected', 'Warning: ']);
-LogBox.ignoreAllLogs();
-=======
-LogBox.ignoreLogs(['Expected']);
 LogBox.ignoreAllLogs(true);
->>>>>>> origin/gijeong_spotifyTab
 
 const App = () => {
   return (

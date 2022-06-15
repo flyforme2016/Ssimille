@@ -22,7 +22,7 @@ const KakaoLogin = ({navigation: {navigate}}) => {
             code: authCode,
           })
           .then(async res => {
-            dispatch(actions.saveKakaoUidAction(res.data.userId))
+            dispatch(actions.saveKakaoUidAction(res.data.userId));
             await AsyncStorage.setItem(
               'userNumber',
               JSON.stringify(res.data.userId),

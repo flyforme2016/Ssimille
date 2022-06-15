@@ -6,13 +6,9 @@ import CommunityUpload from '../screens/Community/CommunityUpload';
 import oneByOneChatScreen from '../screens/ChatScreen/OneByOneChating';
 import ProfileEdit from '../screens/Profile/ProfileEdit';
 import KakaoLogin from '../screens/KakaoLogin';
-<<<<<<< HEAD
 import SearchMusic from '../components/SearchMusic';
 import CommunityPost from '../components/CommunityPost';
-=======
-import SearchMusic from '../screens/SearchMusic';
 import SpotifyAuthentication from '../components/SpotifyAuthentication';
->>>>>>> origin/gijeong_spotifyTab
 
 const NativeStack = createNativeStackNavigator();
 
@@ -25,13 +21,19 @@ const Stack = () => {
       }}>
       <NativeStack.Screen name="Notice" component={Notice} />
       <NativeStack.Screen name="Myzone" component={Myzone} />
-      <NativeStack.Screen name="OneByOneChatScreen" component={oneByOneChatScreen} />
+      <NativeStack.Screen
+        name="OneByOneChatScreen"
+        component={oneByOneChatScreen}
+      />
       <NativeStack.Screen name="ProfileEdit" component={ProfileEdit} />
       <NativeStack.Screen name="SearchMusic" component={SearchMusic} />
       <NativeStack.Screen name="CommunityUpload" component={CommunityUpload} />
       <NativeStack.Screen name="CommunityPost" component={CommunityPost} />
       <NativeStack.Screen name="KakaoLogin" component={KakaoLogin} />
-      <NativeStack.Screen name="SpotifyAuthentication" component={SpotifyAuthentication} />
+      <NativeStack.Screen
+        name="SpotifyAuthentication"
+        component={SpotifyAuthentication}
+      />
     </NativeStack.Navigator>
   );
 };

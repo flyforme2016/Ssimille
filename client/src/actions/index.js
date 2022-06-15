@@ -15,15 +15,15 @@ exports.updateProfileImgAction = parameter => {
 };
 
 exports.saveKakaoUidAction = parameter => {
-  return{
+  return {
     type: types.SAVE_KAKAO_UID,
-    payload: parameter
-  }
-}
+    payload: parameter,
+  };
+};
 
 exports.saveSpotifyTokenAction = parameter => {
-  return{
+  return {
     type: types.SAVE_SPOTIFY_TOKEN,
-    payload: parameter
-  }
-}
+    payload: parameter,
+  };
+};
