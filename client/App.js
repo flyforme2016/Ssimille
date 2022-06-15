@@ -10,7 +10,7 @@ import Navigation from './src/navigation/Navigation';
 import {Provider} from 'react-redux';
 import store from './src/store';
 
-LogBox.ignoreLogs(['Warning: ...']);
+LogBox.ignoreLogs(['Expected', 'Warning: ']);
 LogBox.ignoreAllLogs();
 
 const App = () => {

@@ -1,25 +1,31 @@
-import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
 
 const SearchMusic = ({navigation}) => {
-  const handleMusic = text => {
-    setSearchName(text);
-  };
+  const SpotifyWebApi = require('spotify-web-api-node');
+  const spotifyApi = new SpotifyWebApi({
+    clientID: '9912bb2704184ec5acea5688b54c459b',
+    clientSecret: 'a060b8460dbd4fdd8e045aac32af1d9c',
+    redirectURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
+  });
   const [searchName, setSearchName] = useState();
   const [data, setData] = useState();
 
   const searchMusic = async () => {
-    const apiKey = '8d9fa3281b6b3aad9ce7665f929b0048';
-    await axios
-      .get(
-        `http://ws.audioscrobbler.com/2.0/?method=track.search&track=${searchName}&api_key=${apiKey}&format=json`,
-      )
-      .then(res => {
-        setData(res.data.results.trackmatches.track);
-        // console.log(res.data.results.trackmatches);
-      });
+    const token = await AsyncStorage.getItem('spotifyToken');
+    await spotifyApi.setAccessToken(token);
+
+    await spotifyApi.searchTracks(searchName).then(
+      data => {
+        console.log('data', data);
+        setData(data.body.tracks.items);
+      },
+      err => {
+        console.error(err);
+      },
+    );
   };
   return (
     <Container>
@@ -27,7 +33,7 @@ const SearchMusic = ({navigation}) => {
         <SearchInput
           placeholder="음악을 검색해주세요"
           value={searchName}
-          onChangeText={handleMusic}
+          onChangeText={text => setSearchName(text)}
         />
         <SearchBtn
           onPress={async () => {
@@ -38,7 +44,7 @@ const SearchMusic = ({navigation}) => {
       </SearchContainer>
       <MusicResultList
         data={data}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={item => item.id + ''}
         horizontal={false}
         renderItem={({item}) => (
           <Card>
@@ -47,14 +53,19 @@ const SearchMusic = ({navigation}) => {
                 console.log(item);
                 navigation.navigate({
                   name: 'CommunityUpload',
-                  params: {name: item.name, artist: item.artist},
-                  merge: true,
+                  params: {
+                    albumTitle: item.name,
+                    albumArtistName: item.artists[0].name,
+                    albumImg: item.album.images[0].url,
+                    musicUri: item.uri,
+                  },
+                  // merge: true,
                 });
               }}>
-              <CoverImg source={{uri: item.image[0]['#text']}} />
+              <CoverImg source={{uri: item.album.images[0].url}} />
               <MusicInfo>
                 <MusicName>{item.name}</MusicName>
-                <ArtistName>{item.artist}</ArtistName>
+                <ArtistName>{item.artists[0].name}</ArtistName>
               </MusicInfo>
             </MusicInfoContainer>
           </Card>

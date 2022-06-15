@@ -5,7 +5,7 @@ import styled from 'styled-components/native';
 import logo from '../../logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SpotifyTab from '../../components/SpotifyTab';
-
+import Swiper from 'react-native-swiper';
 const Home = ({navigation: {navigate}}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -63,12 +63,46 @@ const Home = ({navigation: {navigate}}) => {
             <AlBumInfo>artist</AlBumInfo>
           </AlbumContainer>
         </AlbumRecommendContainer>
+
+        <Swiper height={300} loadMinimal={true} showsButtons={true}>
+          <ImageContainer>
+            <PostImg source={require('../../assets/sample/2.jpg')} />
+          </ImageContainer>
+
+          <AlbumImgBtn
+            onPress={() => {
+              console.log('swiper clicked');
+            }}>
+            <SelectedMusic>노래제목- 노래이름</SelectedMusic>
+            <PostImg source={require('../../assets/sample/2.jpg')} />
+          </AlbumImgBtn>
+        </Swiper>
       </Container>
       <SpotifyTab />
     </>
   );
 };
 
+const SelectedMusic = styled.Text`
+  font-size: 14px;
+`;
+
+const ImageContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+`;
+
+const PostImg = styled.Image`
+  width: 250;
+  height: 250;
+  margin: 5px;
+`;
+const AlbumImgBtn = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+`;
+
+///
 const Loader = styled.View`
   flex: 1;
   justify-content: center;
@@ -76,7 +110,6 @@ const Loader = styled.View`
 `;
 
 const Container = styled.ScrollView`
-  flex: 1;
   background-color: lightgrey;
 `;
 const TopBar = styled.View`
@@ -101,7 +134,6 @@ const Btn = styled.TouchableOpacity`
   justify-content: center;
   border: 2px solid grey;
 `;
-
 const Text = styled.Text`
   font-size: 18;
 `;
