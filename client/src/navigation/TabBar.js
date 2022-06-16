@@ -4,8 +4,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/Home/Home';
 import Community from '../screens/Community/Comunity';
 import FriendList from '../screens/FriendList/FriendList';
-import chatingList from '../screens/ChatScreen/ChatingList';
-import Profile from '../screens/Profile/Profile';
+import ChatingList from '../screens/ChatScreen/ChatingList';
+import MyProfile from '../screens/Profile/MyProfile';
 
 const Tab = createBottomTabNavigator();
 
@@ -51,7 +51,7 @@ const TabBar = () => {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
           } else if (rn === 'FriendList') {
             iconName = focused ? 'people' : 'people-outline';
-          } else if (rn === 'Profile') {
+          } else if (rn === 'MyProfile') {
             iconName = focused ? 'person' : 'person-outline';
           }
 
@@ -59,12 +59,12 @@ const TabBar = () => {
         },
       })}>
       <Tab.Screen name="Community" component={Community} />
-      <Tab.Screen name="ChatingList" component={chatingList} />
+      <Tab.Screen name="ChatingList" component={ChatingList} />
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="FriendList" component={FriendList} />
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="MyProfile"
+        component={MyProfile}
         options={{
           unmountOnBlur: true,
         }}
