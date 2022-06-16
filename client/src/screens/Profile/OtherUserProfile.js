@@ -1,59 +1,33 @@
-import React, {useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import ProfileTabBar from '../../navigation/ProfileTapBar';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Text, View, StyleSheet, Pressable} from 'react-native';
+import ProfileTabBar from './ProfileTapBar';
+
 import CustomButton from '../../components/CustomButtons';
-const Profile = ({navigation: {navigate}}) => {
-  const [userImg, setUserImg] = useState();
-  const [userName, setUserName] = useState();
-  const [profileMusic, setProfileMusic] = useState();
-  const [userTag, setUserTag] = useState([]);
-  const [userPost, setUserPost] = useState();
-  const [userFriend, setUserFriend] = useState();
-  const [userSong, setUserSong] = useState();
-  const getProfileElment = async () => {
+const Profile = ({navigation, route}) => {
+  const [otherUserData, setOhterUserData] = useState({});
+  const getOtherUserProfile = async () => {
     try {
-      const value = await AsyncStorage.getItem('userNumber');
-      if (value !== null) {
-        // await axios
-        //   .post('http://192.168.0.105:3000/profile/editProfile', {
-        // params: {
-        //   nickname: 'nicknameTest1',
-        //   profileImg: 'profileImgTest1',
-        //   profileMusicUri: 'profileMusicUriTest1',
-        //   hashTag: ['tag1_Cd', null, null, null, null],
-        //   key: value,
-        // },
-        //   })
-        //   .then(res => {
-        //     console.log('Test editProfile');
-        //   });
+      const otherUserUid = route.params.otherUid;
+      if (otherUserUid !== null) {
         await axios
-          .get('http://192.168.0.105:3000/profile/getMyProfile', {
+          .get('http://192.168.0.124:3000/profile/getUserProfile', {
             params: {
-              key: value,
+              key: otherUserUid,
             },
           })
           .then(res => {
-            console.log('res: ', res.data);
-            const userInfo = res.data;
-            setUserName(userInfo.nickname);
-            setUserImg(userInfo.profile_image);
-            setProfileMusic(userInfo.profile_music_uri);
-            setUserTag(userInfo.tag1_cd);
-            setUserPost(userInfo.post_count);
-            setUserFriend(userInfo.friend_count);
-            setUserSong(userInfo.song_count);
+            console.log('ress: ', res.data);
+            setOhterUserData(res.data);       //서버에게 받아온 otherUserProfileData
           });
       }
     } catch (error) {
       console.log('error: ', error);
     }
   };
-  getProfileElment();
+  useLayoutEffect(() => {
+    getOtherUserProfile();
+  }, []);
 
   return (
     <Container>
@@ -63,33 +37,43 @@ const Profile = ({navigation: {navigate}}) => {
       <Divider />
 
       <ProfileView>
-        <ProfilePic source={{uri: userImg}} />
-        <ProfileText>{userName}</ProfileText>
+        <ProfilePic source={{uri: otherUserData.profile_image}} />
+        <ProfileText>{otherUserData.nickname}</ProfileText>
         <Follow>
           <Followview>
             <Followtext>POST</Followtext>
-            <Followtext>{userPost}</Followtext>
+            <Followtext>{otherUserData.post_count}</Followtext>
           </Followview>
           <Followview>
             <Followtext>FREIND</Followtext>
-            <Followtext>{userFriend}</Followtext>
+            <Followtext>{otherUserData.friend_count}</Followtext>
           </Followview>
           <Followview>
             <Followtext>SONG</Followtext>
-            <Followtext>{userSong}</Followtext>
+            <Followtext>{otherUserData.song_count}</Followtext>
           </Followview>
         </Follow>
         <ProfileText2>
-          {profileMusic !== null ? profileMusic : '프로필뮤직을 설정해주세요'}
+          {otherUserData.profile_music_uri !== null
+            ? otherUserData.profile_music_uri
+            : '프로필뮤직을 설정해주세요'}
         </ProfileText2>
         <ProfileText3>
-          {userTag !== null ? userTag : 'hashTag를 설정해주세요'}
+          {otherUserData.tag1_cd !== null
+            ? otherUserData.tag1_cd
+            : 'hashTag를 설정해주세요'}
         </ProfileText3>
       </ProfileView>
       <NavBar2>
-        <CustomButton text="친구신청" />
-
-        <CustomButton text="채팅하기" />
+        <CustomButton
+          text="친구신청 or 채팅하기"
+          onPress={() => {
+            navigation.navigate('Stack', {
+              screen: 'OneByOneChating',
+              params: {otherUid: route.params.otherUid},
+            });
+          }}
+        />
       </NavBar2>
       <ProfileTabBar />
     </Container>
@@ -131,7 +115,8 @@ const NavBar = styled.View`
 `;
 const NavBar2 = styled.View`
   flex-direction: row;
-
+  justify-content: center;
+  align-items: center;
   margin: 10px;
 `;
 const NavText = styled.Text`
@@ -179,7 +164,6 @@ const ProfileText3 = styled.Text`
   font-size: 16;
   padding: 5px;
   position: relative;
-
   bottom: 120px;
 `;
 

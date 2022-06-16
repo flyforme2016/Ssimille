@@ -3,64 +3,85 @@ import {GiftedChat} from 'react-native-gifted-chat';
 import {
   collection,
   addDoc,
+  setDoc,
   orderBy,
   query,
   onSnapshot,
   doc,
 } from 'firebase/firestore';
-import {auth, database} from '../../config/firebase';
+import {database} from '../../config/firebase';
 import {useSelector} from 'react-redux';
 
 export default function Chat({route}) {
+  const OtherUid = route.params.otherUid;
+  const stringOtherUid = OtherUid.toString();
   const [messages, setMessages] = useState([]);
+  const [userData, setUserData] = useState({});
   const myUid = useSelector(state => state.kakaoUid);
-  console.log('route: ', route)
   //useLayoutEffect vs useEffect
   //useLayoutEffect : 화면이 그려지기 전에 Dom 관련 데이터를 먼저 동기적으로 처리해줌
   useLayoutEffect(() => {
-    //firestore DB에서 채팅 데이터 get -> setMessage로 messages에 할당
-    const collectionRef = collection(database, 'chats');
-    const documentRef = doc(collectionRef, 'myUID');
-    const realCollectionRef = collection(documentRef, 'rcTest');
-    //'desc' : 내림차순 정렬
-    const q = query(realCollectionRef, orderBy('createdAt', 'desc')); //채팅 내용을 최신순으로 정렬
+    const getChattingLog = async () => {
+      console.log('start getChattingLog');
+      setUserData(myUid.kakaoUid);
+      //firestore DB에서 채팅 데이터 get -> setMessage로 messages에 할당
+      const collectionRef = collection(database, 'chats');
+      const documentRef = doc(collectionRef, myUid.kakaoUid);
+      const realCollectionRef = collection(documentRef, stringOtherUid);
+      const q = query(realCollectionRef, orderBy('createdAt', 'desc')); //'desc' : 내림차순 정렬 -> 채팅 내용을 최신순으로 정렬
 
-    const unsubscribe = onSnapshot(q, querySnapshot => {
-      console.log('querySnapshot unsusbscribe');
-      setMessages(
-        querySnapshot.docs.map(doc => ({
-          _id: doc.data()._id,
-          createdAt: doc.data().createdAt.toDate(),
-          text: doc.data().text,
-          user: doc.data().user,
-        })),
-      );
-    });
-    return unsubscribe; //hook 상태 관리에서 return은 clean 작업을 의미하는데 ChatScreen.js가 unmount된 후
+      const unsubscribe = onSnapshot(q, querySnapshot => {
+        console.log('querySnapshot unsusbscribe');
+        setMessages(
+          querySnapshot.docs.map(doc => ({
+            _id: doc.data()._id,
+            createdAt: doc.data().createdAt.toDate(),
+            text: doc.data().text,
+            user: doc.data().user,
+          })),
+        );
+      });
+      return unsubscribe;
+    };
+    getChattingLog();
+
+    //return unsubscribe; //hook 상태 관리에서 return은 clean 작업을 의미하는데 ChatScreen.js가 unmount된 후
     //다시 호출되어 mount될 시 어차피 다시 데이터를 불러오기 때문에 unmount 시점에 return unsubscribe로
     //messages를 메모리 초기화? 시켜주는 것.
   }, []);
 
   //메세지 전송 firestore에 저장
-  const onSend = useCallback(
-    (messages = []) => {
+  const onSend = useCallback((messages = []) => {
+    const getMyUid = async () => {
       const collectionRef = collection(database, 'chats'); //chats
-      const documentRef = doc(collectionRef, userData); //myUid
-      const realCollectionRef = collection(documentRef, 'rcTest'); //otherUid
+      const documentRef = doc(collectionRef, myUid.kakaoUid); //myUid
+      const realCollectionRef = collection(documentRef, stringOtherUid); //otherUid
+
+      const collectionRef2 = collection(database, 'chats'); //chats
+      const documentRef2 = doc(collectionRef2, stringOtherUid); //myUid stringOtherUid
+      const realCollectionRef2 = collection(documentRef2, myUid.kakaoUid); //otherUid
+
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, messages),
       );
       // setMessages([...messages, ...messages]);
-      const {_id, createdAt, text} = messages[0];
+      const {_id, createdAt, text, user} = messages[0];
       addDoc(realCollectionRef, {
         _id,
         createdAt,
         text,
+        user,
       });
-    },
-    // [userData],
-  );
-  
+      addDoc(realCollectionRef2, {
+        _id,
+        createdAt,
+        text,
+        user,
+      });
+    };
+    getMyUid();
+  }, []);
+
   return (
     //messages state에 저장된 채팅내용을 랜더링
     <GiftedChat
@@ -74,6 +95,10 @@ export default function Chat({route}) {
       textInputStyle={{
         backgroundColor: '#fff',
         borderRadius: 20,
+      }}
+      user={{
+        _id: userData,
+        avatar: 'https://i.pravatar.cc/300',
       }}
     />
   );

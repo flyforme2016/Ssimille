@@ -1,82 +1,65 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useLayoutEffect} from 'react';
 import styled from 'styled-components/native';
-
-const data = [
-  {
-    id: 0,
-    name: '윤승희',
-    music: 'Music',
-  },
-  {
-    id: 1,
-    name: '윤승희2',
-    music: 'Music',
-  },
-  {
-    id: 2,
-    name: '윤승희2',
-    music: 'Music',
-  },
-];
+import {useIsFocused} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 const CurrentFriendList = ({navigation: {navigate}}) => {
-  const [friendData, setFriendData] = useState({});
+  const [friendList, setFriendData] = useState({});
+  const isFocused = useIsFocused();
+  const myUid = useSelector(state => state.kakaoUid);
 
-  // 누르면 각 유저별 채팅화면으로 넘어가는 함수
-  const moveChatScreen = () => {
-    navigate('TabBar', {screen: 'ChatScreen'});
-  };
-  // 누르면 상대 프로필 보여지는 함수
-  const showProfileScreen = async () => {
-    const value = await AsyncStorage.getItem('userNumber');
+  useLayoutEffect(() => {
+    getMyFriendList();
+  }, [isFocused]);
+  const getMyFriendList = async () => {
     try {
-      if (value !== null) {
+      console.log('start getMyFriendList');
+      if (myUid.kakaoUid !== null) {
         await axios
           .get('http://192.168.0.124:3000/friend/getFriendList', {
             params: {
-              key: value,
+              key: myUid.kakaoUid,
             },
           })
           .then(res => {
             console.log('res: ', res.data);
-            const userInfo = res.data;
-            setFriendData(userInfo[0].nickname);
+            setFriendData(res.data);        //서버에게 받은 친구목록 setUseState 변수 할당
           });
       }
     } catch (error) {
       console.log('error: ', error);
     }
   };
-  useEffect(() => {
-    showProfileScreen();
-  });
 
   return (
     <Container>
       <FriendList
-        data={data}
+        data={friendList}
         keyExtractor={item => item.id + ''}
         horizontal={false}
         renderItem={({item}) => (
-          <Card>
+          <Card
+            onPress={() => {
+              navigate('Stack', {
+                screen: 'OtherUserProfile',
+                params: {otherUid: item.friend_kakao_user_number},
+              });
+            }}>
             <UserInfo>
               <UserImg>
-                <Avatar source={require('../../assets/sample/1.jpg')} />
+                <Avatar source={{uri: item.profileImg}} />
               </UserImg>
               <InfoBox>
-                <UserName>{item.name}</UserName>
-                <UserMusic>{item.music}</UserMusic>
+                <UserName>{item.nickname}</UserName>
               </InfoBox>
             </UserInfo>
             <BtnContainer>
-              <Btn onpress={showProfileScreen}>
-                <ChatText>프로필보기</ChatText>
-              </Btn>
-              <Btn onpress={moveChatScreen}>
-                <ChatText>채팅하기</ChatText>
-              </Btn>
+              <UserMusic>
+                {item.profileMusicUri !== null
+                  ? item.profileMusicUri
+                  : '프로필뮤직이 없습니다'}
+              </UserMusic>
             </BtnContainer>
           </Card>
         )}
@@ -92,7 +75,8 @@ const Container = styled.View`
 const FriendList = styled.FlatList`
   margin: 12px 0;
 `;
-const Card = styled.View`
+const Card = styled.TouchableOpacity`
+width : 85%;
   padding: 15px 10px;
   border-radius: 20px;
   background-color: #ffffff;
@@ -101,7 +85,6 @@ const Card = styled.View`
   justify-content: space-between
   margin: 8px 15px;
   elevation: 3;
-
 `;
 
 const UserInfo = styled.View`
@@ -115,8 +98,8 @@ const UserImg = styled.View`
 `;
 
 const Avatar = styled.Image`
-  width: 50;
-  height: 50;
+  width: 55;
+  height: 55;
   border-radius: 25px;
 `;
 const InfoBox = styled.View`
@@ -124,7 +107,7 @@ const InfoBox = styled.View`
 `;
 const UserName = styled.Text`
   margin-bottom: 3px;
-  font-size: 16px;
+  font-size: 20px;
   color: gray;
 `;
 const UserMusic = styled.Text`
