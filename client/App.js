@@ -9,11 +9,17 @@ import {LogBox} from 'react-native';
 import Navigation from './src/navigation/Navigation';
 import {Provider} from 'react-redux';
 import store from './src/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 LogBox.ignoreLogs(['Expected', 'Warning: ']);
 LogBox.ignoreAllLogs(true);
 
 const App = () => {
+  // const removeData = async () => {
+  //   await AsyncStorage.removeItem('userNumber');
+  // }
+  // removeData();
+
   return (
     <SafeAreaProvider style={styles.root}>
       <StatusBar hidden={true} />

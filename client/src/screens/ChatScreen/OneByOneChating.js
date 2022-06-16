@@ -16,17 +16,19 @@ export default function Chat({route}) {
   const OtherUid = route.params.otherUid;
   const stringOtherUid = OtherUid.toString();
   const [messages, setMessages] = useState([]);
-  const [userData, setUserData] = useState({});
-  const myUid = useSelector(state => state.kakaoUid);
+  const myData = useSelector(state => state.myProfile);
+  const myUid = myData.myProfileData.kakao_user_number.toString();
+  console.log('myData: ', myData);
+  console.log('myData.myProfileData: ', myData.myProfileData);
+  console.log('OtherUid: ', stringOtherUid)
   //useLayoutEffect vs useEffect
   //useLayoutEffect : 화면이 그려지기 전에 Dom 관련 데이터를 먼저 동기적으로 처리해줌
   useLayoutEffect(() => {
     const getChattingLog = async () => {
       console.log('start getChattingLog');
-      setUserData(myUid.kakaoUid);
       //firestore DB에서 채팅 데이터 get -> setMessage로 messages에 할당
       const collectionRef = collection(database, 'chats');
-      const documentRef = doc(collectionRef, myUid.kakaoUid);
+      const documentRef = doc(collectionRef, myUid);
       const realCollectionRef = collection(documentRef, stringOtherUid);
       const q = query(realCollectionRef, orderBy('createdAt', 'desc')); //'desc' : 내림차순 정렬 -> 채팅 내용을 최신순으로 정렬
 
@@ -54,12 +56,17 @@ export default function Chat({route}) {
   const onSend = useCallback((messages = []) => {
     const getMyUid = async () => {
       const collectionRef = collection(database, 'chats'); //chats
-      const documentRef = doc(collectionRef, myUid.kakaoUid); //myUid
+      const documentRef = doc(collectionRef, myUid); //myUid
       const realCollectionRef = collection(documentRef, stringOtherUid); //otherUid
 
       const collectionRef2 = collection(database, 'chats'); //chats
       const documentRef2 = doc(collectionRef2, stringOtherUid); //myUid stringOtherUid
-      const realCollectionRef2 = collection(documentRef2, myUid.kakaoUid); //otherUid
+      const realCollectionRef2 = collection(documentRef2, myUid); //otherUid
+
+      const collectionRef3 = collection(database, 'chatList');
+      const documentRef3 = doc(collectionRef3, myUid);
+      const realCollectionRef3 = collection(documentRef3, 'chatList');
+      const realDocumentRef = doc(realCollectionRef3, stringOtherUid)
 
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, messages),
@@ -78,6 +85,13 @@ export default function Chat({route}) {
         text,
         user,
       });
+      setDoc(realDocumentRef, {
+        _id,
+        createdAt,
+        text,
+        user,
+      })
+
     };
     getMyUid();
   }, []);
@@ -97,8 +111,9 @@ export default function Chat({route}) {
         borderRadius: 20,
       }}
       user={{
-        _id: userData,
-        avatar: 'https://i.pravatar.cc/300',
+        _id: myUid,
+        name: myData.myProfileData.nickname,
+        avatar: myData.myProfileData.profile_image,
       }}
     />
   );

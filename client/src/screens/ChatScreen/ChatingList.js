@@ -13,68 +13,72 @@ import {
   TextSection,
 } from '../../../styles/MessageStyles';
 import styled from 'styled-components/native';
+import {
+  collection,
+  addDoc,
+  setDoc,
+  orderBy,
+  query,
+  onSnapshot,
+  doc,
+} from 'firebase/firestore';
+import {database} from '../../config/firebase';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
-
-const Messages = [
-  {
-    id: '1',
-    userName: 'user1',
-    userImg: require('../../assets/sample/1.jpg'),
-    messageTime: '4 mins ago',
-    messageText: '안녕하세요 저랑 음악취향이 같으셔서 친추 걸어봤습니다.',
-  },
-  {
-    id: '2',
-    userName: 'user2',
-    userImg: require('../../assets/sample/2.jpg'),
-    messageTime: '2 hours ago',
-    messageText: '엿이나 까잡수세요',
-  },
-  {
-    id: '3',
-    userName: 'user3',
-    userImg: require('../../assets/sample/3.jpg'),
-    messageTime: '1 hours ago',
-    messageText: '저는 바보입니다 그게 확실해요',
-  },
-  {
-    id: '4',
-    userName: 'user4',
-    userImg: require('../../assets/sample/4.jpg'),
-    messageTime: '1 day ago',
-    messageText: '홀리몰리 과카몰리',
-  },
-  {
-    id: '5',
-    userName: 'user5',
-    userImg: require('../../assets/sample/5.jpg'),
-    messageTime: '2 days ago',
-    messageText: '나좀 도와줘',
-  },
-];
+// import {useSelector} from 'react-redux';
 
 const ChatingList = ({navigation: {navigate}}) => {
-  const myUid = useSelector(state => state.kakaoUid);
+  const [messages, setMessages] = useState();
+  const myData = useSelector(state => state.myProfile);
+  const myUid = myData.myProfileData.kakao_user_number.toString();
+  // const myUid = useSelector(state => state.kakaoUid);
+  useLayoutEffect(() => {
+    const getChatList = async () => {
+      console.log('start getChatList');
+      //firestore DB에서 채팅 데이터 get -> setMessage로 messages에 할당
+      const collectionRef = collection(database, 'chatList');
+      const documentRef = doc(collectionRef, myUid);
+      const realCollectionRef = collection(documentRef, 'chatList');
+      const q = query(realCollectionRef, orderBy('createdAt', 'desc'));
+      
+      const unsubscribe = onSnapshot(q, querySnapshot => {
+        console.log('querySnapshot unsusbscribe');
+        setMessages(
+          querySnapshot.docs.map(doc => ({
+            _id: doc.data()._id,
+            createdAt: doc.data().createdAt.toDate().toString(),
+            text: doc.data().text,
+            user: doc.data().user,
+          })),
+        );
+      });
+      return unsubscribe;
+    };
+    getChatList();
+
+    //return unsubscribe; //hook 상태 관리에서 return은 clean 작업을 의미하는데 ChatScreen.js가 unmount된 후
+    //다시 호출되어 mount될 시 어차피 다시 데이터를 불러오기 때문에 unmount 시점에 return unsubscribe로
+    //messages를 메모리 초기화? 시켜주는 것.
+  }, []);
   return (
     <>
       <Container>
         <NavText>채팅창</NavText>
         <FlatList
-          data={Messages}
+          data={messages}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <Card onPress={() => navigate( 'Stack', {screen: 'OneByOneChatScreen', params:{myUid:myUid}} )}>
+            <Card onPress={() => navigate( 'Stack', {screen: 'OneByOneChatScreen'} )}>
               <UserInfo>
                 <UserImgWrapper>
-                  <UserImg source={item.userImg} />
+                  <UserImg source={{uri: item.user.avatar}} />
                 </UserImgWrapper>
                 <TextSection>
                   <UserInfoText>
-                    <UserName>{item.userName}</UserName>
-                    <PostTime>{item.messageTime}</PostTime>
+                    <UserName>{item.user.name}</UserName>
+                    <PostTime>{item.createdAt}</PostTime>
                   </UserInfoText>
-                  <MessageText>{item.messageText}</MessageText>
+                  <MessageText>{item.text}</MessageText>
                 </TextSection>
               </UserInfo>
             </Card>

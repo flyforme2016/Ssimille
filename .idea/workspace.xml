@@ -4,16 +4,24 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7612c69c-f1f6-435c-a79e-2f9fbe5e7c8d" name="Default Changelist" comment="" />
-    <list default="true" id="7612c69c-f1f6-435c-a79e-2f9fbe5e7c8d" name="Default Changelist" comment="06.15 Complete spotifyTab">
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.16 try master commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/actions/ActionTypes.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/actions/ActionTypes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/actions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/actions/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/SpotifyTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SpotifyTab.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/navigation/Navigation.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/Navigation.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/navigation/Stack.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/Stack.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/navigation/TabBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/TabBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/reducers/rootReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/reducers/rootReducer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/FriendList/CurrentFriendList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/FriendList/CurrentFriendList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Home/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/Profile.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/UserProfile.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Start/Start.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Start/Start.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +34,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="gijeongChatting" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -74,7 +82,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655263048355</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="06.16 try master commit">
+      <created>1655352349084</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1655352349084</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -91,6 +106,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="06.15 Complete spotifyTab" />
-    <option name="LAST_COMMIT_MESSAGE" value="06.15 Complete spotifyTab" />
+    <MESSAGE value="06.16 try master commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="06.16 try master commit" />
   </component>
 </project>

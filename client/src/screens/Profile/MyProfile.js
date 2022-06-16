@@ -20,19 +20,6 @@ const Profile = ({navigation: {navigate}}) => {
       console.log('start getProfileElement');
       if (myUid !== null) {
         console.log('myUid: ', myUid.kakaoUid)
-        // await axios
-        //   .post('http://192.165.0.104:3000/profile/editProfile', {
-        // params: {
-        //   nickname: 'nicknameTest1',
-        //   profileImg: 'profileImgTest1',
-        //   profileMusicUri: 'profileMusicUriTest1',
-        //   hashTag: ['tag1_Cd', null, null, null, null],
-        //   key: value,
-        // },
-        //   })
-        //   .then(res => {
-        //     console.log('Test editProfile');
-        //   });
         await axios
           .get('http://192.168.0.124:3000/profile/getUserProfile', {
             params: {

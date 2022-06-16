@@ -27,3 +27,12 @@ exports.saveSpotifyTokenAction = parameter => {
     payload: parameter,
   };
 };
+
+exports.saveUserProfileAction = parameter => {
+  console.log('Enter saveUserProfileAction')
+  console.log('parameter: ', parameter)
+  return {
+    type: types.SAVE_USER_PROFILE,
+    payload: parameter,
+  };
+};

@@ -19,13 +19,8 @@ const SUBMIT = {
 
 const ProfileEdit = ({navigation: {navigate}}) => {
   const {profileImg} = useSelector(state => state.uploadProfileImg); //profileImg
-<<<<<<< HEAD
-  const dispatch = useDispatch();
-  const [idx, setIdx] = useState([]); //hashTag
-=======
   const reduxDispatch = useDispatch();
   const [idx, setIdx] = React.useState([]); //hasgTag
->>>>>>> origin/gijeong_spotifyTab
   const [changeName, setChangeName] = useState(); //nickname
   //닉네임 변경 함수
   const handleName = e => {

@@ -1,14 +1,46 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {ActivityIndicator, RefreshControl, LogBox} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SpotifyTab from '../../components/SpotifyTab';
 import Swiper from 'react-native-swiper';
+import axios from 'axios';
+import {useSelector, useDispatch} from 'react-redux';
+import actions from '../../actions/index'
+
 const Home = ({navigation: {navigate}}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const myUid = useSelector(state => state.kakaoUid);
+  console.log('myUid in Home: ', myUid)
+
+  useLayoutEffect(() => {
+    getProfileElment();
+  }, []);
+
+  const getProfileElment = async () => {
+    try {
+      console.log('start getProfileElement');
+      if (myUid !== null) {
+        console.log('myUid: ', myUid.kakaoUid)
+        await axios
+          .get('http://192.168.0.124:3000/profile/getUserProfile', {
+            params: {
+              key: myUid.kakaoUid,
+            },
+          })
+          .then(res => {
+            console.log('res: ', res.data);
+            dispatch(actions.saveUserProfileAction(res.data))
+          });
+      }
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  };
 
   //새로고침 하면 데이터 다시 받아오는 함수
   const onRefresh = async () => {

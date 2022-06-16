@@ -3,36 +3,48 @@ import axios from 'axios';
 import React from 'react';
 import {View, LogBox} from 'react-native';
 import {WebView} from 'react-native-webview';
-import getSpotifyToken from '../api/getSpotifyToken';
+import {useDispatch} from 'react-redux';
+import actions from '../actions/index'
 
 LogBox.ignoreLogs(['Remote debugger']);
 
 const runFirst = `window.ReactNativeWebView.postMessage("this is message from web");`;
 
 const KakaoLogin = ({navigation: {navigate}}) => {
+  console.log('Enter KakaoLogin')
+  const dispatch = useDispatch();
+  
   const parseAuthCode = async url => {
+    console.log('Enter parseAuthCode')
     const exp = 'code='; //url에 붙어 날라오는 인가코드는 code=뒤부터 parse하여 get
     const startIndex = url.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
     if (startIndex !== -1) {
+      console.log('Enter startIndex')
       const authCode = url.substring(startIndex + exp.length);
-      //console.log('access code :: ' + authCode);
       try {
         await axios
           .post('http://192.168.0.124:3000/kakao/oauth/callback', {
             code: authCode,
           })
           .then(async res => {
-            dispatch(actions.saveKakaoUidAction(res.data.userId));
-            await AsyncStorage.setItem(
-              'userNumber',
-              JSON.stringify(res.data.userId),
-            );
-            await getSpotifyToken();
+            console.log('res.data: ', res.data);
+            if(res.data.userId) { //최초 로그인 시 진입
+              console.log('First Login')
+              dispatch(actions.saveKakaoUidAction(res.data.userId));
+              await AsyncStorage.setItem(
+                'userNumber',
+                JSON.stringify(res.data.userId),
+              );
+            }else { //최초 로그인이 아닐 시
+              console.log('Already Login')
+              const myUid = await AsyncStorage.getItem('userNumber')
+              dispatch(actions.saveKakaoUidAction(myUid))
+            }
+              navigate('Stack', {screen: 'SpotifyAuthentication', params:{isFirstLogin : res.data.userId}});
           });
       } catch (err) {
         console.log(err);
       }
-      navigate('Stack', {screen: 'SpotifyAuthentication'});
     }
   };
 
@@ -49,7 +61,6 @@ const KakaoLogin = ({navigation: {navigate}}) => {
         onMessage={event => {
           parseAuthCode(event.nativeEvent['url']);
         }}
-
         // onMessage ... :: webview에서 온 데이터를 event handler로 잡아서 logInProgress로 전달
       />
     </View>

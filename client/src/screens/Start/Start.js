@@ -13,6 +13,7 @@ import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import styled from 'styled-components/native';
 
 const Onboarding = ({navigation: {navigate}, route}) => {
+  console.log('Enter onboarding')
   const flatlistRef = useRef();
   const [currentPage, setCurrentPage] = useState(0);
   const [viewableItems, setViewableItems] = useState([]);
@@ -116,7 +117,7 @@ const Onboarding = ({navigation: {navigate}, route}) => {
             // Get Started Button
             <Getstart
               onPress={() => {
-                navigate('Stack', {screen: 'KakaoLogin'});
+                navigate('TabBar', {screen: 'Home'});
               }}>
               <NavText>Get Started</NavText>
               <AntDesignIcons

@@ -28,12 +28,11 @@ const SpotifyTab = () => {
 
   useLayoutEffect(() => {
     const getMusic = async () => {
-      await getSpotifyToken();
+      await connectSpotifyRemote();
       await getPlayingMusic();
       await timer();
     };
     if (playingMusic.playbackPosition === null) getMusic(); //처음에 무조건 spotify에서 재생중인 노래 가져오기 위한 조건
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
   useLayoutEffect(() => {
     const processAlbumCover = async () => {
@@ -42,20 +41,9 @@ const SpotifyTab = () => {
     if (playingMusic.playbackPosition !== null) processAlbumCover();
   }, [playingMusic]);
 
-  const getSpotifyToken = async () => {
+  const connectSpotifyRemote = async () => {
     try {
       await SpotifyRemote.connect(spotifyToken.spotifyToken);
-      // await spotifyWebApi.setAccessToken(spotifyToken.spotifyToken);
-      // const checkToken = spotifyWebApi.getAccessToken();
-      // console.log('checkToken1: ', checkToken);
-      // .then(async () => {
-      //   const value = session.accessToken;
-      //   await AsyncStorage.setItem('spotifyToken', value);
-      //   console.log('success authorize');
-      // })
-      // .catch(err => {
-      //   console.log('err', err);
-      // });
     } catch (err) {
       console.error(err);
     }
