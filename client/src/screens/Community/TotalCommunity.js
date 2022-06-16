@@ -118,7 +118,7 @@ const TotalCommunity = ({navigation}) => {
                   const seq = item.post_seq;
                   setLikePress(prev => !prev);
                   const like = likePress;
-                  console.log(likePress);
+                  console.log(likePress, seq);
                   await handleLike(seq, like);
                 }}>
                 {likePress ? (

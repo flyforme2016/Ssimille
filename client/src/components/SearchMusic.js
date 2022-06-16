@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
 
-const SearchMusic = ({navigation}) => {
+const SearchMusic = ({navigation, route}) => {
   const SpotifyWebApi = require('spotify-web-api-node');
   const spotifyApi = new SpotifyWebApi({
     clientID: '9912bb2704184ec5acea5688b54c459b',
@@ -52,7 +52,7 @@ const SearchMusic = ({navigation}) => {
               onPress={() => {
                 console.log(item);
                 navigation.navigate({
-                  name: 'CommunityUpload',
+                  name: route.params.page,
                   params: {
                     albumTitle: item.name,
                     albumArtistName: item.artists[0].name,

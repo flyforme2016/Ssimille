@@ -64,7 +64,13 @@ const ChatingList = ({navigation: {navigate}}) => {
           data={Messages}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <Card onPress={() => navigate( 'Stack', {screen: 'OneByOneChatScreen', params:{myUid:myUid}} )}>
+            <Card
+              onPress={() =>
+                navigate('Stack', {
+                  screen: 'OneByOneChatScreen',
+                  params: {myUid: myUid},
+                })
+              }>
               <UserInfo>
                 <UserImgWrapper>
                   <UserImg source={item.userImg} />

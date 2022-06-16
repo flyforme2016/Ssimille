@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/Home/Home';
 import Community from '../screens/Community/Comunity';
 import FriendList from '../screens/FriendList/FriendList';
-
+import ChatingList from '../screens/ChatScreen/ChatingList';
 import MyProfile from '../screens/Profile/MyProfile';
 
 const Tab = createBottomTabNavigator();
@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator();
 const TabBar = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Community"
+      initialRouteName="Home"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
@@ -51,10 +51,7 @@ const TabBar = () => {
         },
       })}>
       <Tab.Screen name="Community" component={Community} />
-<<<<<<< HEAD
-=======
       <Tab.Screen name="ChatingList" component={ChatingList} />
->>>>>>> bdaa06abea7e44b9805fc097eb4c4c3a1a932ed9
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="FriendList" component={FriendList} />
       <Tab.Screen

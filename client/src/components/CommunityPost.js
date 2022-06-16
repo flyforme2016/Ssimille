@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {remote} from 'react-native-spotify-remote';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Text, View} from 'react-native';
+import PostComments from './PostComments';
 
 const CommunityPost = ({navigation, route}) => {
   const [comment, setComment] = useState();
@@ -44,7 +44,7 @@ const CommunityPost = ({navigation, route}) => {
         .post('http://192.168.0.124:3000/post/inputPostComment', {
           key: value,
           postSeq: postSeq,
-          parent: 0,
+          parent: 2,
           comment: comment,
         })
         .then(
@@ -111,26 +111,13 @@ const CommunityPost = ({navigation, route}) => {
           </Interaction>
         </InterContainer>
         <Divider />
-        <CommentList
+        <PostComments
           data={data}
-          keyExtractor={(item, idx) => idx + ''}
-          horizontal={false}
-          renderItem={({item}) => (
-            <>
-              <CommentsContainer>
-                <CommentUser source={{uri: item.profileImg}} />
-                <View>
-                  <CommentText>{item.nickname}</CommentText>
-                  <CommentText>{item.comment}</CommentText>
-                </View>
-              </CommentsContainer>
-            </>
-          )}
+          keyExtractor={item => item.comment_seq + ''}
         />
         <CommentInputContainer>
           <CommentInput
             multiline={true}
-            autoFocus={true}
             placeholder="댓글을 입력해주세요"
             value={comment}
             onChangeText={text => setComment(text)}
@@ -224,31 +211,14 @@ const Interaction = styled.TouchableOpacity`
   padding: 2px 5px;
   color: ${props => (props.active ? '#2e64e5' : 'transparent')};
 `;
-const CommentList = styled.FlatList`
-  width: 90%;
-`;
 const InteractionText = styled.Text`
   font-size: 12px;
   font-weight: bold;
   margin: 5px;
   color: ${props => (props.active ? '#2e64e5' : '#333')};
 `;
-
-const CommentsContainer = styled.View`
-  margin-right: 5px;
-  flex-direction: row;
-`;
-const CommentUser = styled.Image`
-  width: 50;
-  height: 50;
-  border-radius: 25px;
-`;
-const CommentText = styled.Text`
-  font-size: 12px;
-`;
 const CommentInputContainer = styled.View`
   align-items: center;
-  flex-direction: row;
   flex-direction: row;
   margin: 10px;
   padding-right: 10px;

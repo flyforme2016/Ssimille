@@ -21,7 +21,7 @@ const SpotifyAuthentication = ({navigation: {navigate}}) => {
     try {
       const session = await SpotifyAuth.authorize(spotifyConfig);
       dispatch(actions.saveSpotifyTokenAction(session.accessToken));
-      navigate('TabBar', {screen: 'Community'});
+      navigate('TabBar', {screen: 'MyProfile'});
     } catch (error) {
       console.log('dispatchSpotifyToken Fucntion error: ', error);
     }

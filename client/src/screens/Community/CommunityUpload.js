@@ -104,14 +104,22 @@ const CommunityUpload = ({navigation, route}) => {
               numberOfLines={8}
               placeholder="내용을 입력해주세요"
               value={postContent}
-              onChangeText={text => setPostContent(text)}
+              onChangeText={text => {
+                console.log(postContent);
+                setPostContent(text);
+              }}
             />
             <Divider />
             <MusicUploadBtn
               onPress={async () => {
                 console.log('clicked');
                 await getSpotifyToken();
-                navigation.navigate('Stack', {screen: 'SearchMusic'});
+                navigation.navigate('Stack', {
+                  screen: 'SearchMusic',
+                  params: {
+                    page: 'CommunityUpload',
+                  },
+                });
               }}>
               <Ionicons name="add" size={25} />
               <BtnText>
