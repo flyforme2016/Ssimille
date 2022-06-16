@@ -31,7 +31,7 @@ const ProfileEdit = ({navigation: {navigate}}) => {
   const handleName = e => {
     setChangeName(e.nativeEvent.text);
   };
-  //프로필 사진 변경 함수
+  //프로필 사진 변경 함수(=사진가져오기)
   const getProfileImage = async () => {
     try {
       const response = await MultipleImagePicker.openPicker({
@@ -48,7 +48,7 @@ const ProfileEdit = ({navigation: {navigate}}) => {
       console.log('error: ', e.message);
     }
   };
-  //submit하면 서버에 전송하는 함수
+  //submit하면 서버에 전송하는 함수(=프로필변경하기)
   const handleProfileEdit = async event => {
     event.preventDefault();
     try {
