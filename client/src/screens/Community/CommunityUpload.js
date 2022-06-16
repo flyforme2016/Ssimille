@@ -4,65 +4,65 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import getSpotifyToken from '../../api/getSpotifyToken';
 
 const CommunityUpload = ({navigation, route}) => {
-  const [uploadImg, setUploadImg] = useState();
+  const [uploadImgs, setUploadImgs] = useState([]);
   const [postContent, setPostContent] = useState();
+  let submitImgs = Array(5).fill(null);
 
-  //게시글에 사진 추가하는 함수
   const handleImgUpload = async () => {
     try {
       const response = await MultipleImagePicker.openPicker({
-        selectedAssets: uploadImg,
+        selectedAssets: uploadImgs,
         mediaType: 'image',
         isExportThumbnail: true,
         isCrop: true,
         isCropCircle: true,
       });
       console.log('response: ', response);
-      setUploadImg(response);
+      setUploadImgs(response);
     } catch (e) {
       console.log(e.code, e.message);
     }
+    await submitPhotos();
   };
   //사진 업로드
   const submitPhotos = async event => {
-    event.preventDefault();
     const formdata = new FormData();
     try {
-      await uploadImg.map(image => {
+      await uploadImgs.map(MultipleImg => {
         formdata.append('multipleImg', {
-          uri: uploadImg.path,
-          type: uploadImg.mime,
-          name: uploadImg.fileName,
+          uri: 'file://' + MultipleImg.path,
+          type: MultipleImg.mime,
+          name: MultipleImg.fileName,
         });
       });
-
-      console.log('formdata: ', formdata);
-
       const requestOptions = {
         method: 'POST',
         body: formdata,
         redirect: 'follow',
-        params: {},
       };
-
       const result = await (
         await fetch(
-          'http://192.168.0.124:3000/s3/uploadProfileImg',
+          'http://192.168.0.124:3000/s3/uploadMultipleImg',
           requestOptions,
         )
-      )
-        .json()
-        .then(result => console.log(result));
-    } catch (e) {
-      console.log(e.code, e.message);
+      ).json();
+      result.map(data => {
+        submitImgs.shift();
+        submitImgs.push(data.transforms[0].location);
+      });
+    } catch {
+      err => console.log(err);
     }
+    submitImgs.reverse();
   };
+
+  //upload post to server process
   const onSubmitPost = async () => {
     const value = await AsyncStorage.getItem('userNumber');
     try {
-      await submitPhotos();
       await axios
         .post('http://192.168.0.124:3000/post/uploadPost', {
           key: value,
@@ -73,8 +73,7 @@ const CommunityUpload = ({navigation, route}) => {
           albumImg: route.params.albumImg,
           albumArtistName: route.params.albumArtistName,
           inputText: postContent,
-          //사진 파라미터 값 :
-          //JSON.stringify({uploadImg.fileName})
+          images: submitImgs,
         })
         .then(
           result => console.log(result, '업로드 완료'),
@@ -83,8 +82,8 @@ const CommunityUpload = ({navigation, route}) => {
           },
         )
         .then(navigation.navigate('TabBar', {screen: 'Community'}));
-    } catch (err) {
-      console.log(err);
+    } catch (e) {
+      console.log(e.code, e.message);
     }
   };
 
@@ -109,9 +108,11 @@ const CommunityUpload = ({navigation, route}) => {
             />
             <Divider />
             <MusicUploadBtn
-              onPress={() =>
-                navigation.navigate('Stack', {screen: 'SearchMusic'})
-              }>
+              onPress={async () => {
+                console.log('clicked');
+                await getSpotifyToken();
+                navigation.navigate('Stack', {screen: 'SearchMusic'});
+              }}>
               <Ionicons name="add" size={25} />
               <BtnText>
                 {!route.params ? '음악 올리기 ' : '음악 수정하기'}
@@ -131,14 +132,15 @@ const CommunityUpload = ({navigation, route}) => {
               <BtnText>사진 가져오기</BtnText>
             </ImgUploadBtn>
             <SelectContainer>
-              {uploadImg
-                ? uploadImg.map(data => {
+              {uploadImgs[0]
+                ? uploadImgs.map(data => {
+                    console.log(data);
                     return (
                       <SelectedImg
                         source={{
                           uri:
                             'file://' +
-                            (uploadImg?.crop?.cropPath ?? data.path),
+                            (uploadImgs?.crop?.cropPath ?? data.path),
                         }}
                       />
                     );

@@ -23,7 +23,7 @@ const SpotifyTab = () => {
   const spotifyWebApi = new SpotifyWebApi({
     clientID: '9912bb2704184ec5acea5688b54c459b',
     clientSecret: 'a060b8460dbd4fdd8e045aac32af1d9c',
-    redirectURL: 'http://192.168.0.104:3000/spotify/oauth/callback',
+    redirectURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
   });
 
   useLayoutEffect(() => {
@@ -45,17 +45,6 @@ const SpotifyTab = () => {
   const getSpotifyToken = async () => {
     try {
       await SpotifyRemote.connect(spotifyToken.spotifyToken);
-      // await spotifyWebApi.setAccessToken(spotifyToken.spotifyToken);
-      // const checkToken = spotifyWebApi.getAccessToken();
-      // console.log('checkToken1: ', checkToken);
-      // .then(async () => {
-      //   const value = session.accessToken;
-      //   await AsyncStorage.setItem('spotifyToken', value);
-      //   console.log('success authorize');
-      // })
-      // .catch(err => {
-      //   console.log('err', err);
-      // });
     } catch (err) {
       console.error(err);
     }

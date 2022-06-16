@@ -30,7 +30,7 @@ const Navigation = () => {
         presentation: 'modal',
         headerShown: false,
       }}>
-      <Nav.Screen name="Start" component={Onboarding} />
+      {/* <Nav.Screen name="Start" component={Onboarding} /> */}
       <Nav.Screen
         name="SpotifyAuthentication"
         component={SpotifyAuthentication}

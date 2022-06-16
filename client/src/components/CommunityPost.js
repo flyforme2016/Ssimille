@@ -1,14 +1,62 @@
-import React from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import Swiper from 'react-native-swiper';
 import getSpotifyToken from '../api/getSpotifyToken';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import {remote} from 'react-native-spotify-remote';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Text, View} from 'react-native';
 
 const CommunityPost = ({navigation, route}) => {
-  const [likePress, setLikePress] = useState(false);
+  const [comment, setComment] = useState();
+  const [data, setData] = useState();
+  const postSeq = route.params.post_seq;
+  useLayoutEffect(() => {
+    getComment();
+  }, []);
+  const getComment = async () => {
+    try {
+      await axios
+        .get('http://192.168.0.124:3000/post/getPostComments', {
+          params: {
+            postSeq: postSeq,
+          },
+        })
+        .then(
+          res => {
+            setData(res.data);
+            console.log('댓글', res.data);
+          },
+          err => {
+            console.log(err);
+          },
+        );
+    } catch {
+      err => console.log(err);
+    }
+  };
 
+  const uploadComment = async () => {
+    const value = await AsyncStorage.getItem('userNumber');
+    try {
+      await axios
+        .post('http://192.168.0.124:3000/post/inputPostComment', {
+          key: value,
+          postSeq: postSeq,
+          parent: 0,
+          comment: comment,
+        })
+        .then(
+          result => console.log(result, '업로드 완료'),
+          err => {
+            console.log(err);
+          },
+        );
+    } catch {
+      err => console.log(err);
+    }
+  };
   return (
     <Container>
       <Card>
@@ -30,7 +78,7 @@ const CommunityPost = ({navigation, route}) => {
         <PostText> {route.params.input_text}</PostText>
         <Divider />
 
-        <Swiper height={200} loadMinimal={true} showsButtons={true}>
+        {/* <Swiper height={200} loadMinimal={true} showsButtons={true}>
           <AlbumImgBtn
             onPress={async () => {
               await getSpotifyToken();
@@ -42,17 +90,13 @@ const CommunityPost = ({navigation, route}) => {
             <PostImg source={{uri: route.params.album_image}} />
           </AlbumImgBtn>
           <ImageContainer>
-            {/* 사용자가 올린 사진 추가 */}
-            {/* <PostImg source={require('../../assets/sample/2.jpg')} /> */}
+            <PostImg source={require('../assets/sample/1.jpg')} />
           </ImageContainer>
-        </Swiper>
-        <Divider />
+        </Swiper> */}
+
         <InterContainer>
-          <Interaction
-            onPress={() => {
-              setLikePress(!likePress);
-            }}>
-            {route.params.like || likePress ? (
+          <Interaction onPress={() => {}}>
+            {route.params.likeNy ? (
               <Ionicons name="heart" color="red" size={25} />
             ) : (
               <Ionicons name="heart-outline" size={25} />
@@ -66,19 +110,49 @@ const CommunityPost = ({navigation, route}) => {
             </InteractionText>
           </Interaction>
         </InterContainer>
+        <Divider />
+        <CommentList
+          data={data}
+          keyExtractor={(item, idx) => idx + ''}
+          horizontal={false}
+          renderItem={({item}) => (
+            <>
+              <CommentsContainer>
+                <CommentUser source={{uri: item.profileImg}} />
+                <View>
+                  <CommentText>{item.nickname}</CommentText>
+                  <CommentText>{item.comment}</CommentText>
+                </View>
+              </CommentsContainer>
+            </>
+          )}
+        />
+        <CommentInputContainer>
+          <CommentInput
+            multiline={true}
+            autoFocus={true}
+            placeholder="댓글을 입력해주세요"
+            value={comment}
+            onChangeText={text => setComment(text)}
+          />
+          <PostBtn onPress={uploadComment}>
+            <Ionicons name="send" size={25} />
+          </PostBtn>
+        </CommentInputContainer>
       </Card>
     </Container>
   );
 };
 
 const Container = styled.View`
+  flex: 1;
   align-items: center;
 `;
 
 const Card = styled.View`
   background-color: #ffffff;
   justify-content: center;
-  margin: 20px 0 5px 0;
+  margin: 25px;
   border-radius: 10px;
   elevation: 3;
 `;
@@ -134,14 +208,13 @@ const Divider = styled.View`
   border-bottom-color: #dddddd;
   border-bottom-width: 1px;
   width: 90%;
-  margin-top: 15px;
   align-self: center;
 `;
 const InterContainer = styled.View`
   width: 100%;
   flex-direction: row;
+
   justify-content: space-around;
-  padding: 12px;
   background-color: #ffffff;
 `;
 const Interaction = styled.TouchableOpacity`
@@ -151,12 +224,41 @@ const Interaction = styled.TouchableOpacity`
   padding: 2px 5px;
   color: ${props => (props.active ? '#2e64e5' : 'transparent')};
 `;
-
+const CommentList = styled.FlatList`
+  width: 90%;
+`;
 const InteractionText = styled.Text`
   font-size: 12px;
   font-weight: bold;
   margin: 5px;
   color: ${props => (props.active ? '#2e64e5' : '#333')};
 `;
+
+const CommentsContainer = styled.View`
+  margin-right: 5px;
+  flex-direction: row;
+`;
+const CommentUser = styled.Image`
+  width: 50;
+  height: 50;
+  border-radius: 25px;
+`;
+const CommentText = styled.Text`
+  font-size: 12px;
+`;
+const CommentInputContainer = styled.View`
+  align-items: center;
+  flex-direction: row;
+  flex-direction: row;
+  margin: 10px;
+  padding-right: 10px;
+`;
+const CommentInput = styled.TextInput`
+  width: 90%;
+  border: 1px solid #dddddd;
+  padding: 10px;
+  margin-right: 10px;
+`;
+const PostBtn = styled.TouchableOpacity``;
 
 export default CommunityPost;

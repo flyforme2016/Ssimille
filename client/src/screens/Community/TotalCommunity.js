@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useLayoutEffect, useRef, useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import getPostTime from '../../api/getPostTime';
@@ -10,8 +10,10 @@ import getSpotifyToken from '../../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
 const {width} = Dimensions.get('window');
 
-const TotalCommunity = ({navigation, route}) => {
-  const [likePress, setLikePress] = useState(false);
+const TotalCommunity = ({navigation}) => {
+  // const setLike = useRef();
+
+  const [likePress, setLikePress] = useState();
   const [postData, setPostData] = useState();
 
   const getData = async () => {
@@ -33,6 +35,23 @@ const TotalCommunity = ({navigation, route}) => {
       );
   };
 
+  const handleLike = async (seq, like) => {
+    const value = await AsyncStorage.getItem('userNumber');
+    await axios
+      .post('http://192.168.0.124:3000/post/postLike', {
+        key: value,
+        postSeq: postData[seq - 1].post_seq,
+        check: !like,
+      })
+      .then(
+        res => {
+          console.log('좋아요 수정 성공: ', res.data);
+        },
+        err => {
+          console.log('좋아요 수정하기 실패', err);
+        },
+      );
+  };
   useLayoutEffect(() => {
     getData();
   }, []);
@@ -50,7 +69,6 @@ const TotalCommunity = ({navigation, route}) => {
                 navigation.navigate('Stack', {
                   screen: 'UserProfile',
                   params: {
-                    //값 확인
                     key: item.kakao_user_number,
                   },
                 });
@@ -58,13 +76,12 @@ const TotalCommunity = ({navigation, route}) => {
               <UserImg source={{uri: item.profileImg}} />
               <UserInfoView>
                 <UserName>{item.nickname}</UserName>
-                <PostTime>{getPostTime(item.time)}</PostTime>
+                <PostTime>{getPostTime(item.reg_time)}</PostTime>
               </UserInfoView>
             </UserInfo>
-            <PostText> {item.input_text}</PostText>
             <Divider />
 
-            <Swiper height={200} loadMinimal={true} showsButtons={true}>
+            <Swiper height={200} loadMinimal={true} showsButtons={true} loop>
               <AlbumImgBtn
                 onPress={async () => {
                   await getSpotifyToken();
@@ -73,40 +90,64 @@ const TotalCommunity = ({navigation, route}) => {
                 <SelectedMusic>
                   {item.album_title} - {item.album_artist_name}
                 </SelectedMusic>
-                <PostImg source={{uri: item.album_image}} />
+                <PostImg resizeMode="cover" source={{uri: item.album_image}} />
               </AlbumImgBtn>
               <ImageContainer>
-                {/* 사용자가 올린 사진 추가 */}
-                <PostImg source={require('../../assets/sample/2.jpg')} />
+                <PostImg resizeMode="cover" source={{uri: item.image1}} />
+              </ImageContainer>
+              <ImageContainer>
+                <PostImg resizeMode="cover" source={{uri: item.image2}} />
+              </ImageContainer>
+              <ImageContainer>
+                <PostImg resizeMode="cover" source={{uri: item.image3}} />
+              </ImageContainer>
+              <ImageContainer>
+                <PostImg resizeMode="cover" source={{uri: item.image4}} />
+              </ImageContainer>
+              <ImageContainer>
+                <PostImg resizeMode="cover" source={{uri: item.image5}} />
               </ImageContainer>
             </Swiper>
             <Divider />
-            <InterContainer
-              onPress={() => {
-                navigation.navigate('Stack', {
-                  screen: 'CommunityPost',
-                  params: {
-                    albumTitle: item.name,
-                    albumArtistName: item.artists[0].name,
-                    albumImg: item.album.images[0].url,
-                    musicUri: item.uri,
-                  },
-                  // merge: true,
-                });
-              }}>
+            <PostText> {item.input_text}</PostText>
+
+            <InterContainer>
               <Interaction
-                onPress={() => {
-                  console.log(item.post_seq);
-                  setLikePress(!likePress);
+                onPress={async e => {
+                  console.log('e.target', e.target);
+                  const seq = item.post_seq;
+                  setLikePress(prev => !prev);
+                  const like = likePress;
+                  console.log(likePress);
+                  await handleLike(seq, like);
                 }}>
-                {item.like || likePress ? (
+                {likePress ? (
                   <Ionicons name="heart" color="red" size={25} />
                 ) : (
                   <Ionicons name="heart-outline" size={25} />
                 )}
                 <InteractionText> Like ({item.like_count})</InteractionText>
               </Interaction>
-              <Interaction>
+              <Interaction
+                onPress={() => {
+                  navigation.navigate('Stack', {
+                    screen: 'CommunityPost',
+                    params: {
+                      post_seq: item.post_seq,
+                      kakao_user_id: item.kakao_user_number,
+                      profileImg: item.profileImg,
+                      nickname: item.nickname,
+                      input_text: item.input_text,
+                      like_count: item.like_count,
+                      albumTitle: item.album_title,
+                      albumArtistName: item.album_artist_name,
+                      albumImg: item.album_image,
+                      musicUri: item.music_uri,
+                      commentCount: item.commentCount,
+                      likeNy: item.likeNy,
+                    },
+                  });
+                }}>
                 <Ionicons name="md-chatbubble-outline" size={25} />
                 <InteractionText>Comment ({item.commentCount})</InteractionText>
               </Interaction>
@@ -178,6 +219,7 @@ const PostImg = styled.Image`
   margin: 5px;
 `;
 const AlbumImgBtn = styled.TouchableOpacity`
+  margin-top: 12px;
   justify-content: center;
   align-items: center;
 `;
@@ -207,7 +249,7 @@ const InteractionText = styled.Text`
   font-size: 12px;
   font-weight: bold;
   margin: 5px;
-  color: ${props => (props.active ? '#2e64e5' : '#333')};
+  //color: ${props => (props.active ? '#2e64e5' : '#333')};
 `;
 
 export default TotalCommunity;

@@ -4,20 +4,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/Home/Home';
 import Community from '../screens/Community/Comunity';
 import FriendList from '../screens/FriendList/FriendList';
-import chatingList from '../screens/ChatScreen/ChatingList';
 import Profile from '../screens/Profile/Profile';
 
 const Tab = createBottomTabNavigator();
 
 const TabBar = () => {
-  // const loginResult = () => {
-  //   AsyncStorage.getItem('userNumber', result => {
-  //     setLoginState(result);
-  //   });
-  // };
-  // useEffect(() => {
-  //   loginResult();
-  // }, []);
   return (
     <Tab.Navigator
       initialRouteName="Community"
@@ -59,7 +50,6 @@ const TabBar = () => {
         },
       })}>
       <Tab.Screen name="Community" component={Community} />
-      <Tab.Screen name="ChatingList" component={chatingList} />
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="FriendList" component={FriendList} />
       <Tab.Screen

@@ -7,7 +7,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
 import itemIds from '../../items';
 import postProfileImg from '../../api/postProfileImg';
-import RNFetchBlob from 'rn-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob';
 
 const AVARTA =
   'https://cdn4.iconfinder.com/data/icons/outlines-business-web-optimization/256/1-89-128.png';
@@ -19,13 +19,8 @@ const SUBMIT = {
 
 const ProfileEdit = ({navigation: {navigate}}) => {
   const {profileImg} = useSelector(state => state.uploadProfileImg); //profileImg
-<<<<<<< HEAD
-  const dispatch = useDispatch();
-  const [idx, setIdx] = useState([]); //hashTag
-=======
   const reduxDispatch = useDispatch();
   const [idx, setIdx] = React.useState([]); //hasgTag
->>>>>>> origin/gijeong_spotifyTab
   const [changeName, setChangeName] = useState(); //nickname
   //닉네임 변경 함수
   const handleName = e => {
@@ -53,27 +48,37 @@ const ProfileEdit = ({navigation: {navigate}}) => {
     event.preventDefault();
     try {
       const formdata = new FormData();
-      const newImageUri = "file://" +profileImg.path
+      const newImageUri = 'file://' + profileImg.path;
       formdata.append('profileImg', {
         uri: newImageUri,
         type: profileImg.mime,
-        name: profileImg.fileName,  
+        name: profileImg.fileName,
       });
       console.log('formdata: ', formdata);
 
-      const result = await (await RNFetchBlob.fetch('POST', 'http://192.168.0.124:3000/s3/uploadProfileImg', { 
-          'Content-Type' : 'multipart/form-data' 
-      }, [
-          { name : 'profileImg', filename : profileImg.fileName, data : RNFetchBlob.wrap(profileImg.path) },
-      ]).then(console.log('성공'))).json()
+      const result = await (
+        await RNFetchBlob.fetch(
+          'POST',
+          'http://192.168.0.124:3000/s3/uploadProfileImg',
+          {
+            'Content-Type': 'multipart/form-data',
+          },
+          [
+            {
+              name: 'profileImg',
+              filename: profileImg.fileName,
+              data: RNFetchBlob.wrap(profileImg.path),
+            },
+          ],
+        ).then(console.log('성공'))
+      ).json();
 
-      console.log('result: ', result)
-      postProfileImg(result.imgUrl)
-
+      console.log('result: ', result);
+      postProfileImg(result.imgUrl);
     } catch (e) {
       console.log(e, e.message);
     }
-    navigate('TabBar', {screen: 'Profile'})
+    navigate('TabBar', {screen: 'Profile'});
   };
   console.log(idx);
   return (
