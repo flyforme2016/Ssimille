@@ -4,25 +4,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 Complete login process and chatting">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/SearchMusic.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SearchMusic.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/navigation/TabBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/TabBar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" afterDir="false" />
-    </list>
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 Complete login process and chatting" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="origin/gijeongChatting" />
+    <option name="BRANCH" value="gijeong0617" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
