@@ -28,7 +28,7 @@ const SpotifyTab = () => {
 
   useLayoutEffect(() => {
     const getMusic = async () => {
-      await getSpotifyToken();
+      await connectSpotifyRemote();
       await getPlayingMusic();
       await timer();
     };
@@ -42,7 +42,7 @@ const SpotifyTab = () => {
     if (playingMusic.playbackPosition !== null) processAlbumCover();
   }, [playingMusic]);
 
-  const getSpotifyToken = async () => {
+  const connectSpotifyRemote = async () => {
     try {
       await SpotifyRemote.connect(spotifyToken.spotifyToken);
     } catch (err) {

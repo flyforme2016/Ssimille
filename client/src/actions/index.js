@@ -27,3 +27,9 @@ exports.saveSpotifyTokenAction = parameter => {
     payload: parameter,
   };
 };
+exports.saveUserProfileAction = parameter => {
+  return {
+    type: types.SAVE_USER_PROFILE,
+    payload: parameter,
+  };
+};

@@ -3,7 +3,6 @@ import styled from 'styled-components/native';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
-import postProfileImg from '../../api/postProfileImg';
 import RNFetchBlob from 'rn-fetch-blob';
 import axios from 'axios';
 import {HashTagIds} from '../../datas';
@@ -11,11 +10,10 @@ import getSpotifyToken from '../../api/getSpotifyToken';
 
 const ProfileEdit = ({navigation, route}) => {
   const myUid = useSelector(state => state.kakaoUid);
-
   const reduxDispatch = useDispatch();
   const {profileImg} = useSelector(state => state.uploadProfileImg);
-  const [idx, setIdx] = useState([]); //hasgTag
-  const [changeName, setChangeName] = useState(); //nickname
+  const [idx, setIdx] = useState(route.params.hashTag);
+  const [changeName, setChangeName] = useState();
   console.log(idx);
 
   //프로필 사진 변경 함수(=사진가져오기)
@@ -134,7 +132,6 @@ const ProfileEdit = ({navigation, route}) => {
           </SelectContainer>
         ) : null}
         <InfoText>HashTag 설정</InfoText>
-        <InfoText>{route.params.hashTag}</InfoText>
 
         <HashTagContainer>
           {HashTagIds.map(data => {
@@ -143,10 +140,13 @@ const ProfileEdit = ({navigation, route}) => {
                 isSelected={idx.includes(data.name)}
                 onPress={() => {
                   setIdx(([...prev]) => {
-                    const id = prev.indexOf(data);
-                    if (id > -1) prev.splice(id, 1);
-                    else if (idx.length > 4) alert('다섯개만 선택하세요');
-                    else prev.push(data.name);
+                    if (idx.includes(data.name)) {
+                      prev.splice(prev.indexOf(data.name), 1);
+                    } else if (idx.length > 4) {
+                      alert('다섯개만 선택하세요');
+                    } else {
+                      prev.push(data.name);
+                    }
                     return prev;
                   });
                 }}>

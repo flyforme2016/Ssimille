@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import FavoriteSongs from '../../components/FavoriteSongs';
 
 const LIKE = {
   uri: 'https://cdn1.iconfinder.com/data/icons/basic-ui-element-2-2-line/512/Basic_UI_Elements_-_2.1_-_line-22-128.png',
@@ -38,28 +39,6 @@ const ProfileTabBar = () => {
     );
   };
 
-  const Musics = () => {
-    return (
-      <View>
-        <Container>
-          <Card>
-            <Image source={LIKE} />
-            <Image source={COMMENTS} />
-          </Card>
-          <Card>
-            <Image source={LIKE} />
-            <Image source={COMMENTS} />
-          </Card>
-          <Card>
-            <Image source={LIKE} />
-            <Image source={COMMENTS} />
-          </Card>
-        </Container>
-      </View>
-    );
-  };
-  //
-
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -76,7 +55,7 @@ const ProfileTabBar = () => {
           if (route.name === 'Posts') {
             iconName = focused ? 'ios-apps-sharp' : 'ios-apps-sharp';
             color = focused ? '#b7b4df' : 'gray';
-          } else if (route.name === 'Musics') {
+          } else if (route.name === 'FavoriteSongs') {
             iconName = focused ? 'headset' : 'headset-outline';
             color = focused ? '#b7b4df' : 'gray';
           }
@@ -85,7 +64,7 @@ const ProfileTabBar = () => {
         },
       })}>
       <Tab.Screen name="Posts" component={Posts} />
-      <Tab.Screen name="Musics" component={Musics} />
+      <Tab.Screen name="FavoriteSongs" component={FavoriteSongs} />
     </Tab.Navigator>
   );
 };

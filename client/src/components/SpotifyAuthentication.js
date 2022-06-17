@@ -4,10 +4,13 @@ import {
   ApiScope,
 } from 'react-native-spotify-remote';
 import {useDispatch} from 'react-redux';
+import App from '../../App';
 import actions from '../actions/index';
 
-const SpotifyAuthentication = ({navigation: {navigate}}) => {
+const SpotifyAuthentication = ({navigation: {navigate, replace}, route}) => {
+  const check = route.params.isFirstLogin;
   console.log('Enter SpotifyAuthentication Component');
+  console.log('check: ', check);
   const dispatch = useDispatch();
   const spotifyConfig = {
     clientID: '9912bb2704184ec5acea5688b54c459b',
@@ -21,7 +24,13 @@ const SpotifyAuthentication = ({navigation: {navigate}}) => {
     try {
       const session = await SpotifyAuth.authorize(spotifyConfig);
       dispatch(actions.saveSpotifyTokenAction(session.accessToken));
-      navigate('TabBar', {screen: 'MyProfile'});
+      if (check) {
+        //최초 로그인 시
+        replace('Stack', {screen: 'Onboarding'});
+      } else {
+        //최초 로그인 아닐 시 바로 Home으로 이동
+        replace('TabBar', {screen: 'Home'});
+      }
     } catch (error) {
       console.log('dispatchSpotifyToken Fucntion error: ', error);
     }

@@ -20,19 +20,6 @@ const Profile = ({navigation: {navigate}}) => {
       const value = await AsyncStorage.getItem('userNumber');
       console.log('UID: ', value);
       if (value !== null) {
-        // await axios
-        //   .post('http://192.165.0.104:3000/profile/editProfile', {
-        // params: {
-        //   nickname: 'nicknameTest1',
-        //   profileImg: 'profileImgTest1',
-        //   profileMusicUri: 'profileMusicUriTest1',
-        //   hashTag: ['tag1_Cd', null, null, null, null],
-        //   key: value,
-        // },
-        //   })
-        //   .then(res => {
-        //     console.log('Test editProfile');
-        //   });
         await axios
           .get('http://192.168.0.125:3000/profile/getMyProfile', {
             params: {

@@ -16,7 +16,7 @@ const Onboarding = ({navigation: {navigate}, route}) => {
   const flatlistRef = useRef();
   const [currentPage, setCurrentPage] = useState(0);
   const [viewableItems, setViewableItems] = useState([]);
-  console.log('route: ', route)
+  console.log('route: ', route);
 
   const handleViewableItemsChanged = useRef(({viewableItems}) => {
     setViewableItems(viewableItems);
@@ -116,7 +116,7 @@ const Onboarding = ({navigation: {navigate}, route}) => {
             // Get Started Button
             <Getstart
               onPress={() => {
-                navigate('Stack', {screen: 'KakaoLogin'});
+                navigate('TabBar', {screen: 'Home'});
               }}>
               <NavText>Get Started</NavText>
               <AntDesignIcons

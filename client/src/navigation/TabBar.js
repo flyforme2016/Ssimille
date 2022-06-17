@@ -13,6 +13,7 @@ const TabBar = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"
+      backBehavior="history"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,

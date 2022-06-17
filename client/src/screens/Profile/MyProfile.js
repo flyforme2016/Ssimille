@@ -1,6 +1,5 @@
-import React, {useState, useLayoutEffect} from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
-import axios from 'axios';
 import ProfileTabBar from './ProfileTapBar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SpotifyTab from '../../components/SpotifyTab';
@@ -9,32 +8,14 @@ import {remote} from 'react-native-spotify-remote';
 import getSpotifyToken from '../../api/getSpotifyToken';
 
 const Profile = ({navigation}) => {
-  const [userData, setUserData] = useState({});
-  const myUid = useSelector(state => state.kakaoUid);
-
-  useLayoutEffect(() => {
-    getProfileElment();
-  }, []);
-  const getProfileElment = async () => {
-    try {
-      console.log('start getProfileElement');
-      if (myUid !== null) {
-        await axios
-          .get('http://192.168.0.124:3000/profile/getUserProfile', {
-            params: {
-              key: myUid.kakaoUid,
-            },
-          })
-          .then(res => {
-            console.log('res: ', res.data);
-            const userInfo = res.data;
-            setUserData(userInfo);
-          });
-      }
-    } catch (error) {
-      console.log('error: ', error);
-    }
-  };
+  const {myProfileData} = useSelector(state => state.myProfile);
+  const HashTag = [
+    myProfileData.tag1_cd,
+    myProfileData.tag2_cd,
+    myProfileData.tag3_cd,
+    myProfileData.tag4_cd,
+    myProfileData.tag5_cd,
+  ].filter(tag => tag !== null);
 
   return (
     <>
@@ -43,19 +24,13 @@ const Profile = ({navigation}) => {
           <NavText>PROFILE</NavText>
           <Btn
             onPress={() =>
-              navigation.navigate('Stack', {
+              navigation.push('Stack', {
                 screen: 'ProfileEdit',
                 params: {
-                  profileImg: userData.profile_image,
-                  nicknmae: userData.nickname,
-                  hashTag: [
-                    userData.tag1_cd,
-                    userData.tag2_cd,
-                    userData.tag3_cd,
-                    userData.tag4_cd,
-                    userData.tag5_cd,
-                  ],
-                  profileMusic: userData.profile_music_uri,
+                  profileImg: myProfileData.profile_image,
+                  nicknmae: myProfileData.nickname,
+                  hashTag: HashTag,
+                  profileMusic: myProfileData.profile_music_uri,
                 },
               })
             }>
@@ -66,28 +41,42 @@ const Profile = ({navigation}) => {
 
         <ProfileContainer>
           <UserInfo>
-            <ProfilePic source={{uri: userData.profile_image}} />
-            <UserName>{userData.nickname}</UserName>
+            <ProfilePic source={{uri: myProfileData.profile_image}} />
+            <UserName>{myProfileData.nickname}</UserName>
           </UserInfo>
           <ProfileInfo>
             <CountContainer>
-              <CountView>
+              <CountBtn>
                 <CountText>POST</CountText>
-                <CountText>{userData.post_count}</CountText>
-              </CountView>
-              <CountView>
+                <CountText>{myProfileData.post_count}</CountText>
+              </CountBtn>
+              <CountBtn>
                 <CountText>FREIND</CountText>
-                <CountText>{userData.friend_count}</CountText>
-              </CountView>
-              <CountView>
+                <CountText>{myProfileData.friend_count}</CountText>
+              </CountBtn>
+              <CountBtn
+                onPress={() => {
+                  navigation.push('Stack', {
+                    screen: 'FavoriteSongs',
+                    params: {
+                      userId: myProfileData.kakao_user_number,
+                    },
+                  });
+                }}>
                 <CountText>SONG</CountText>
-                <CountText>{userData.song_count}</CountText>
-              </CountView>
+                <CountText>{myProfileData.song_count}</CountText>
+              </CountBtn>
             </CountContainer>
-            <ProfileHashTag>
-              {userData.tag1_cd} | {userData.tag2_cd} | {userData.tag3_cd}|
-              {userData.tag4_cd} | {userData.tag5_cd}|
-            </ProfileHashTag>
+
+            <TagContainer>
+              {HashTag.map(data => {
+                return (
+                  <TagBtn>
+                    <TagText>{data}</TagText>
+                  </TagBtn>
+                );
+              })}
+            </TagContainer>
           </ProfileInfo>
         </ProfileContainer>
         <MusicContainer>
@@ -95,10 +84,10 @@ const Profile = ({navigation}) => {
             onPress={async () => {
               console.log('clicked');
               await getSpotifyToken();
-              await remote.playUri(userData.profile_music_uri);
+              await remote.playUri(myProfileData.profile_music_uri);
             }}>
             <ProfileMusic>
-              {userData.album_title} - {userData.album_artist_name}
+              {myProfileData.album_title} - {myProfileData.album_artist_name}
             </ProfileMusic>
           </MusicPlayBtn>
         </MusicContainer>
@@ -159,7 +148,7 @@ const CountContainer = styled.View`
   margin: 6px;
   flex-direction: row;
 `;
-const CountView = styled.View`
+const CountBtn = styled.TouchableOpacity`
   align-items: center;
 `;
 const CountText = styled.Text`
@@ -170,7 +159,14 @@ const CountText = styled.Text`
 const ProfileInfo = styled.View`
   justify-content: center;
 `;
-const ProfileHashTag = styled.Text`
+const TagContainer = styled.View`
+  justify-content: center;
+  flex-direction: row;
+`;
+const TagBtn = styled.TouchableOpacity`
+  padding: 0 4px;
+`;
+const TagText = styled.Text`
   margin-top: 8px;
 `;
 const MusicContainer = styled.View`

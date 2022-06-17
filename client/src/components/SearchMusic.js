@@ -19,7 +19,7 @@ const SearchMusic = ({navigation, route}) => {
 
     await spotifyApi.searchTracks(searchName).then(
       data => {
-        console.log('data', data);
+        console.log('곡 정보', data.body.tracks.items);
         setData(data.body.tracks.items);
       },
       err => {
@@ -51,6 +51,7 @@ const SearchMusic = ({navigation, route}) => {
             <MusicInfoContainer
               onPress={() => {
                 console.log(item);
+
                 navigation.navigate({
                   name: route.params.page,
                   params: {
@@ -59,7 +60,7 @@ const SearchMusic = ({navigation, route}) => {
                     albumImg: item.album.images[0].url,
                     musicUri: item.uri,
                   },
-                  // merge: true,
+                  merge: true,
                 });
               }}>
               <CoverImg source={{uri: item.album.images[0].url}} />
