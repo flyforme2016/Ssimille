@@ -21,10 +21,10 @@ const TabBar = () => {
   return (
     <Tab.Navigator
       initialRouteName="Community"
+      backBehavior= 'history'
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         headerShown: false,
-
         tabBarStyle: {
           borderRadius: 10,
           backgroundColor: 'white',

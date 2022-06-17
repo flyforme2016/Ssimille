@@ -70,7 +70,7 @@ const Profile = ({navigation, route}) => {
           onPress={() => {
             navigation.navigate('Stack', {
               screen: 'OneByOneChating',
-              params: {otherUid: route.params.otherUid},
+              params: {otherUid: route.params.otherUid, otherProfleImg: otherUserData.profile_image, otherNickname: otherUserData.nickname},
             });
           }}
         />

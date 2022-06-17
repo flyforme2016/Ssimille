@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.16 Complete login process and chatting" />
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 Complete login process and chatting">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/SearchMusic.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SearchMusic.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/navigation/TabBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/TabBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -78,7 +89,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655389825299</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="06.17 Complete login process and chatting">
+      <created>1655432193444</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1655432193444</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -97,6 +115,7 @@
     <MESSAGE value="06.15 Complete spotifyTab" />
     <MESSAGE value="06.16 try master commit" />
     <MESSAGE value="06.16 Complete login process and chatting" />
-    <option name="LAST_COMMIT_MESSAGE" value="06.16 Complete login process and chatting" />
+    <MESSAGE value="06.17 Complete login process and chatting" />
+    <option name="LAST_COMMIT_MESSAGE" value="06.17 Complete login process and chatting" />
   </component>
 </project>

@@ -27,7 +27,7 @@ import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 // import {useSelector} from 'react-redux';
 
-const ChatingList = ({navigation: {navigate}}) => {
+const ChatingList = ({navigation: {navigate,push}}) => {
   const [messages, setMessages] = useState();
   const myData = useSelector(state => state.myProfile);
   const myUid = myData.myProfileData.kakao_user_number.toString();
@@ -44,12 +44,15 @@ const ChatingList = ({navigation: {navigate}}) => {
       const unsubscribe = onSnapshot(q, querySnapshot => {
         console.log('querySnapshot unsusbscribe');
         setMessages(
-          querySnapshot.docs.map(doc => ({
+          querySnapshot.docs.map(doc => 
+            ({
             _id: doc.data()._id,
             createdAt: doc.data().createdAt.toDate().toString(),
             text: doc.data().text,
-            user: doc.data().user,
-          })),
+            user: doc.data().setDocUserObj,
+          })
+          
+          ),
         );
       });
       return unsubscribe;
@@ -66,9 +69,9 @@ const ChatingList = ({navigation: {navigate}}) => {
         <NavText>채팅창</NavText>
         <FlatList
           data={messages}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           renderItem={({item}) => (
-            <Card onPress={() => navigate( 'Stack', {screen: 'OneByOneChatScreen'} )}>
+            <Card onPress={() => push( 'Stack', {screen: 'OneByOneChating', params:{otherProfleImg: item.user.avatar, otherNickname: item.user.name, otherUid: item.user._id}} )}>
               <UserInfo>
                 <UserImgWrapper>
                   <UserImg source={{uri: item.user.avatar}} />
