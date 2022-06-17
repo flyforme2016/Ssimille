@@ -6,9 +6,11 @@ import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import {remote} from 'react-native-spotify-remote';
 import getSpotifyToken from '../../api/getSpotifyToken';
+import {MusicControlBtn} from '../../components/MusicControlBtn';
 
 const Profile = ({navigation}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
+  console.log({myProfileData});
   const HashTag = [
     myProfileData.tag1_cd,
     myProfileData.tag2_cd,
@@ -31,6 +33,9 @@ const Profile = ({navigation}) => {
                   nicknmae: myProfileData.nickname,
                   hashTag: HashTag,
                   profileMusic: myProfileData.profile_music_uri,
+                  albumImg: myProfileData.album_image,
+                  albumTitle: myProfileData.album_title,
+                  artistName: myProfileData.album_artist_name,
                 },
               })
             }>
@@ -72,26 +77,26 @@ const Profile = ({navigation}) => {
               {HashTag.map(data => {
                 return (
                   <TagBtn>
-                    <TagText>{data}</TagText>
+                    <TagText>#{data} </TagText>
                   </TagBtn>
                 );
               })}
             </TagContainer>
           </ProfileInfo>
         </ProfileContainer>
-        <MusicContainer>
-          <MusicPlayBtn
-            onPress={async () => {
-              console.log('clicked');
-              await getSpotifyToken();
-              await remote.playUri(myProfileData.profile_music_uri);
-            }}>
-            <ProfileMusic>
-              {myProfileData.album_title} - {myProfileData.album_artist_name}
-            </ProfileMusic>
-          </MusicPlayBtn>
-        </MusicContainer>
 
+        <Card>
+          <MusicInfoContainer>
+            <MusicWrapper>
+              <CoverImg source={{uri: myProfileData.album_image}} />
+              <MusicInfo>
+                <MusicName> {myProfileData.album_title}</MusicName>
+                <ArtistName>{myProfileData.album_artist_name}</ArtistName>
+              </MusicInfo>
+            </MusicWrapper>
+            <MusicControlBtn type="play" />
+          </MusicInfoContainer>
+        </Card>
         <ProfileTabBar />
       </Container>
       <SpotifyTab />
@@ -135,6 +140,52 @@ const UserInfo = styled.View`
   align-items: center;
 `;
 
+const Card = styled.View`
+  background-color: #ffffff;
+  justify-content: center;
+  align-items: center;
+  margin: 5px 20px;
+  border-radius: 10px;
+  //elevation: 3;
+`;
+
+const MusicInfoContainer = styled.TouchableOpacity`
+  width: 80%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-content: space-around;
+  padding: 12px;
+`;
+
+const MusicWrapper = styled.View`
+  flex-direction: row;
+  margin: 0 8px;
+`;
+const CoverImg = styled.Image`
+  width: 40px;
+  height: 40px;
+`;
+const MusicInfo = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 15px;
+`;
+
+const MusicName = styled.Text`
+  font-size: 14px;
+  font-weight: bold;
+`;
+
+const ArtistName = styled.Text`
+  font-size: 12px;
+`;
+
+const AlbumImg = styled.Image`
+  margin: 0 5px;
+  width: 50;
+  height: 50;
+`;
 const ProfilePic = styled.Image`
   width: 100;
   height: 100;
@@ -168,6 +219,7 @@ const TagBtn = styled.TouchableOpacity`
 `;
 const TagText = styled.Text`
   margin-top: 8px;
+  color: #b7b4df;
 `;
 const MusicContainer = styled.View`
   justify-content: center;

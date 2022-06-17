@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import FavoriteSongs from '../../components/FavoriteSongs';
 
 const LIKE = {
   uri: 'https://cdn1.iconfinder.com/data/icons/basic-ui-element-2-2-line/512/Basic_UI_Elements_-_2.1_-_line-22-128.png',
@@ -64,7 +63,6 @@ const ProfileTabBar = () => {
         },
       })}>
       <Tab.Screen name="Posts" component={Posts} />
-      <Tab.Screen name="FavoriteSongs" component={FavoriteSongs} />
     </Tab.Navigator>
   );
 };

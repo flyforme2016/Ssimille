@@ -4,21 +4,21 @@ import React from 'react';
 import {View, LogBox} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {useDispatch} from 'react-redux';
-import actions from '../actions/index'
-import SpotifyAuthentication from '../components/SpotifyAuthentication'
+import actions from '../actions/index';
+import SpotifyAuthentication from '../components/SpotifyAuthentication';
 
 LogBox.ignoreLogs(['Remote debugger']);
 
 const runFirst = `window.ReactNativeWebView.postMessage("this is message from web");`;
 
 const KakaoLogin = ({navigation: {navigate, replace}}) => {
-  console.log('Enter KakaoLogin')
+  console.log('Enter KakaoLogin');
   const dispatch = useDispatch();
 
   const parseAuthCode = async url => {
-    const exp = 'code='; //url에 붙어 날라오는 인가코드는 code=뒤부터 parse하여 get
-    const startIndex = url.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
-    if (startIndex !== -1) {
+    if (url) {
+      const exp = 'code='; //url에 붙어 날라오는 인가코드는 code=뒤부터 parse하여 get
+      const startIndex = url.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
       const authCode = url.substring(startIndex + exp.length);
       try {
         await axios
@@ -26,27 +26,27 @@ const KakaoLogin = ({navigation: {navigate, replace}}) => {
             code: authCode,
           })
           .then(async res => {
-
             //스포티파이 연동
-            const spotifyToken = await SpotifyAuthentication(res.data.userId)
-            dispatch(actions.saveSpotifyTokenAction(spotifyToken))
+            const spotifyToken = await SpotifyAuthentication(res.data.userId);
+            dispatch(actions.saveSpotifyTokenAction(spotifyToken));
 
             console.log('res.data: ', res.data);
-            if(res.data.userId) { //최초 로그인 시 진입
-              console.log('First Login')
+            if (res.data.userId) {
+              //최초 로그인 시 진입
+              console.log('First Login');
               dispatch(actions.saveKakaoUidAction(res.data.userId));
               await AsyncStorage.setItem(
                 'userNumber',
                 JSON.stringify(res.data.userId),
               );
-              replace('Stack', {screen: 'Onboarding'})
-            }else { //최초 로그인이 아닐 시
-              console.log('Already Login')
-              const myUid = await AsyncStorage.getItem('userNumber')
-              dispatch(actions.saveKakaoUidAction(myUid))
+              replace('Stack', {screen: 'Onboarding'});
+            } else {
+              //최초 로그인이 아닐 시
+              console.log('Already Login');
+              const myUid = await AsyncStorage.getItem('userNumber');
+              dispatch(actions.saveKakaoUidAction(myUid));
               replace('TabBar', {screen: 'Home'});
             }
-              // navigate('Stack', {screen: 'SpotifyAuthentication', params:{isFirstLogin : res.data.userId}});
           });
       } catch (err) {
         console.log(err);

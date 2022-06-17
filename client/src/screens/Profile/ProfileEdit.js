@@ -87,10 +87,13 @@ const ProfileEdit = ({navigation, route}) => {
 
   return (
     <>
+      <NavBar>
+        <NavText>프로필 편집</NavText>
+        <SubmitBtn onPress={handleProfileEdit}>
+          <BtnText>완료</BtnText>
+        </SubmitBtn>
+      </NavBar>
       <Container>
-        <NavBar>
-          <NavText>PROFILE EDIT</NavText>
-        </NavBar>
         <ImgChangeBtn onPress={getProfileImage}>
           <ImgPreview
             source={{
@@ -100,37 +103,38 @@ const ProfileEdit = ({navigation, route}) => {
             }}
           />
         </ImgChangeBtn>
-        <InfoText> 닉네임 변경하기 </InfoText>
         <NameInput
           placeholder={route.params.nicknmae}
           value={changeName}
+          text-center={true}
           onChangeText={text => {
             console.log(changeName);
             setChangeName(text);
           }}
         />
 
-        <ProfileMusicBtn
-          onPress={async () => {
-            console.log('clicked');
-            await getSpotifyToken();
-            navigation.navigate('Stack', {
-              screen: 'SearchMusic',
-              params: {
-                page: 'ProfileEdit',
-              },
-            });
-          }}>
-          <BtnText>프로필 음악 변경하기</BtnText>
-        </ProfileMusicBtn>
         {route.params ? (
           <SelectContainer>
             <SelectedImg source={{uri: route.params.albumImg}} />
             <SelectedMusic>
-              {route.params.albumTitle} {route.params.albumArtistName}
+              {route.params.albumTitle} - {route.params.artistName}
             </SelectedMusic>
+            <ProfileMusicBtn
+              onPress={async () => {
+                console.log('clicked');
+                await getSpotifyToken();
+                navigation.navigate('Stack', {
+                  screen: 'SearchMusic',
+                  params: {
+                    page: 'ProfileEdit',
+                  },
+                });
+              }}>
+              <BtnText>프로필 음악 변경하기</BtnText>
+            </ProfileMusicBtn>
           </SelectContainer>
         ) : null}
+
         <InfoText>HashTag 설정</InfoText>
 
         <HashTagContainer>
@@ -150,14 +154,13 @@ const ProfileEdit = ({navigation, route}) => {
                     return prev;
                   });
                 }}>
-                <SelectedTags>{data.name}</SelectedTags>
+                <SelectedTags isSelected={idx.includes(data.name)}>
+                  {data.name}
+                </SelectedTags>
               </HashTagBtn>
             );
           })}
         </HashTagContainer>
-        <SubmitBtn onPress={handleProfileEdit}>
-          <BtnText>프로필 변경</BtnText>
-        </SubmitBtn>
       </Container>
     </>
   );
@@ -170,22 +173,32 @@ const Container = styled.View`
   align-items: center;
   justify-content: center;
 `;
-const NavBar = styled.View``;
+const NavBar = styled.View`
+  padding: 8px 16px;
+  background-color: white;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
 const NavText = styled.Text`
-  color: #9b59b6;
-  font-size: 24px;
+  color: black;
+  font-size: 14px;
   padding: 8px;
 `;
 const ImgPreview = styled.Image`
   margin: 10px;
-  width: 80;
-  height: 80;
+  width: 100;
+  height: 100;
   border-radius: 100;
+  border: 1px solid gray;
 `;
 const ImgChangeBtn = styled.TouchableOpacity`
+  align-items: center;
+  justify-content: center;
   width: 100;
 `;
 const InfoText = styled.Text`
+  color: black;
   margin-top: 6px;
   font-size: 14px;
 `;
@@ -194,31 +207,40 @@ const BtnText = styled.Text`
   color: white;
 `;
 const NameInput = styled.TextInput`
+  width: 90%
   margin-top: 10px;
   border: 1px solid gray;
   border-radius: 10px;
-  width: 200;
+  text-align: center;
 `;
 
 const SelectContainer = styled.View`
+  width: 90%;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 8px;
+  margin-top: 8px;
   align-items: center;
+  justify-content: center;
   flex-direction: row;
 `;
 const SelectedMusic = styled.Text`
   font-size: 12px;
+  color: black;
 `;
 
 const SelectedImg = styled.Image`
-  margin: 0 10px;
-  width: 40px;
-  height: 40px;
+  margin-right: 10px;
+  width: 35px;
+  height: 35px;
 `;
 const HashTagBtn = styled.Pressable`
-  margin: 2px;
+  margin: 3px;
   padding: 6px;
   align-items: center;
   justify-content: center;
-  border-radius: 10;
+  border: ${props => (props.isSelected ? '#dddddd' : '#b7b4df')}
+  border-radius: 20;
   background-color: ${props => (props.isSelected ? '#b7b4df' : 'white')};
 `;
 const ProfileMusicBtn = styled.TouchableOpacity`
@@ -239,6 +261,7 @@ const HashTagContainer = styled.View`
 `;
 const SelectedTags = styled.Text`
   font-weight: bold;
+  color: ${props => (props.isSelected ? '#ffffff' : 'black')};
 `;
 
 const SubmitBtn = styled.TouchableOpacity`

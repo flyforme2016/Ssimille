@@ -1,41 +1,60 @@
-import React from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import getSpotifyToken from '../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
 import {MusicControlBtn} from './MusicControlBtn';
+import {useSelector} from 'react-redux';
+import axios from 'axios';
 
-const FavoriteSongs = ({navigation}) => {
-  const data = [
-    {
-      preview_url:
-        'https://i.scdn.co/image/ab67616d0000b273b1e699e6e60ec54bbf0b7e8f',
-      name: 'Gashina',
-      artist: 'SUNMI',
-      musicUri: 'spotify:track:7csMuPqdOPaFKby0AoRYL5',
-    },
-    {
-      preview_url:
-        'https://i.scdn.co/image/ab67616d0000b273b1e699e6e60ec54bbf0b7e8f',
-      name: 'Gashina',
-      artist: 'SUNMI',
-      musicUri: 'spotify:track:7csMuPqdOPaFKby0AoRYL5',
-    },
-    {
-      preview_url:
-        'https://i.scdn.co/image/ab67616d0000b273b1e699e6e60ec54bbf0b7e8f',
-      name: 'Gashina',
-      artist: 'SUNMI',
-      musicUri: 'spotify:track:7csMuPqdOPaFKby0AoRYL5',
-    },
-    {
-      preview_url:
-        'https://i.scdn.co/image/ab67616d0000b273b1e699e6e60ec54bbf0b7e8f',
-      name: 'Gashina',
-      artist: 'SUNMI',
-      musicUri: 'spotify:track:7csMuPqdOPaFKby0AoRYL5',
-    },
-  ];
+const FavoriteSongs = ({navigation, route}) => {
+  const myUid = useSelector(state => state.kakaoUid);
+  const [data, setData] = useState();
+
+  useLayoutEffect(() => {
+    getFavoriteSongs();
+  }, []);
+
+  const getFavoriteSongs = async () => {
+    try {
+      console.log('myUid: ', myUid.kakaoUid);
+      await axios
+        .get('http://192.168.0.124:3000/profile/getUserSongList', {
+          params: {
+            key: myUid.kakaoUid,
+          },
+        })
+        .then(res => {
+          console.log('res: ', res.data);
+          if (res.data.status === 200) alert('이미 등록된 노래입니다.');
+          else setData(res.data);
+        });
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  };
+
+  const postFavoriteSongs = async () => {
+    try {
+      if (myUid !== null) {
+        console.log('myUid: ', myUid.kakaoUid);
+        await axios
+          .post('http://192.168.0.124:3000/profile/addFavoriteSong', {
+            key: myUid.kakaoUid,
+            musicUri: route.params.musicUri,
+            albumTitle: route.params.albumTitle,
+            albumImg: route.params.albumImg,
+            albumArtistName: route.params.albumArtistName,
+          })
+          .then(res => {
+            console.log('성공', res);
+          });
+      }
+    } catch (error) {
+      console.log('error: ', error);
+      alert(error);
+    }
+  };
   return (
     <Container>
       <NavBar>
@@ -46,36 +65,49 @@ const FavoriteSongs = ({navigation}) => {
             navigation.navigate('Stack', {
               screen: 'SearchMusic',
               params: {
-                page: 'Profile',
+                page: 'FavoriteSongs',
               },
             });
           }}>
           <Ionicons name="add" size={25} />
         </MusicUploadBtn>
-        <NavText>음악 추가하기</NavText>
       </NavBar>
+      {/* 새로 추가할 애청곡 */}
+      {route.params ? (
+        <MusicInfoContainer>
+          <MusicWrapper>
+            <CoverImg source={{uri: route.params.albumImg}} />
+            <MusicInfo>
+              <MusicName>{route.params.albumTitle}</MusicName>
+              <ArtistName>{route.params.albumArtistName}</ArtistName>
+            </MusicInfo>
+          </MusicWrapper>
+          <SubmitBtn onPress={postFavoriteSongs}>
+            <BtnText>추가하기</BtnText>
+          </SubmitBtn>
+        </MusicInfoContainer>
+      ) : null}
+      <Divider />
 
+      {/* 기존 애청곡 */}
       <MusicResultList
         data={data}
         keyExtractor={item => item.id + ''}
         horizontal={false}
         renderItem={({item}) => (
           <Card>
-            <MusicInfoContainer
-              onPress={() => {
-                console.log('애청곡 눌림');
-              }}>
+            <MusicInfoContainer>
               <MusicWrapper>
-                <CoverImg source={{uri: item.preview_url}} />
+                <CoverImg source={{uri: item.album_image}} />
                 <MusicInfo>
-                  <MusicName>{item.name}</MusicName>
-                  <ArtistName>{item.artist}</ArtistName>
+                  <MusicName>{item.album_title}</MusicName>
+                  <ArtistName>{item.album_artist_name}</ArtistName>
                 </MusicInfo>
               </MusicWrapper>
               <MusicControlBtn
                 onPress={async () => {
                   await getSpotifyToken();
-                  await remote.playUri(item.musicUri);
+                  await remote.playUri(item.music_uri);
                 }}
                 type="play"
               />
@@ -97,12 +129,16 @@ const NavBar = styled.View`
   justify-content: center;
   align-items: center;
 `;
-const NavText = styled.Text`
-  font-size: 16px;
-  padding: 8px;
+
+const Divider = styled.View`
+  border-bottom-color: #dddddd;
+  border-bottom-width: 1px;
+  width: 90%;
+  align-self: center;
+  margin: 8px;
 `;
 const MusicUploadBtn = styled.TouchableOpacity`
-  padding: 8px;
+  margin-top: 8px;
 `;
 
 const MusicResultList = styled.FlatList``;
@@ -127,6 +163,8 @@ const MusicInfoContainer = styled.TouchableOpacity`
 
 const MusicWrapper = styled.View`
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
   margin: 0 8px;
 `;
 const CoverImg = styled.Image`
@@ -138,7 +176,14 @@ const MusicInfo = styled.View`
   justify-content: center;
   margin: 0 15px;
 `;
-
+const SubmitBtn = styled.TouchableOpacity`
+  border: 1px solid gray;
+  border-radius: 12px;
+  padding: 8px;
+`;
+const BtnText = styled.Text`
+  font-size: 12px;
+`;
 const MusicName = styled.Text`
   font-size: 14px;
   font-weight: bold;

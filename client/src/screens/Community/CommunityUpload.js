@@ -105,7 +105,6 @@ const CommunityUpload = ({navigation, route}) => {
               placeholder="내용을 입력해주세요"
               value={postContent}
               onChangeText={text => {
-                console.log(postContent);
                 setPostContent(text);
               }}
             />

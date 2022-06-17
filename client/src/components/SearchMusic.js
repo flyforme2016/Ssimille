@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 
 const SearchMusic = ({navigation, route}) => {
@@ -12,14 +13,13 @@ const SearchMusic = ({navigation, route}) => {
   });
   const [searchName, setSearchName] = useState();
   const [data, setData] = useState();
+  const spotifyToken = useSelector(state => state.spotifyToken);
 
   const searchMusic = async () => {
-    const token = await AsyncStorage.getItem('spotifyToken');
-    await spotifyApi.setAccessToken(token);
+    await spotifyApi.setAccessToken(spotifyToken.spotifyToken);
 
     await spotifyApi.searchTracks(searchName).then(
       data => {
-        console.log('곡 정보', data.body.tracks.items);
         setData(data.body.tracks.items);
       },
       err => {

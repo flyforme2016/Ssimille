@@ -9,7 +9,6 @@ import Swiper from 'react-native-swiper';
 import axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
-import FavoriteSongs from '../../components/FavoriteSongs';
 
 const Home = ({navigation: {navigate}}) => {
   const dispatch = useDispatch();

@@ -33,6 +33,7 @@ const SpotifyTab = () => {
       await timer();
     };
     if (playingMusic.playbackPosition === null) getMusic(); //처음에 무조건 spotify에서 재생중인 노래 가져오기 위한 조건
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
   useLayoutEffect(() => {
     const processAlbumCover = async () => {
@@ -76,7 +77,6 @@ const SpotifyTab = () => {
 
   const getAlbumCover = async () => {
     const uri = playingMusic.track.album.uri;
-    //uri 형식 : "spotify:album:3nTPSrFSU515qZW6xASdF7"
     const exp = 'spotify:album:';
     const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
     if (startIndex !== -1) {
