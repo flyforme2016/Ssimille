@@ -13,6 +13,7 @@ import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import styled from 'styled-components/native';
 
 const Onboarding = ({navigation: {navigate}, route}) => {
+  console.log('Enter onboarding')
   const flatlistRef = useRef();
   const [currentPage, setCurrentPage] = useState(0);
   const [viewableItems, setViewableItems] = useState([]);

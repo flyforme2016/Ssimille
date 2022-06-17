@@ -33,7 +33,6 @@ const SpotifyTab = () => {
       await timer();
     };
     if (playingMusic.playbackPosition === null) getMusic(); //처음에 무조건 spotify에서 재생중인 노래 가져오기 위한 조건
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
   useLayoutEffect(() => {
     const processAlbumCover = async () => {

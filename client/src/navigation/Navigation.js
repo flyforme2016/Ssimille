@@ -17,7 +17,7 @@ const Navigation = () => {
       <Nav.Screen name="TabBar" component={TabBar} />
       <Nav.Screen name="Stack" component={Stack} />
     </Nav.Navigator>
-  );
+  )
 };
 
 export default Navigation;

@@ -13,14 +13,16 @@ import {database} from '../../config/firebase';
 import {useSelector} from 'react-redux';
 
 export default function Chat({route}) {
-  const OtherUid = route.params.otherUid;
-  const stringOtherUid = OtherUid.toString();
+  const otherUid = route.params.otherUid;
+  const stringOtherUid = otherUid.toString();
+  const otherNickname = route.params.otherNickname;
+  const otherProfleImg = route.params.otherProfleImg;
   const [messages, setMessages] = useState([]);
   const myData = useSelector(state => state.myProfile);
   const myUid = myData.myProfileData.kakao_user_number.toString();
-  console.log('myData: ', myData);
-  console.log('myData.myProfileData: ', myData.myProfileData);
-  console.log('OtherUid: ', stringOtherUid);
+  console.log('OtherUid: ', stringOtherUid)
+  console.log('otherNickname', otherNickname)
+  console.log('otherProfleImg', otherProfleImg)
   //useLayoutEffect vs useEffect
   //useLayoutEffect : 화면이 그려지기 전에 Dom 관련 데이터를 먼저 동기적으로 처리해줌
   useLayoutEffect(() => {
@@ -63,16 +65,22 @@ export default function Chat({route}) {
       const documentRef2 = doc(collectionRef2, stringOtherUid); //myUid stringOtherUid
       const realCollectionRef2 = collection(documentRef2, myUid); //otherUid
 
-      const collectionRef3 = collection(database, 'chatList');
+      const collectionRef3 = collection(database, 'chatList');        //my chatList update
       const documentRef3 = doc(collectionRef3, myUid);
       const realCollectionRef3 = collection(documentRef3, 'chatList');
-      const realDocumentRef = doc(realCollectionRef3, stringOtherUid);
+      const realDocumentRef = doc(realCollectionRef3, stringOtherUid)
+
+      const collectionRef4 = collection(database, 'chatList');        //other chatList update
+      const documentRef4 = doc(collectionRef4, stringOtherUid);
+      const realCollectionRef4 = collection(documentRef4, 'chatList');
+      const realDocumentRef2 = doc(realCollectionRef4, myUid)
 
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, messages),
       );
       // setMessages([...messages, ...messages]);
       const {_id, createdAt, text, user} = messages[0];
+
       addDoc(realCollectionRef, {
         _id,
         createdAt,
@@ -85,12 +93,23 @@ export default function Chat({route}) {
         text,
         user,
       });
-      setDoc(realDocumentRef, {
+      setDoc(realDocumentRef, { //my chatList update
         _id,
         createdAt,
         text,
-        user,
-      });
+        setDocUserObj : {
+          _id: stringOtherUid,
+          name: otherNickname,
+          avatar: otherProfleImg,
+        },
+      })
+      setDoc(realDocumentRef2, {  //other chatList update
+        _id,
+        createdAt,
+        text,
+        setDocUserObj : user
+      })
+
     };
     getMyUid();
   }, []);
