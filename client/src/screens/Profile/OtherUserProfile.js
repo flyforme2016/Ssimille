@@ -2,23 +2,26 @@ import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import ProfileTabBar from './ProfileTapBar';
-
 import CustomButton from '../../components/CustomButtons';
+import Config from 'react-native-config';
+
 const Profile = ({navigation, route}) => {
   const [otherUserData, setOhterUserData] = useState({});
+  const BASE_URL = Config.BASE_URL;
+
   const getOtherUserProfile = async () => {
     try {
       const otherUserUid = route.params.otherUid;
       if (otherUserUid !== null) {
         await axios
-          .get('http://192.168.0.124:3000/profile/getUserProfile', {
+          .get(`${BASE_URL}/profile/getUserProfile`, {
             params: {
               key: otherUserUid,
             },
           })
           .then(res => {
             console.log('ress: ', res.data);
-            setOhterUserData(res.data);       //서버에게 받아온 otherUserProfileData
+            setOhterUserData(res.data); //서버에게 받아온 otherUserProfileData
           });
       }
     } catch (error) {
@@ -70,7 +73,11 @@ const Profile = ({navigation, route}) => {
           onPress={() => {
             navigation.navigate('Stack', {
               screen: 'OneByOneChating',
-              params: {otherUid: route.params.otherUid, otherProfleImg: otherUserData.profile_image, otherNickname: otherUserData.nickname},
+              params: {
+                otherUid: route.params.otherUid,
+                otherProfleImg: otherUserData.profile_image,
+                otherNickname: otherUserData.nickname,
+              },
             });
           }}
         />

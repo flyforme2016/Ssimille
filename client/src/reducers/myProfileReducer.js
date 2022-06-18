@@ -5,15 +5,15 @@ const initialState = {
 };
 
 const myProfileReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case types.SAVE_USER_PROFILE:
-        return {
-            ...state,
-            myProfileData: action.payload,
-        };
-        default:
-        return state;
-    }
+  switch (action.type) {
+    case types.SAVE_USER_PROFILE:
+      return {
+        ...state,
+        myProfileData: action.payload,
+      };
+    default:
+      return state;
+  }
 };
 
 export default myProfileReducer;

@@ -6,6 +6,7 @@ import {WebView} from 'react-native-webview';
 import {useDispatch} from 'react-redux';
 import actions from '../actions/index';
 import SpotifyAuthentication from '../components/SpotifyAuthentication';
+import Config from 'react-native-config';
 
 LogBox.ignoreLogs(['Remote debugger']);
 
@@ -13,16 +14,17 @@ const runFirst = `window.ReactNativeWebView.postMessage("this is message from we
 
 const KakaoLogin = ({navigation: {navigate, replace}}) => {
   console.log('Enter KakaoLogin');
+  const BASE_URL = Config.BASE_URL;
   const dispatch = useDispatch();
 
   const parseAuthCode = async url => {
-    if (url) {
-      const exp = 'code='; //url에 붙어 날라오는 인가코드는 code=뒤부터 parse하여 get
-      const startIndex = url.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
+    const exp = 'code='; //url에 붙어 날라오는 인가코드는 code=뒤부터 parse하여 get
+    const startIndex = url.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
+    if (startIndex !== -1) {
       const authCode = url.substring(startIndex + exp.length);
       try {
         await axios
-          .post('http://192.168.0.124:3000/kakao/oauth/callback', {
+          .post(`${BASE_URL}/kakao/oauth/callback`, {
             code: authCode,
           })
           .then(async res => {
@@ -60,7 +62,7 @@ const KakaoLogin = ({navigation: {navigate, replace}}) => {
         originWhitelist={['*']}
         scalesPageToFit={false}
         source={{
-          uri: 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=http://192.168.0.124:3000//kakao/oauth/callback',
+          uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=${BASE_URL}/kakao/oauth/callback`,
         }}
         injectedJavaScript={runFirst}
         javaScriptEnabled={true}

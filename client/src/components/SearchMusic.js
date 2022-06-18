@@ -3,13 +3,16 @@ import React, {useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
+import Config from 'react-native-config';
 
 const SearchMusic = ({navigation, route}) => {
+  const BASE_URL = Config.BASE_URL;
+
   const SpotifyWebApi = require('spotify-web-api-node');
   const spotifyApi = new SpotifyWebApi({
     clientID: '9912bb2704184ec5acea5688b54c459b',
     clientSecret: 'a060b8460dbd4fdd8e045aac32af1d9c',
-    redirectURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
+    redirectURL: `${BASE_URL}/spotify/oauth/callback`,
   });
   const [searchName, setSearchName] = useState();
   const [data, setData] = useState();

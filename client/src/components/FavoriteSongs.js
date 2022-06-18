@@ -6,8 +6,11 @@ import {remote} from 'react-native-spotify-remote';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
+import Config from 'react-native-config';
 
 const FavoriteSongs = ({navigation, route}) => {
+  const BASE_URL = Config.BASE_URL;
+
   const myUid = useSelector(state => state.kakaoUid);
   const [data, setData] = useState();
 
@@ -19,7 +22,7 @@ const FavoriteSongs = ({navigation, route}) => {
     try {
       console.log('myUid: ', myUid.kakaoUid);
       await axios
-        .get('http://192.168.0.124:3000/profile/getUserSongList', {
+        .get(`${BASE_URL}profile/getUserSongList`, {
           params: {
             key: myUid.kakaoUid,
           },
@@ -39,7 +42,7 @@ const FavoriteSongs = ({navigation, route}) => {
       if (myUid !== null) {
         console.log('myUid: ', myUid.kakaoUid);
         await axios
-          .post('http://192.168.0.124:3000/profile/addFavoriteSong', {
+          .post(`${BASE_URL}/profile/addFavoriteSong`, {
             key: myUid.kakaoUid,
             musicUri: route.params.musicUri,
             albumTitle: route.params.albumTitle,
@@ -52,7 +55,6 @@ const FavoriteSongs = ({navigation, route}) => {
       }
     } catch (error) {
       console.log('error: ', error);
-      alert(error);
     }
   };
   return (

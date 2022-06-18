@@ -52,7 +52,18 @@ const Profile = ({navigation}) => {
           <ProfileInfo>
             <CountContainer>
               <CountBtn>
-                <CountText>POST</CountText>
+                <CountText
+                  onPress={() => {
+                    console.log('clicked');
+                    navigation.push('Stack', {
+                      screen: 'PostList',
+                      params: {
+                        userId: myProfileData.kakao_user_number,
+                      },
+                    });
+                  }}>
+                  POST
+                </CountText>
                 <CountText>{myProfileData.post_count}</CountText>
               </CountBtn>
               <CountBtn>
@@ -84,19 +95,23 @@ const Profile = ({navigation}) => {
             </TagContainer>
           </ProfileInfo>
         </ProfileContainer>
+        {myProfileData.album_image ? (
+          <Card>
+            <MusicInfoContainer>
+              <MusicWrapper>
+                <CoverImg source={{uri: myProfileData.album_image}} />
+                <MusicInfo>
+                  <MusicName> {myProfileData.album_title}</MusicName>
+                  <ArtistName>{myProfileData.album_artist_name}</ArtistName>
+                </MusicInfo>
+              </MusicWrapper>
+              <MusicControlBtn type="play" />
+            </MusicInfoContainer>
+          </Card>
+        ) : (
+          <MusicName>프로필 뮤직을 설정해주세요</MusicName>
+        )}
 
-        <Card>
-          <MusicInfoContainer>
-            <MusicWrapper>
-              <CoverImg source={{uri: myProfileData.album_image}} />
-              <MusicInfo>
-                <MusicName> {myProfileData.album_title}</MusicName>
-                <ArtistName>{myProfileData.album_artist_name}</ArtistName>
-              </MusicInfo>
-            </MusicWrapper>
-            <MusicControlBtn type="play" />
-          </MusicInfoContainer>
-        </Card>
         <ProfileTabBar />
       </Container>
       <SpotifyTab />

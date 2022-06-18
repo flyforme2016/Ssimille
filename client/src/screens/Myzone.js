@@ -1,50 +1,41 @@
-import React, {useEffect, useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import Styled from 'styled-components/native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-
+import Geolocation from '@react-native-community/geolocation';
+import {PermissionsAndroid} from 'react-native';
 import axios from 'axios';
-import {getCurrentLocation} from '../api/getCurrentLocation';
+import {useDispatch} from 'react-redux';
+import actions from '../actions/index';
 
 const Myzone = () => {
-  const [location, setLocation] = useState({longitude: '', latitude: ''});
-  const [locationName, setLocationName] = useState('위치 확인중');
-  useEffect(() => {
-    const testLocation = async () => {
-      await getCurrentLocation().then(async result => {
-        await setLocation(result);
-        console.log(result);
-      });
-    };
-    testLocation();
-    getLocationName();
-  });
-  // //현재 위치 가져오는 함수
-  // const getCurrentLocation = async () => {
-  //   // 위치 권한 허용 확인
-  //   const granted = await PermissionsAndroid.request(
-  //     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-  //   );
-  //   if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //     console.log('권한 얻기 성공');
-  //     //위도 & 경도 불러오는 함수
-  //     Geolocation.getCurrentPosition(
-  //       async position => {
-  //         await setLocation([
-  //           position.coords.longitude,
-  //           position.coords.latitude,
-  //         ]);
-  //       },
-  //       error => {
-  //         console.log(error.message);
-  //       },
-  //       {enableHighAccuracy: true, timeout: 15000},
-  //     ).catch(err => console.log('위치정보 얻기 실패 :', err));
-  //     console.log(location);
-  //   }
-  // };
+  const [location, setLocation] = useState();
+  const dispatch = useDispatch();
 
+  const getCurrentLocation = async () => {
+    // 위치 권한 허용 확인
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('권한 얻기 성공');
+      //위도 & 경도 불러오는 함수
+      Geolocation.getCurrentPosition(
+        position => {
+          const {latitude, longitude} = position.coords;
+          setLocation([longitude, latitude]);
+        },
+        error => {
+          console.log(error.message);
+        },
+        {enableHighAccuracy: true, timeout: 15000},
+      );
+    } else {
+      console.log('권한얻기 실패 :', granted);
+    }
+  };
   // 현재위치를 행정동으로 바꿔주는 함수
   const getLocationName = async () => {
+    await getCurrentLocation();
     try {
       const res = await axios({
         method: 'GET',
@@ -56,12 +47,15 @@ const Myzone = () => {
         },
       });
       const currentInfo = res.data.documents[0];
-      setLocationName(currentInfo.address_name);
-      return currentInfo;
+      dispatch(actions.saveUserLocation(currentInfo));
+      console.log(currentInfo);
     } catch (error) {
       return error;
     }
   };
+  useLayoutEffect(() => {
+    getLocationName();
+  }, []);
 
   return (
     <Container>
@@ -81,7 +75,6 @@ const Myzone = () => {
               longitude: location[0],
             }}
           />
-          <Label>{locationName}</Label>
         </MapView>
       )}
     </Container>
@@ -90,9 +83,6 @@ const Myzone = () => {
 
 const Container = Styled.View`
   flex: 1;
-`;
-const Label = Styled.Text`
-  font-size: 26px;
 `;
 
 export default Myzone;

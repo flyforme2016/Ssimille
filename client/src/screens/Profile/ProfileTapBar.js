@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import PostList from './PostList';
 
 const LIKE = {
   uri: 'https://cdn1.iconfinder.com/data/icons/basic-ui-element-2-2-line/512/Basic_UI_Elements_-_2.1_-_line-22-128.png',
@@ -54,7 +55,7 @@ const ProfileTabBar = () => {
           if (route.name === 'Posts') {
             iconName = focused ? 'ios-apps-sharp' : 'ios-apps-sharp';
             color = focused ? '#b7b4df' : 'gray';
-          } else if (route.name === 'FavoriteSongs') {
+          } else if (route.name === 'PostList') {
             iconName = focused ? 'headset' : 'headset-outline';
             color = focused ? '#b7b4df' : 'gray';
           }
@@ -62,6 +63,7 @@ const ProfileTabBar = () => {
           return <Ionicons name={iconName} color={color} size={22} />;
         },
       })}>
+      <Tab.Screen name="PostList" component={PostList} />
       <Tab.Screen name="Posts" component={Posts} />
     </Tab.Navigator>
   );

@@ -1,34 +1,25 @@
-import React, {useLayoutEffect, useRef, useState} from 'react';
-import styled from 'styled-components/native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, {useLayoutEffect, useState} from 'react';
 import getPostTime from '../../api/getPostTime';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import {Dimensions} from 'react-native';
 import Swiper from 'react-native-swiper';
+import styled from 'styled-components/native';
 import getSpotifyToken from '../../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
-import Config from 'react-native-config';
+import axios from 'axios';
 import {useSelector} from 'react-redux';
-const {width} = Dimensions.get('window');
+import Config from 'react-native-config';
 
-const RegionCommunity = ({navigation}) => {
-  const BASE_URL = Config.BASE_URL;
-  const {userLocation} = useSelector(state => state.userLocation);
-
-  const [likePress, setLikePress] = useState();
+const PostList = ({navigation}) => {
+  const myUid = useSelector(state => state.kakaoUid);
   const [postData, setPostData] = useState();
+  const BASE_URL = Config.BASE_URL;
 
   const getData = async () => {
-    const value = await AsyncStorage.getItem('userNumber');
     await axios
-      .get(`${BASE_URL}/post/getLocationPostList`, {
+      .get(`${BASE_URL}/post/getMyPost`, {
         params: {
-          key: value,
-          regionDepth1: userLocation.region_1depth_name,
+          key: myUid.kakaoUid,
         },
       })
-
       .then(
         res => {
           console.log('res: ', res.data);
@@ -40,44 +31,19 @@ const RegionCommunity = ({navigation}) => {
       );
   };
 
-  const handleLike = async (seq, like) => {
-    const value = await AsyncStorage.getItem('userNumber');
-    await axios
-      .post(`${BASE_URL}/post/postLike`, {
-        key: value,
-        postSeq: postData[seq - 1].post_seq,
-        check: !like,
-      })
-      .then(
-        res => {
-          console.log('좋아요 수정 성공: ', res.data);
-        },
-        err => {
-          console.log('좋아요 수정하기 실패', err);
-        },
-      );
-  };
   useLayoutEffect(() => {
     getData();
   }, []);
 
   return (
     <Container>
-      <PostList
+      <MyPostList
         data={postData}
         keyExtractor={item => item.post_seq + ''}
         horizontal={false}
         renderItem={({item}) => (
           <Card>
-            <UserInfo
-              onPress={() => {
-                navigation.navigate('Stack', {
-                  screen: 'UserProfile',
-                  params: {
-                    key: item.kakao_user_number,
-                  },
-                });
-              }}>
+            <UserInfo>
               <UserImg source={{uri: item.profileImg}} />
               <UserInfoView>
                 <UserName>{item.nickname}</UserName>
@@ -115,48 +81,6 @@ const RegionCommunity = ({navigation}) => {
             </Swiper>
             <Divider />
             <PostText> {item.input_text}</PostText>
-
-            <InterContainer>
-              <Interaction
-                onPress={async e => {
-                  console.log('e.target', e.target);
-                  const seq = item.post_seq;
-                  setLikePress(prev => !prev);
-                  const like = likePress;
-                  console.log(likePress, seq);
-                  await handleLike(seq, like);
-                }}>
-                {likePress ? (
-                  <Ionicons name="heart" color="red" size={25} />
-                ) : (
-                  <Ionicons name="heart-outline" size={25} />
-                )}
-                <InteractionText> Like ({item.like_count})</InteractionText>
-              </Interaction>
-              <Interaction
-                onPress={() => {
-                  navigation.navigate('Stack', {
-                    screen: 'CommunityPost',
-                    params: {
-                      post_seq: item.post_seq,
-                      kakao_user_id: item.kakao_user_number,
-                      profileImg: item.profileImg,
-                      nickname: item.nickname,
-                      input_text: item.input_text,
-                      like_count: item.like_count,
-                      albumTitle: item.album_title,
-                      albumArtistName: item.album_artist_name,
-                      albumImg: item.album_image,
-                      musicUri: item.music_uri,
-                      commentCount: item.commentCount,
-                      likeNy: item.likeNy,
-                    },
-                  });
-                }}>
-                <Ionicons name="md-chatbubble-outline" size={25} />
-                <InteractionText>Comment ({item.commentCount})</InteractionText>
-              </Interaction>
-            </InterContainer>
           </Card>
         )}
       />
@@ -168,7 +92,7 @@ const Container = styled.View`
   align-items: center;
 `;
 
-const PostList = styled.FlatList`
+const MyPostList = styled.FlatList`
   width: 90%;
 `;
 
@@ -257,4 +181,4 @@ const InteractionText = styled.Text`
   //color: ${props => (props.active ? '#2e64e5' : '#333')};
 `;
 
-export default RegionCommunity;
+export default PostList;
