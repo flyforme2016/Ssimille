@@ -8,6 +8,7 @@ import {Dimensions} from 'react-native';
 import Swiper from 'react-native-swiper';
 import getSpotifyToken from '../../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
+import Config from "react-native-config";
 const {width} = Dimensions.get('window');
 
 const TotalCommunity = ({navigation}) => {
@@ -15,18 +16,19 @@ const TotalCommunity = ({navigation}) => {
 
   const [likePress, setLikePress] = useState();
   const [postData, setPostData] = useState();
+  const apiBaseUrl = Config.API_BASE_URL;
 
   const getData = async () => {
     const value = await AsyncStorage.getItem('userNumber');
     await axios
-      .get('http://192.168.0.124:3000/post/getPostList', {
+      .get(apiBaseUrl+'/post/getPostList', {
         params: {
           key: value,
         },
       })
       .then(
         res => {
-          console.log('res: ', res.data);
+          console.log('postData: ', res.data);
           setPostData(res.data);
         },
         err => {
@@ -38,7 +40,7 @@ const TotalCommunity = ({navigation}) => {
   const handleLike = async (seq, like) => {
     const value = await AsyncStorage.getItem('userNumber');
     await axios
-      .post('http://192.168.0.124:3000/post/postLike', {
+      .post(apiBaseUrl+'/post/postLike', {
         key: value,
         postSeq: postData[seq - 1].post_seq,
         check: !like,

@@ -9,7 +9,7 @@ const SearchMusic = ({navigation, route}) => {
   const spotifyApi = new SpotifyWebApi({
     clientID: '9912bb2704184ec5acea5688b54c459b',
     clientSecret: 'a060b8460dbd4fdd8e045aac32af1d9c',
-    redirectURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
+    redirectURL: 'http://192.168.0.105:3000/spotify/oauth/callback',
   });
   const [searchName, setSearchName] = useState();
   const [data, setData] = useState();

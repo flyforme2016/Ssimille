@@ -3,11 +3,10 @@ import {
   remote as SpotifyRemote,
   ApiScope,
 } from 'react-native-spotify-remote';
+import Config from "react-native-config"
 
-const SpotifyAuthentication = async parameter => {
-  const check = parameter;
+const SpotifyAuthentication = async () => {
   console.log('Enter SpotifyAuthentication Component');
-  console.log('check: ', check);
   const spotifyConfig = {
     clientID: '9912bb2704184ec5acea5688b54c459b',
     clientSecret: 'a060b8460dbd4fdd8e045aac32af1d9c',

@@ -1,12 +1,17 @@
 const getPostTime = date => {
+  console.log('typeof date: ', typeof date)
+  console.log('date: ', date)
   const seconds = 10;
   const minute = seconds * 60;
   const hour = minute * 60;
   const day = hour * 24;
   const postTime = new Date(date);
+  console.log('postTime: ', postTime);
   let postedTime = Math.floor(
     (new Date().getTime() - postTime.getTime()) / 1000,
   );
+  console.log('typeof postedTime: ', typeof postedTime)
+  console.log('postedTime: ', postedTime)
 
   let postTimeText = '';
   if (postedTime < seconds) {

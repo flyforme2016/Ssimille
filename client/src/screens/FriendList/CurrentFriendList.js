@@ -3,11 +3,13 @@ import React, {useEffect, useState, useLayoutEffect} from 'react';
 import styled from 'styled-components/native';
 import {useIsFocused} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+import Config from "react-native-config";
 
 const CurrentFriendList = ({navigation: {navigate}}) => {
   const [friendList, setFriendData] = useState({});
   const isFocused = useIsFocused();
   const myUid = useSelector(state => state.kakaoUid);
+  const apiBaseUrl = Config.API_BASE_URL;
 
   useLayoutEffect(() => {
     getMyFriendList();
@@ -17,7 +19,7 @@ const CurrentFriendList = ({navigation: {navigate}}) => {
       console.log('start getMyFriendList');
       if (myUid.kakaoUid !== null) {
         await axios
-          .get('http://192.168.0.124:3000/friend/getFriendList', {
+          .get(apiBaseUrl+'/friend/getFriendList', {
             params: {
               key: myUid.kakaoUid,
             },

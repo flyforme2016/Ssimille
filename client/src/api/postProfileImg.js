@@ -14,7 +14,7 @@ const postProfileImg = async parameter => {
       },
     };
     await fetch(
-      'http://192.168.0.124:3000/profile/updateProfileImg', //1.upload image API to S3
+      'http://192.168.0.105:3000/profile/updateProfileImg', //1.upload image API to S3
       requestOptions,
     )
       .then(response => response.text())

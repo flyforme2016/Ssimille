@@ -7,18 +7,21 @@ import {remote} from 'react-native-spotify-remote';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PostComments from './PostComments';
+import Config from "react-native-config";
 
 const CommunityPost = ({navigation, route}) => {
   const [comment, setComment] = useState();
   const [data, setData] = useState();
   const postSeq = route.params.post_seq;
+  const apiBaseUrl = Config.API_BASE_URL;
+
   useLayoutEffect(() => {
     getComment();
   }, []);
   const getComment = async () => {
     try {
       await axios
-        .get('http://192.168.0.124:3000/post/getPostComments', {
+        .get(apiBaseUrl+'/post/getPostComments', {
           params: {
             postSeq: postSeq,
           },
@@ -41,7 +44,7 @@ const CommunityPost = ({navigation, route}) => {
     const value = await AsyncStorage.getItem('userNumber');
     try {
       await axios
-        .post('http://192.168.0.124:3000/post/inputPostComment', {
+        .post(apiBaseUrl+'/post/inputPostComment', {
           key: value,
           postSeq: postSeq,
           parent: 2,

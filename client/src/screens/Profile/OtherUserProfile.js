@@ -2,16 +2,18 @@ import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import ProfileTabBar from './ProfileTapBar';
-
 import CustomButton from '../../components/CustomButtons';
-const Profile = ({navigation, route}) => {
+import Config from "react-native-config"
+
+const OtherUserProfile = ({navigation, route}) => {
   const [otherUserData, setOhterUserData] = useState({});
+  const apiBaseUrl = Config.API_BASE_URL;
   const getOtherUserProfile = async () => {
     try {
       const otherUserUid = route.params.otherUid;
       if (otherUserUid !== null) {
         await axios
-          .get('http://192.168.0.124:3000/profile/getUserProfile', {
+          .get(apiBaseUrl+'/profile/getUserProfile', {
             params: {
               key: otherUserUid,
             },
@@ -167,4 +169,4 @@ const ProfileText3 = styled.Text`
   bottom: 120px;
 `;
 
-export default Profile;
+export default OtherUserProfile;

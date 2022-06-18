@@ -4,7 +4,31 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 Complete login process and chatting" />
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 Complete login process and chatting">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/actions/ActionTypes.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/actions/ActionTypes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/actions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/actions/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/api/getPostTime.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/api/getPostTime.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/api/postProfileImg.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/api/postProfileImg.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/CommunityPost.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/CommunityPost.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/FavoriteSongs.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/FavoriteSongs.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/SearchMusic.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SearchMusic.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/reducers/rootReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/reducers/rootReducer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/reducers/updateProfileImgReducer.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/FriendList/CurrentFriendList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/FriendList/CurrentFriendList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Home/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/Profile.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,7 +40,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="gijeonLoginChatting" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />

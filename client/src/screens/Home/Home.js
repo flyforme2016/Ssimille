@@ -4,8 +4,8 @@ import {ActivityIndicator, RefreshControl} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Config from "react-native-config";
 import SpotifyTab from '../../components/SpotifyTab';
-import Swiper from 'react-native-swiper';
 import axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
@@ -15,6 +15,7 @@ const Home = ({navigation: {navigate}}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const myUid = useSelector(state => state.kakaoUid);
+  const apiBaseUrl = Config.API_BASE_URL;
 
   useLayoutEffect(() => {
     getProfileElment();
@@ -25,7 +26,7 @@ const Home = ({navigation: {navigate}}) => {
       if (myUid !== null) {
         console.log('myUid: ', myUid.kakaoUid);
         await axios
-          .get('http://192.168.0.124:3000/profile/getUserProfile', {
+          .get(apiBaseUrl + '/profile/getUserProfile', {
             params: {
               key: myUid.kakaoUid,
             },

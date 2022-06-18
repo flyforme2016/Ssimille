@@ -5,11 +5,13 @@ import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import getSpotifyToken from '../../api/getSpotifyToken';
+import Config from "react-native-config";
 
 const CommunityUpload = ({navigation, route}) => {
   const [uploadImgs, setUploadImgs] = useState([]);
   const [postContent, setPostContent] = useState();
   let submitImgs = Array(5).fill(null);
+  const apiBaseUrl = Config.API_BASE_URL;
 
   const handleImgUpload = async () => {
     try {
@@ -45,7 +47,7 @@ const CommunityUpload = ({navigation, route}) => {
       };
       const result = await (
         await fetch(
-          'http://192.168.0.124:3000/s3/uploadMultipleImg',
+          apiBaseUrl+'/s3/uploadMultipleImg',
           requestOptions,
         )
       ).json();
@@ -64,7 +66,7 @@ const CommunityUpload = ({navigation, route}) => {
     const value = await AsyncStorage.getItem('userNumber');
     try {
       await axios
-        .post('http://192.168.0.124:3000/post/uploadPost', {
+        .post(apiBaseUrl+'/post/uploadPost', {
           key: value,
           locationDepth1: '인천광역시',
           engLocationDepth1: 'incheon',
