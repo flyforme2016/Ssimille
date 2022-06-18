@@ -4,29 +4,31 @@ import {ActivityIndicator, RefreshControl} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Config from "react-native-config";
 import SpotifyTab from '../../components/SpotifyTab';
 import axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
+import Config from 'react-native-config';
 
 const Home = ({navigation: {navigate}}) => {
+  const BASE_URL = Config.BASE_URL;
+
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const myUid = useSelector(state => state.kakaoUid);
-  const apiBaseUrl = Config.API_BASE_URL;
 
   useLayoutEffect(() => {
     getProfileElment();
   }, []);
+
   const getProfileElment = async () => {
     try {
       console.log('start getProfileElement');
       if (myUid !== null) {
         console.log('myUid: ', myUid.kakaoUid);
         await axios
-          .get(apiBaseUrl + '/profile/getUserProfile', {
+          .get(`${BASE_URL}/profile/getUserProfile`, {
             params: {
               key: myUid.kakaoUid,
             },
@@ -79,12 +81,7 @@ const Home = ({navigation: {navigate}}) => {
             <Text>MY ZONE</Text>
           </Btn>
         </MyzoneContainer>
-        <Btn
-          onPress={async () => {
-            console.log(await AsyncStorage.getItem('userNumber'));
-          }}>
-          <Text>usertoken</Text>
-        </Btn>
+
         <RecommendText>음악 추천</RecommendText>
         <AlbumRecommendContainer>
           <AlbumContainer>
@@ -93,44 +90,11 @@ const Home = ({navigation: {navigate}}) => {
             <AlBumInfo>artist</AlBumInfo>
           </AlbumContainer>
         </AlbumRecommendContainer>
-
-        {/* <Swiper height={300} loadMinimal={true} showsButtons={true}>
-          <ImageContainer>
-            <PostImg source={require('../../assets/sample/2.jpg')} />
-          </ImageContainer>
-
-          <AlbumImgBtn
-            onPress={() => {
-              console.log('swiper clicked');
-            }}>
-            <SelectedMusic>노래제목- 노래이름</SelectedMusic>
-            <PostImg source={require('../../assets/sample/2.jpg')} />
-          </AlbumImgBtn>
-        </Swiper> */}
       </Container>
       <SpotifyTab />
     </>
   );
 };
-
-const SelectedMusic = styled.Text`
-  font-size: 14px;
-`;
-
-const ImageContainer = styled.View`
-  justify-content: center;
-  align-items: center;
-`;
-
-const PostImg = styled.Image`
-  width: 250;
-  height: 250;
-  margin: 5px;
-`;
-const AlbumImgBtn = styled.TouchableOpacity`
-  justify-content: center;
-  align-items: center;
-`;
 
 ///
 const Loader = styled.View`

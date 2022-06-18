@@ -26,3 +26,9 @@ exports.saveUserProfileAction = parameter => {
     payload: parameter,
   };
 };
+exports.saveUserLocation = parameter => {
+  return {
+    type: types.SAVE_USER_LOCATION,
+    payload: parameter,
+  };
+};

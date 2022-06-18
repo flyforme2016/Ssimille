@@ -3,24 +3,25 @@ import styled from 'styled-components/native';
 import axios from 'axios';
 import ProfileTabBar from './ProfileTapBar';
 import CustomButton from '../../components/CustomButtons';
-import Config from "react-native-config"
+import Config from 'react-native-config';
 
-const OtherUserProfile = ({navigation, route}) => {
-  const [otherUserData, setOhterUserData] = useState({});
-  const apiBaseUrl = Config.API_BASE_URL;
+const Profile = ({navigation, route}) => {
+  const [otherUserData, setOtherUserData] = useState({});
+  const BASE_URL = Config.BASE_URL;
+
   const getOtherUserProfile = async () => {
     try {
       const otherUserUid = route.params.otherUid;
       if (otherUserUid !== null) {
         await axios
-          .get(apiBaseUrl+'/profile/getUserProfile', {
+          .get(`${BASE_URL}/profile/getUserProfile`, {
             params: {
               key: otherUserUid,
             },
           })
           .then(res => {
             console.log('ress: ', res.data);
-            setOhterUserData(res.data);       //서버에게 받아온 otherUserProfileData
+            setOtherUserData(res.data);       //서버에게 받아온 otherUserProfileData
           });
       }
     } catch (error) {
@@ -72,7 +73,11 @@ const OtherUserProfile = ({navigation, route}) => {
           onPress={() => {
             navigation.navigate('Stack', {
               screen: 'OneByOneChating',
-              params: {otherUid: route.params.otherUid, otherProfleImg: otherUserData.profile_image, otherNickname: otherUserData.nickname},
+              params: {
+                otherUid: route.params.otherUid,
+                otherProfleImg: otherUserData.profile_image,
+                otherNickname: otherUserData.nickname,
+              },
             });
           }}
         />
@@ -169,4 +174,4 @@ const ProfileText3 = styled.Text`
   bottom: 120px;
 `;
 
-export default OtherUserProfile;
+export default Profile;

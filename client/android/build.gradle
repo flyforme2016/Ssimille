@@ -39,5 +39,10 @@ allprojects {
         google()
         maven { url 'https://www.jitpack.io' }
         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
+         jcenter()
+        // 네이버 지도 저장소
+        maven {
+            url 'https://naver.jfrog.io/artifactory/maven/'
+        }
     }
 }

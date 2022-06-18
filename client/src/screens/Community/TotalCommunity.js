@@ -8,20 +8,26 @@ import {Dimensions} from 'react-native';
 import Swiper from 'react-native-swiper';
 import getSpotifyToken from '../../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
-import Config from "react-native-config";
+import Config from 'react-native-config';
 const {width} = Dimensions.get('window');
 
 const TotalCommunity = ({navigation}) => {
-  // const setLike = useRef();
+  const BASE_URL = Config.BASE_URL;
 
   const [likePress, setLikePress] = useState();
   const [postData, setPostData] = useState();
-  const apiBaseUrl = Config.API_BASE_URL;
-
+  const postImages = [
+    postData.image1,
+    postData.image2,
+    postData.image3,
+    postData.image4,
+    postData.image5,
+  ].filter(image => image !== null);
+  console.log(postImages);
   const getData = async () => {
     const value = await AsyncStorage.getItem('userNumber');
     await axios
-      .get(apiBaseUrl+'/post/getPostList', {
+      .get(`${BASE_URL}/post/getPostList`, {
         params: {
           key: value,
         },
@@ -40,7 +46,7 @@ const TotalCommunity = ({navigation}) => {
   const handleLike = async (seq, like) => {
     const value = await AsyncStorage.getItem('userNumber');
     await axios
-      .post(apiBaseUrl+'/post/postLike', {
+      .post(`${BASE_URL}/post/postLike`, {
         key: value,
         postSeq: postData[seq - 1].post_seq,
         check: !like,
@@ -94,21 +100,15 @@ const TotalCommunity = ({navigation}) => {
                 </SelectedMusic>
                 <PostImg resizeMode="cover" source={{uri: item.album_image}} />
               </AlbumImgBtn>
-              <ImageContainer>
-                <PostImg resizeMode="cover" source={{uri: item.image1}} />
-              </ImageContainer>
-              <ImageContainer>
-                <PostImg resizeMode="cover" source={{uri: item.image2}} />
-              </ImageContainer>
-              <ImageContainer>
-                <PostImg resizeMode="cover" source={{uri: item.image3}} />
-              </ImageContainer>
-              <ImageContainer>
-                <PostImg resizeMode="cover" source={{uri: item.image4}} />
-              </ImageContainer>
-              <ImageContainer>
-                <PostImg resizeMode="cover" source={{uri: item.image5}} />
-              </ImageContainer>
+              {postImages
+                ? postImages.map(data => (
+                    <>
+                      <ImageContainer>
+                        <PostImg resizeMode="cover" source={{uri: data}} />
+                      </ImageContainer>
+                    </>
+                  ))
+                : null}
             </Swiper>
             <Divider />
             <PostText> {item.input_text}</PostText>

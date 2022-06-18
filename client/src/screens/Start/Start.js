@@ -12,12 +12,10 @@ import {OnboardingDatas} from '../../datas';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import styled from 'styled-components/native';
 
-const Onboarding = ({navigation: {navigate}, route}) => {
-  console.log('Enter onboarding')
+const Onboarding = ({navigation: {navigate, replace}}) => {
   const flatlistRef = useRef();
   const [currentPage, setCurrentPage] = useState(0);
   const [viewableItems, setViewableItems] = useState([]);
-  console.log('route: ', route);
 
   const handleViewableItemsChanged = useRef(({viewableItems}) => {
     setViewableItems(viewableItems);
@@ -117,7 +115,7 @@ const Onboarding = ({navigation: {navigate}, route}) => {
             // Get Started Button
             <Getstart
               onPress={() => {
-                navigate('TabBar', {screen: 'Home'});
+                replace('TabBar', {screen: 'Home'});
               }}>
               <NavText>Get Started</NavText>
               <AntDesignIcons

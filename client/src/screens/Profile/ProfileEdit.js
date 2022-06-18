@@ -7,7 +7,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import axios from 'axios';
 import {HashTagIds} from '../../datas';
 import getSpotifyToken from '../../api/getSpotifyToken';
-import Config from "react-native-config"
+import Config from 'react-native-config';
 
 const ProfileEdit = ({navigation, route}) => {
   const myUid = useSelector(state => state.kakaoUid);
@@ -15,8 +15,7 @@ const ProfileEdit = ({navigation, route}) => {
   const {profileImg} = useSelector(state => state.uploadProfileImg);
   const [idx, setIdx] = useState(route.params.hashTag);
   const [changeName, setChangeName] = useState();
-  const apiBaseUrl = Config.API_BASE_URL;
-  console.log(idx);
+  const BASE_URL = Config.BASE_URL;
 
   //프로필 사진 변경 함수(=사진가져오기)
   const getProfileImage = async () => {
@@ -46,22 +45,11 @@ const ProfileEdit = ({navigation, route}) => {
         name: profileImg.fileName,
       });
       console.log('formdata: ', formdata);
-      // const requestOptions = {
-      //   method: 'POST',
-      //   body: formdata,
-      //   redirect: 'follow',
-      // };
 
-      // const result = (await fetch(
-      //   'http://192.168.0.124:3000/s3/uploadProfileImg',
-      //   requestOptions,
-      // )).json()
-      // console.log('result.imgUrl: ', result.imgUrl)
-      
       const result = await (
         await RNFetchBlob.fetch(
           'POST',
-          apiBaseUrl+'/s3/uploadProfileImg',
+          `${BASE_URL}/s3/uploadProfileImg`,
           {
             'Content-Type': 'multipart/form-data',
           },
@@ -76,7 +64,7 @@ const ProfileEdit = ({navigation, route}) => {
       ).json();
 
       await axios
-        .post(apiBaseUrl+'/profile/editProfile', {
+        .post(`${BASE_URL}/profile/editProfile`, {
           key: myUid.kakaoUid,
           nickname: changeName,
           profileImg: result.imgUrl,

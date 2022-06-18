@@ -5,13 +5,18 @@ import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import getSpotifyToken from '../../api/getSpotifyToken';
-import Config from "react-native-config";
+import {useSelector} from 'react-redux';
+import Config from 'react-native-config';
 
 const CommunityUpload = ({navigation, route}) => {
+  const BASE_URL = Config.BASE_URL;
+
+  const {userLocation} = useSelector(state => state.userLocation);
   const [uploadImgs, setUploadImgs] = useState([]);
   const [postContent, setPostContent] = useState();
+  console.log({userLocation});
+
   let submitImgs = Array(5).fill(null);
-  const apiBaseUrl = Config.API_BASE_URL;
 
   const handleImgUpload = async () => {
     try {
@@ -22,7 +27,6 @@ const CommunityUpload = ({navigation, route}) => {
         isCrop: true,
         isCropCircle: true,
       });
-      console.log('response: ', response);
       setUploadImgs(response);
     } catch (e) {
       console.log(e.code, e.message);
@@ -46,10 +50,7 @@ const CommunityUpload = ({navigation, route}) => {
         redirect: 'follow',
       };
       const result = await (
-        await fetch(
-          apiBaseUrl+'/s3/uploadMultipleImg',
-          requestOptions,
-        )
+        await fetch(`${BASE_URL}/s3/uploadMultipleImg`, requestOptions)
       ).json();
       result.map(data => {
         submitImgs.shift();
@@ -66,10 +67,10 @@ const CommunityUpload = ({navigation, route}) => {
     const value = await AsyncStorage.getItem('userNumber');
     try {
       await axios
-        .post(apiBaseUrl+'/post/uploadPost', {
+        .post(`${BASE_URL}/post/uploadPost`, {
           key: value,
-          locationDepth1: '인천광역시',
-          engLocationDepth1: 'incheon',
+          regionDepth1: userLocation.region_1depth_name,
+          addressName: userLocation.address_name,
           musicUri: route.params.musicUri,
           albumTitle: route.params.albumTitle,
           albumImg: route.params.albumImg,
