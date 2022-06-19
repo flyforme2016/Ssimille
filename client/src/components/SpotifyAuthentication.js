@@ -3,7 +3,6 @@ import {
   remote as SpotifyRemote,
   ApiScope,
 } from 'react-native-spotify-remote';
-import Config from "react-native-config"
 
 const SpotifyAuthentication = async () => {
   console.log('Enter SpotifyAuthentication Component');
@@ -16,6 +15,7 @@ const SpotifyAuthentication = async () => {
     scopes: [ApiScope.AppRemoteControlScope, ApiScope.UserFollowReadScope],
   };
   const session = await SpotifyAuth.authorize(spotifyConfig);
+  console.log('You should make sure that you receive spotifyToken: ', session.accessToken)
   return session.accessToken;
 };
 

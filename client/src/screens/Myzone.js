@@ -33,6 +33,7 @@ const Myzone = () => {
       console.log('권한얻기 실패 :', granted);
     }
   };
+
   // 현재위치를 행정동으로 바꿔주는 함수
   const getLocationName = async () => {
     await getCurrentLocation();
@@ -54,7 +55,10 @@ const Myzone = () => {
     }
   };
   useLayoutEffect(() => {
-    getLocationName();
+    const location = async () => {
+      await getLocationName();
+    };
+    location();
   }, []);
 
   return (

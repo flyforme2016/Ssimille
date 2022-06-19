@@ -16,14 +16,6 @@ const TotalCommunity = ({navigation}) => {
 
   const [likePress, setLikePress] = useState();
   const [postData, setPostData] = useState();
-  const postImages = [
-    postData.image1,
-    postData.image2,
-    postData.image3,
-    postData.image4,
-    postData.image5,
-  ].filter(image => image !== null);
-  console.log(postImages);
   const getData = async () => {
     const value = await AsyncStorage.getItem('userNumber');
     await axios
@@ -100,15 +92,21 @@ const TotalCommunity = ({navigation}) => {
                 </SelectedMusic>
                 <PostImg resizeMode="cover" source={{uri: item.album_image}} />
               </AlbumImgBtn>
-              {postImages
-                ? postImages.map(data => (
-                    <>
-                      <ImageContainer>
-                        <PostImg resizeMode="cover" source={{uri: data}} />
-                      </ImageContainer>
-                    </>
-                  ))
-                : null}
+              <ImageContainer>
+                <PostImg resizeMode="cover" source={{uri: item.image1}} />
+              </ImageContainer>
+              <ImageContainer>
+                <PostImg resizeMode="cover" source={{uri: item.image2}} />
+              </ImageContainer>
+              <ImageContainer>
+                <PostImg resizeMode="cover" source={{uri: item.image3}} />
+              </ImageContainer>
+              <ImageContainer>
+                <PostImg resizeMode="cover" source={{uri: item.image4}} />
+              </ImageContainer>
+              <ImageContainer>
+                <PostImg resizeMode="cover" source={{uri: item.image5}} />
+              </ImageContainer>
             </Swiper>
             <Divider />
             <PostText> {item.input_text}</PostText>

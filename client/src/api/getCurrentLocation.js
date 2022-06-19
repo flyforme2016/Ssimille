@@ -15,7 +15,7 @@ export const getCurrentLocation = async () => {
         return position.coords;
       },
       error => {
-        console.log(error.message);
+        console.log('error: ', error, error.message);
       },
       {enableHighAccuracy: true, timeout: 15000},
     ).catch(err => console.log('위치정보 얻기 실패 :', err));

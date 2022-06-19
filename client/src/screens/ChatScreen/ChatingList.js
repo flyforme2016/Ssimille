@@ -25,6 +25,7 @@ import {
 import {database} from '../../config/firebase';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
+import getChatListTime from '../../api/getChatListTime';
 // import {useSelector} from 'react-redux';
 
 const ChatingList = ({navigation: {navigate, push}}) => {
@@ -46,7 +47,7 @@ const ChatingList = ({navigation: {navigate, push}}) => {
         setMessages(
           querySnapshot.docs.map(doc => ({
             _id: doc.data()._id,
-            createdAt: doc.data().createdAt.toDate().toString(),
+            createdAt: getChatListTime(doc.data().createdAt.toDate().toISOString()),
             text: doc.data().text,
             user: doc.data().setDocUserObj,
           })),
