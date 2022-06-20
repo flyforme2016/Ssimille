@@ -9,6 +9,8 @@ import Swiper from 'react-native-swiper';
 import getSpotifyToken from '../../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
 import Config from 'react-native-config';
+import {useSelector} from 'react-redux';
+import checkIsFriend from '../../api/checkIsFriend';
 const {width} = Dimensions.get('window');
 
 const TotalCommunity = ({navigation}) => {
@@ -16,12 +18,14 @@ const TotalCommunity = ({navigation}) => {
 
   const [likePress, setLikePress] = useState();
   const [postData, setPostData] = useState();
+  const myUid = useSelector(state => state.kakaoUid);
+  console.log('myUid in TotalCommunity', myUid);
+
   const getData = async () => {
-    const value = await AsyncStorage.getItem('userNumber');
     await axios
       .get(`${BASE_URL}/post/getPostList`, {
         params: {
-          key: value,
+          key: myUid,
         },
       })
       .then(
@@ -65,13 +69,20 @@ const TotalCommunity = ({navigation}) => {
         renderItem={({item}) => (
           <Card>
             <UserInfo
-              onPress={() => {
-                navigation.navigate('Stack', {
-                  screen: 'UserProfile',
-                  params: {
-                    key: item.kakao_user_number,
-                  },
-                });
+              onPress={ async () => {
+                const flag = await checkIsFriend(myUid, item.kakao_user_number)
+                console.log('flag: ', flag)
+                if(flag === -1 ){
+                  navigation.navigate('TabBar', {screen:'MyProfile'})
+                }else{
+                  navigation.navigate('Stack', {
+                    screen: 'OtherUserProfile',
+                    params: {
+                      otherUid: item.kakao_user_number,
+                      isFriend: flag,
+                    },
+                  });
+                }
               }}>
               <UserImg source={{uri: item.profileImg}} />
               <UserInfoView>

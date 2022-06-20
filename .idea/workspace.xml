@@ -6,13 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 semi final">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/api/getCurrentLocation.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/api/getCurrentLocation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/api/getPostTime.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/api/getPostTime.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Myzone.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Myzone.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +53,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="7612c69c-f1f6-435c-a79e-2f9fbe5e7c8d" name="Default Changelist" comment="" />
+      <changelist id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 semi final" />
       <created>1648104694742</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
