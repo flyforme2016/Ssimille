@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 semi final">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.20 gijeong checkIsFriend" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,7 +16,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="gijeonLoginChatting" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -43,7 +41,7 @@
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="Android Studio default JDK" />
-    <property name="last_opened_file_path" value="$USER_HOME$/StudioProjects/MUF" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Ssimille" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.24108241" />
@@ -94,7 +92,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655559428108</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="06.20 gijeong checkIsFriend">
+      <created>1655729086155</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1655729086157</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -115,6 +120,7 @@
     <MESSAGE value="06.16 Complete login process and chatting" />
     <MESSAGE value="06.17 Complete login process and chatting" />
     <MESSAGE value="06.17 semi final" />
-    <option name="LAST_COMMIT_MESSAGE" value="06.17 semi final" />
+    <MESSAGE value="06.20 gijeong checkIsFriend" />
+    <option name="LAST_COMMIT_MESSAGE" value="06.20 gijeong checkIsFriend" />
   </component>
 </project>
