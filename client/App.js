@@ -12,6 +12,7 @@ import store from './src/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 LogBox.ignoreLogs(['Expected', 'Warning: ']);
+LogBox.ignoreLogs(['EventEmitter.removeListener'])
 LogBox.ignoreAllLogs(true);
 
 const App = () => {

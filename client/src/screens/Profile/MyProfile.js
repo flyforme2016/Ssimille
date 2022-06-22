@@ -4,8 +4,6 @@ import ProfileTabBar from './ProfileTapBar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
-import {remote} from 'react-native-spotify-remote';
-import getSpotifyToken from '../../api/getSpotifyToken';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
 
 const Profile = ({navigation}) => {

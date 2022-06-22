@@ -4,7 +4,28 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.20 gijeong checkIsFriend" />
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.20 gijeong checkIsFriend">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/api/getChatListTime.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/api/getPostTime.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/api/getSpotifyToken.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/api/postProfileImg.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/CommunityPost.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/CommunityPost.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/FavoriteSongs.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/FavoriteSongs.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/config/firebase.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/config/firebase.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/datas.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/navigation/TabBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/TabBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/RegionCommunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/RegionCommunity.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/PostList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/PostList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/ProfileEdit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Start/Start.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Start/Start.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,7 +62,7 @@
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="Android Studio default JDK" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Ssimille" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.24108241" />
@@ -99,7 +120,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655729086157</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="06.20 gijeong checkIsFriend">
+      <created>1655729120324</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1655729120324</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

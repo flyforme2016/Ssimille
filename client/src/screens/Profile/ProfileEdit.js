@@ -5,8 +5,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
 import RNFetchBlob from 'rn-fetch-blob';
 import axios from 'axios';
-import {HashTagIds} from '../../datas';
-import getSpotifyToken from '../../api/getSpotifyToken';
+import {HashTagIds} from '../../const/datas';
 import Config from 'react-native-config';
 
 const ProfileEdit = ({navigation, route}) => {
@@ -123,7 +122,6 @@ const ProfileEdit = ({navigation, route}) => {
             <ProfileMusicBtn
               onPress={async () => {
                 console.log('clicked');
-                await getSpotifyToken();
                 navigation.navigate('Stack', {
                   screen: 'SearchMusic',
                   params: {

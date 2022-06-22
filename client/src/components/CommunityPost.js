@@ -1,9 +1,6 @@
 import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
-import Swiper from 'react-native-swiper';
-import getSpotifyToken from '../api/getSpotifyToken';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {remote} from 'react-native-spotify-remote';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PostComments from './PostComments';

@@ -1,8 +1,7 @@
 import React, {useLayoutEffect, useState} from 'react';
-import getPostTime from '../../api/getPostTime';
+import getPostTime from '../../functions/getPostTime'
 import Swiper from 'react-native-swiper';
 import styled from 'styled-components/native';
-import getSpotifyToken from '../../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
@@ -55,7 +54,6 @@ const PostList = ({navigation}) => {
             <Swiper height={200} loadMinimal={true} showsButtons={true} loop>
               <AlbumImgBtn
                 onPress={async () => {
-                  await getSpotifyToken();
                   await remote.playUri(item.music_uri);
                 }}>
                 <SelectedMusic>

@@ -4,7 +4,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import getSpotifyToken from '../../api/getSpotifyToken';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
 

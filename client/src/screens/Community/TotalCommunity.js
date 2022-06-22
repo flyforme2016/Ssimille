@@ -1,12 +1,11 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import getPostTime from '../../api/getPostTime';
+import getPostTime from '../../functions/getPostTime'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {Dimensions} from 'react-native';
 import Swiper from 'react-native-swiper';
-import getSpotifyToken from '../../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
 import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
@@ -95,7 +94,6 @@ const TotalCommunity = ({navigation}) => {
             <Swiper height={200} loadMinimal={true} showsButtons={true} loop>
               <AlbumImgBtn
                 onPress={async () => {
-                  await getSpotifyToken();
                   await remote.playUri(item.music_uri);
                 }}>
                 <SelectedMusic>

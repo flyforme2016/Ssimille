@@ -1,16 +1,15 @@
-import React, {useState, useLayoutEffect, useCallback} from 'react';
+import React, {useState, useLayoutEffect, useCallback, useEffect} from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {
-  collection,
   addDoc,
   setDoc,
+  getDoc,
   orderBy,
   query,
   onSnapshot,
-  doc,
 } from 'firebase/firestore';
-import {database} from '../../config/firebase';
 import {useSelector} from 'react-redux';
+import getRef from '../../functions/getRef'
 
 export default function Chat({route}) {
   const otherUid = route.params.otherUid;
@@ -18,24 +17,45 @@ export default function Chat({route}) {
   const otherNickname = route.params.otherNickname;
   const otherProfleImg = route.params.otherProfleImg;
   const [messages, setMessages] = useState([]);
+  const [otherUnReadMessageCount, setOtherUnreadMessageCount] = useState(0);
   const myData = useSelector(state => state.myProfile);
   const myUid = myData.myProfileData.kakao_user_number.toString();
-  console.log('OtherUid: ', stringOtherUid)
-  console.log('otherNickname', otherNickname)
-  console.log('otherProfleImg', otherProfleImg)
-  //useLayoutEffect vs useEffect
-  //useLayoutEffect : 화면이 그려지기 전에 Dom 관련 데이터를 먼저 동기적으로 처리해줌
+
+  const myChatsRef = getRef.chatsRef(myUid, stringOtherUid)
+  const myUnReadMessageRef = getRef.unReadMessageRef(myUid, stringOtherUid)
+
+  const otherChatsRef = getRef.chatsRef(stringOtherUid, myUid); //상대방과의 대화에서 상대방쪽 읽지 않은 메세지 update
+  const otherUnreadMessageRef = getRef.unReadMessageRef(stringOtherUid, myUid);
+
+  const myChatListRef = getRef.chatListRef(myUid, stringOtherUid) //my chatList update
+
+  const otherChatListRef = getRef.chatListRef(stringOtherUid, myUid) //other chatList update
+
   useLayoutEffect(() => {
     const getChattingLog = async () => {
       console.log('start getChattingLog');
       //firestore DB에서 채팅 데이터 get -> setMessage로 messages에 할당
-      const collectionRef = collection(database, 'chats');
-      const documentRef = doc(collectionRef, myUid);
-      const realCollectionRef = collection(documentRef, stringOtherUid);
-      const q = query(realCollectionRef, orderBy('createdAt', 'desc')); //'desc' : 내림차순 정렬 -> 채팅 내용을 최신순으로 정렬
+      const myUnreadMessageDocSnap = await getDoc(myUnReadMessageRef) //상대방과의 대화에서 내가 읽지 않은 메세지 count = 0 으로 초기화
+      if(myUnreadMessageDocSnap.exists()){
+        console.log('myUnreadMessageDocSnap.data(): ', myUnreadMessageDocSnap.data())
+        setDoc(myUnReadMessageRef, {
+          count:0
+        })
+      }
 
+      const q = query(myChatsRef, orderBy('createdAt', 'desc')); //'desc' : 내림차순 정렬 -> 채팅 내용을 최신순으로 정렬
       const unsubscribe = onSnapshot(q, querySnapshot => {
-        console.log('querySnapshot unsusbscribe');
+        querySnapshot.docChanges().map(change => {        //실시간으로 대화하는 중에 상대방에게 메세지를 받을 경우에도
+          if(change.type === 'added'){                    //myUnreadMessageCount를 초기화 해주는 것.
+            if(change.doc.data()._id === stringOtherUid){
+              console.log('added other')
+              setDoc(myUnReadMessageRef, {
+                count:0
+              })
+            }
+          }
+        })
+      
         setMessages(
           querySnapshot.docs.map(doc => ({
             _id: doc.data()._id,
@@ -54,46 +74,46 @@ export default function Chat({route}) {
     //messages를 메모리 초기화? 시켜주는 것.
   }, []);
 
+  useEffect(()=>{
+    const setOtherUnReadMessageCount = async()=>{
+      setDoc(otherUnreadMessageRef, {
+        count:otherUnReadMessageCount,
+      })
+    }
+    if(otherUnReadMessageCount){
+      setOtherUnReadMessageCount()
+    }
+  }, [otherUnReadMessageCount])
+
   //메세지 전송 firestore에 저장
   const onSend = useCallback((messages = []) => {
     const getMyUid = async () => {
-      const collectionRef = collection(database, 'chats'); //chats
-      const documentRef = doc(collectionRef, myUid); //myUid
-      const realCollectionRef = collection(documentRef, stringOtherUid); //otherUid
-
-      const collectionRef2 = collection(database, 'chats'); //chats
-      const documentRef2 = doc(collectionRef2, stringOtherUid); //myUid stringOtherUid
-      const realCollectionRef2 = collection(documentRef2, myUid); //otherUid
-
-      const collectionRef3 = collection(database, 'chatList');        //my chatList update
-      const documentRef3 = doc(collectionRef3, myUid);
-      const realCollectionRef3 = collection(documentRef3, 'chatList');
-      const realDocumentRef = doc(realCollectionRef3, stringOtherUid)
-
-      const collectionRef4 = collection(database, 'chatList');        //other chatList update
-      const documentRef4 = doc(collectionRef4, stringOtherUid);
-      const realCollectionRef4 = collection(documentRef4, 'chatList');
-      const realDocumentRef2 = doc(realCollectionRef4, myUid)
+      const otherUnreadMessageDocSnap = await getDoc(otherUnreadMessageRef)
+      if(otherUnreadMessageDocSnap.exists()){
+        setOtherUnreadMessageCount(otherUnreadMessageDocSnap.data().count+1)
+      } else{
+        setOtherUnreadMessageCount(1);
+      }
 
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, messages),
       );
-      // setMessages([...messages, ...messages]);
+
       const {_id, createdAt, text, user} = messages[0];
 
-      addDoc(realCollectionRef, {
+      addDoc(myChatsRef, {
         _id,
         createdAt,
         text,
         user,
       });
-      addDoc(realCollectionRef2, {
+      addDoc(otherChatsRef, {
         _id,
         createdAt,
         text,
         user,
       });
-      setDoc(realDocumentRef, { //my chatList update
+      setDoc(myChatListRef, { //my chatList update
         _id,
         createdAt,
         text,
@@ -103,13 +123,13 @@ export default function Chat({route}) {
           avatar: otherProfleImg,
         },
       })
-      setDoc(realDocumentRef2, {  //other chatList update
+      setDoc(otherChatListRef, {  //other chatList update
         _id,
         createdAt,
         text,
         setDocUserObj : user
       })
-
+    
     };
     getMyUid();
   }, []);

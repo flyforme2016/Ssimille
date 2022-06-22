@@ -1,7 +1,6 @@
 import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import getSpotifyToken from '../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useSelector} from 'react-redux';
@@ -63,7 +62,6 @@ const FavoriteSongs = ({navigation, route}) => {
         <MusicUploadBtn
           onPress={async () => {
             console.log('clicked');
-            await getSpotifyToken();
             navigation.navigate('Stack', {
               screen: 'SearchMusic',
               params: {
@@ -108,7 +106,6 @@ const FavoriteSongs = ({navigation, route}) => {
               </MusicWrapper>
               <MusicControlBtn
                 onPress={async () => {
-                  await getSpotifyToken();
                   await remote.playUri(item.music_uri);
                 }}
                 type="play"
