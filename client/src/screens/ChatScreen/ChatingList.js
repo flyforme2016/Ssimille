@@ -15,7 +15,6 @@ import {
 import styled from 'styled-components/native';
 import {
   collection,
-  getDoc,
   orderBy,
   query,
   onSnapshot,
@@ -27,19 +26,16 @@ import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import getChatListTime from '../../functions/getChatListTime';
 import getMyUnReadMessageCount from '../../functions/getMyUnReadMessageCount';
-import { useIsFocused } from '@react-navigation/native';
 
 const ChatingList = ({navigation}) => {
   const [messages, setMessages] = useState([]);
   const myData = useSelector(state => state.myProfile);
   const myUid = myData.myProfileData.kakao_user_number.toString();
-  const isFocused = useIsFocused();
 
   const chatListCollectionRef = collection(database, 'chatList');
   const chatListDocumentRef = doc(chatListCollectionRef, myUid);
   const chatListFinalCollectionRef = collection(chatListDocumentRef, 'chatList');
   const q = query(chatListFinalCollectionRef, orderBy('createdAt', 'desc'));
-
 
   useLayoutEffect(() => {
     getChatList();

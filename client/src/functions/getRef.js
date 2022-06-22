@@ -1,4 +1,4 @@
-import {collection, addDoc, setDoc, getDoc, orderBy, query, onSnapshot, doc} from 'firebase/firestore';
+import {collection, doc} from 'firebase/firestore';
 import {database} from '../config/firebase';
 
 exports.chatsRef = (uid1, uid2) => {
