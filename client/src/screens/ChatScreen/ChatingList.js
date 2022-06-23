@@ -45,16 +45,18 @@ const ChatingList = ({navigation}) => {
   async function getChatList() {
     console.log('start getChatList');
     const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async doc => {
+    querySnapshot.forEach(doc => {
       console.log('doc.data(): ', doc.data())
-        const initialObject = {
-          _id: doc.data()._id,
-          createdAt: getChatListTime(doc.data().createdAt.toDate().toISOString()),
-          text: doc.data().text,
-          user: doc.data().setDocUserObj,
-          count: await getMyUnReadMessageCount(myUid, doc.data().setDocUserObj._id)
-        }
-        setMessages(prev => [...prev, initialObject])
+    })
+    querySnapshot.forEach( doc => {
+      const initObject = {
+        _id: doc.data()._id,
+        createdAt: getChatListTime(doc.data().createdAt.toDate().toISOString()),
+        text: doc.data().text,
+        user: doc.data().setDocUserObj,
+        stack: doc.data().stack,
+      }
+      setMessages(messages=>[...messages, initObject])
     })
   };
 
@@ -64,6 +66,7 @@ const ChatingList = ({navigation}) => {
     console.log('onSnapshot');
     console.log('messages: ', messages)
     querySnapshot.docChanges().map(change => { //chatList를 갱신할 때 messages 배열에서 modified된 index만 update.
+      console.log('Enter change')
       if(change.type === 'modified'){   //기존 상대에게 메세지가 오는 경우
         console.log('Enter modified: ', messages)               
         messages.map(async(object, index) => {
@@ -71,29 +74,19 @@ const ChatingList = ({navigation}) => {
           console.log('object: ', object)
           if(object.user._id === change.doc.data().setDocUserObj._id){
             console.log('Enter find')
-            const replaceObject = {
+            const changeObject = {
               _id: change.doc.data()._id,
               createdAt: getChatListTime(change.doc.data().createdAt.toDate().toISOString()),
               text: change.doc.data().text,
               user: change.doc.data().setDocUserObj,
-              count: await getMyUnReadMessageCount(myUid, change.doc.data().setDocUserObj._id)
+              stack: change.doc.data().stack
             }
             let replaceMessages = [...messages]
-            replaceMessages[index] = replaceObject
+            replaceMessages[index] = changeObject
             setMessages(replaceMessages)
           }
         })
       }
-      else if(change.type === 'added'){async () => {  //새로운 상대에게 메세지가 오는 경우
-        const addObject = {
-          _id: change.doc.data()._id,
-          createdAt: getChatListTime(change.doc.data().createdAt.toDate().toISOString()),
-          text: change.doc.data().text,
-          user: change.doc.data().setDocUserObj,
-          count: await getMyUnReadMessageCount(myUid, change.doc.data().setDocUserObj._id)
-        }
-        setMessages(prev => [...prev, addObject])
-      }}
     })
   });
 
@@ -128,8 +121,8 @@ const ChatingList = ({navigation}) => {
                   <UserInfoText>
                     <MessageText>{item.text}</MessageText>
                       {
-                        item.count===0 ? (<Text></Text>):
-                        (<Text>{item.count}</Text>)
+                        item.stack===0 ? (<Text></Text>):
+                        (<Text>{item.stack}</Text>)
                       }
                   </UserInfoText>
                 </TextSection>
