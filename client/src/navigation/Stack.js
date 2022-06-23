@@ -12,7 +12,6 @@ import SpotifyAuthentication from '../components/SpotifyAuthentication';
 import OtherUserProfile from '../screens/Profile/OtherUserProfile';
 import Onboarding from '../screens/Start/Start';
 import FavoriteSongs from '../components/FavoriteSongs';
-import PostList from '../screens/Profile/PostList';
 
 const NativeStack = createNativeStackNavigator();
 
@@ -41,7 +40,6 @@ const Stack = () => {
       />
       <NativeStack.Screen name="Onboarding" component={Onboarding} />
       <NativeStack.Screen name="FavoriteSongs" component={FavoriteSongs} />
-      <NativeStack.Screen name="PostList" component={PostList} />
     </NativeStack.Navigator>
   );
 };

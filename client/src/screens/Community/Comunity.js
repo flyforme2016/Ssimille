@@ -1,17 +1,17 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommunityTabBar from './CommunityTabBar';
 import SpotifyTab from '../../components/SpotifyTab';
+import {useIsFocused} from '@react-navigation/native';
 
-const Community = ({navigation: {navigate}}) => {
+const Community = ({navigation: {push}}) => {
   return (
     <>
       <Container>
         <NavBar>
           <NavText>Community</NavText>
-          <UploadBtn
-            onPress={() => navigate('Stack', {screen: 'CommunityUpload'})}>
+          <UploadBtn onPress={() => push('Stack', {screen: 'CommunityUpload'})}>
             <Ionicons name="duplicate" size={35} color="#b7b4df" />
           </UploadBtn>
         </NavBar>

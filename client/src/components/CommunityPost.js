@@ -1,16 +1,20 @@
 import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import Swiper from 'react-native-swiper';
-import getSpotifyToken from '../api/getSpotifyToken';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {remote} from 'react-native-spotify-remote';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PostComments from './PostComments';
-import Config from "react-native-config";
+import Config from 'react-native-config';
+import checkIsFriend from '../api/checkIsFriend';
+import {useSelector} from 'react-redux';
+import getPostTime from '../api/getPostTime';
+import {Alert} from 'react-native';
 
 const CommunityPost = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
+  const {kakaoUid} = useSelector(state => state.kakaoUid);
 
   const [comment, setComment] = useState();
   const [data, setData] = useState();
@@ -61,24 +65,71 @@ const CommunityPost = ({navigation, route}) => {
       err => console.log(err);
     }
   };
+  const deletePost = async seq => {
+    await axios
+      .get(`${BASE_URL}/post/deletePost`, {
+        params: {
+          postSeq: seq,
+        },
+      })
+      .then(
+        res => {
+          console.log('게시글 삭제 성공: ', res.data);
+        },
+        err => {
+          console.log('삭제 실패', err);
+        },
+      );
+  };
   return (
     <Container>
       <Card>
-        <UserInfo
-          onPress={() => {
-            navigation.navigate('Stack', {
-              screen: 'UserProfile',
-              params: {
-                //값 확인
-                key: route.params.kakao_user_id,
-              },
-            });
-          }}>
-          <UserImg source={{uri: route.params.profileImg}} />
-          <UserInfoView>
-            <UserName>{route.params.nickname}</UserName>
-          </UserInfoView>
-        </UserInfo>
+        <UserWrapper>
+          <UserInfo
+            onPress={async () => {
+              const flag = await checkIsFriend(
+                kakaoUid,
+                route.params.kakao_user_number,
+              );
+              console.log('flag: ', flag);
+              if (flag === -1) {
+                navigation.navigate('TabBar', {screen: 'MyProfile'});
+              } else {
+                navigation.navigate('Stack', {
+                  screen: 'OtherUserProfile',
+                  params: {
+                    otherUid: route.params.kakao_user_number,
+                    isFriend: flag,
+                  },
+                });
+              }
+            }}>
+            <UserImg source={{uri: route.params.profileImg}} />
+            <UserInfoView>
+              <UserName>{route.params.nickname}</UserName>
+              <PostTime>{getPostTime(route.params.reg_time)}</PostTime>
+            </UserInfoView>
+          </UserInfo>
+          {kakaoUid === route.params.kakao_user_number + '' ? (
+            <Ionicons
+              onPress={async () => {
+                Alert.alert('게시글 삭제', '게시글을 삭제하시겠습니까?', [
+                  {text: 'Cancel'},
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      deletePost(route.params.post_seq);
+                      // 프로필 or 전체 게시글로 다시 돌아감
+                      navigation.goBack();
+                    },
+                  },
+                ]);
+              }}
+              name="ellipsis-horizontal"
+              size={25}
+            />
+          ) : null}
+        </UserWrapper>
         <PostText> {route.params.input_text}</PostText>
         <Divider />
 
@@ -148,10 +199,14 @@ const Card = styled.View`
   elevation: 3;
 `;
 
+const UserWrapper = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
 const UserInfo = styled.TouchableOpacity`
   flex-direction: row;
-  justify-content: flex-start;
-  padding: 15px;
+  padding: 10px;
 `;
 
 const UserImg = styled.Image`

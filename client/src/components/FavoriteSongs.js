@@ -1,7 +1,6 @@
 import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import getSpotifyToken from '../api/getSpotifyToken';
 import {remote} from 'react-native-spotify-remote';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useSelector} from 'react-redux';
@@ -11,7 +10,7 @@ import Config from 'react-native-config';
 const FavoriteSongs = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
 
-  const myUid = useSelector(state => state.kakaoUid);
+  const {kakaoUid} = useSelector(state => state.kakaoUid);
   const [data, setData] = useState();
 
   useLayoutEffect(() => {
@@ -20,11 +19,11 @@ const FavoriteSongs = ({navigation, route}) => {
 
   const getFavoriteSongs = async () => {
     try {
-      console.log('myUid: ', myUid.kakaoUid);
+      console.log('myUid: ', kakaoUid);
       await axios
         .get(`${BASE_URL}profile/getUserSongList`, {
           params: {
-            key: myUid.kakaoUid,
+            key: kakaoUid,
           },
         })
         .then(res => {
@@ -39,20 +38,18 @@ const FavoriteSongs = ({navigation, route}) => {
 
   const postFavoriteSongs = async () => {
     try {
-      if (myUid !== null) {
-        console.log('myUid: ', myUid.kakaoUid);
-        await axios
-          .post(`${BASE_URL}/profile/addFavoriteSong`, {
-            key: myUid.kakaoUid,
-            musicUri: route.params.musicUri,
-            albumTitle: route.params.albumTitle,
-            albumImg: route.params.albumImg,
-            albumArtistName: route.params.albumArtistName,
-          })
-          .then(res => {
-            console.log('성공', res);
-          });
-      }
+      console.log('myUid: ', kakaoUid);
+      await axios
+        .post(`${BASE_URL}/profile/addFavoriteSong`, {
+          key: kakaoUid,
+          musicUri: route.params.musicUri,
+          albumTitle: route.params.albumTitle,
+          albumImg: route.params.albumImg,
+          albumArtistName: route.params.albumArtistName,
+        })
+        .then(res => {
+          console.log('성공', res);
+        });
     } catch (error) {
       console.log('error: ', error);
     }
@@ -63,7 +60,6 @@ const FavoriteSongs = ({navigation, route}) => {
         <MusicUploadBtn
           onPress={async () => {
             console.log('clicked');
-            await getSpotifyToken();
             navigation.navigate('Stack', {
               screen: 'SearchMusic',
               params: {
@@ -108,7 +104,6 @@ const FavoriteSongs = ({navigation, route}) => {
               </MusicWrapper>
               <MusicControlBtn
                 onPress={async () => {
-                  await getSpotifyToken();
                   await remote.playUri(item.music_uri);
                 }}
                 type="play"

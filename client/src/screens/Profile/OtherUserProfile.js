@@ -3,11 +3,20 @@ import styled from 'styled-components/native';
 import axios from 'axios';
 import ProfileTabBar from './ProfileTapBar';
 import CustomButton from '../../components/CustomButtons';
+import {MusicControlBtn} from '../../components/MusicControlBtn';
 import Config from 'react-native-config';
 
 const Profile = ({navigation, route}) => {
   const [otherUserData, setOtherUserData] = useState({});
+
   const BASE_URL = Config.BASE_URL;
+  const HashTag = [
+    otherUserData.tag1_cd,
+    otherUserData.tag2_cd,
+    otherUserData.tag3_cd,
+    otherUserData.tag4_cd,
+    otherUserData.tag5_cd,
+  ].filter(tag => tag !== null);
 
   const getOtherUserProfile = async () => {
     try {
@@ -20,8 +29,7 @@ const Profile = ({navigation, route}) => {
             },
           })
           .then(res => {
-            console.log('ress: ', res.data);
-            setOtherUserData(res.data);       //서버에게 받아온 otherUserProfileData
+            setOtherUserData(res.data); //서버에게 받아온 otherUserProfileData
           });
       }
     } catch (error) {
@@ -39,35 +47,55 @@ const Profile = ({navigation, route}) => {
       </NavBar>
       <Divider />
 
-      <ProfileView>
-        <ProfilePic source={{uri: otherUserData.profile_image}} />
-        <ProfileText>{otherUserData.nickname}</ProfileText>
-        <Follow>
-          <Followview>
-            <Followtext>POST</Followtext>
-            <Followtext>{otherUserData.post_count}</Followtext>
-          </Followview>
-          <Followview>
-            <Followtext>FREIND</Followtext>
-            <Followtext>{otherUserData.friend_count}</Followtext>
-          </Followview>
-          <Followview>
-            <Followtext>SONG</Followtext>
-            <Followtext>{otherUserData.song_count}</Followtext>
-          </Followview>
-        </Follow>
-        <ProfileText2>
-          {otherUserData.profile_music_uri !== null
-            ? otherUserData.profile_music_uri
-            : '프로필뮤직을 설정해주세요'}
-        </ProfileText2>
-        <ProfileText3>
-          {otherUserData.tag1_cd !== null
-            ? otherUserData.tag1_cd
-            : 'hashTag를 설정해주세요'}
-        </ProfileText3>
-      </ProfileView>
-      <NavBar2>
+      <ProfileContainer>
+        <UserInfo>
+          <ProfilePic source={{uri: otherUserData.profile_image}} />
+          <UserName>{otherUserData.nickname}</UserName>
+        </UserInfo>
+        <ProfileInfo>
+          <CountContainer>
+            <CountBtn>
+              <CountText>POST</CountText>
+              <CountText>{otherUserData.post_count}</CountText>
+            </CountBtn>
+            <CountBtn>
+              <CountText>FREIND</CountText>
+              <CountText>{otherUserData.friend_count}</CountText>
+            </CountBtn>
+            <CountBtn>
+              <CountText>SONG</CountText>
+              <CountText>{otherUserData.song_count}</CountText>
+            </CountBtn>
+          </CountContainer>
+
+          <TagContainer>
+            {HashTag.map(data => {
+              return (
+                <TagBtn>
+                  <TagText># {data} </TagText>
+                </TagBtn>
+              );
+            })}
+          </TagContainer>
+        </ProfileInfo>
+      </ProfileContainer>
+      {otherUserData.album_image ? (
+        <Card>
+          <MusicInfoContainer>
+            <MusicWrapper>
+              <CoverImg source={{uri: otherUserData.album_image}} />
+              <MusicInfo>
+                <MusicName> {otherUserData.album_title}</MusicName>
+                <ArtistName>{otherUserData.album_artist_name}</ArtistName>
+              </MusicInfo>
+            </MusicWrapper>
+            <MusicControlBtn type="play" />
+          </MusicInfoContainer>
+        </Card>
+      ) : (
+        <MusicName>프로필 뮤직이 없습니다.</MusicName>
+      )}
+      <BtnContainer>
         <CustomButton
           text="친구신청 or 채팅하기"
           onPress={() => {
@@ -81,37 +109,22 @@ const Profile = ({navigation, route}) => {
             });
           }}
         />
-      </NavBar2>
+      </BtnContainer>
+
       <ProfileTabBar />
     </Container>
   );
 };
-
 const Container = styled.View`
   flex: 1;
   background-color: #ffffff;
 `;
-const Follow = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  left: 60px;
-  bottom: 130px;
-`;
 
-const Followview = styled.View`
-  align-items: center;
-`;
-const Followtext = styled.Text`
-  font-weight: bold;
-  font-size: 15;
-  margin: 8px;
-`;
 const Divider = styled.View`
   border-bottom-color: gray;
   border-bottom-width: 1px;
   width: 90%;
+  margin: 4px;
   align-self: center;
   elevation: 3;
 `;
@@ -120,58 +133,98 @@ const NavBar = styled.View`
   justify-content: center;
   align-items: center;
 `;
-const NavBar2 = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin: 10px;
-`;
 const NavText = styled.Text`
   color: #9b59b6;
   font-size: 24;
-  padding: 10px;
+  padding: 5px;
 `;
-
-const Btn = styled.TouchableOpacity`
-  width: 60px;
-  position: absolute;
-  right: -1px;
+const BtnContainer = styled.TouchableOpacity`
+  align-items: center;
 `;
-
-const ProfileView = styled.View`
-  flex: 0.55;
-  padding: 12px;
+const ProfileContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+`;
+const UserInfo = styled.View`
+  margin: 6px 12px;
   align-items: center;
 `;
 
+const Card = styled.View`
+  background-color: #ffffff;
+  justify-content: center;
+  align-items: center;
+  margin: 5px 20px;
+  border-radius: 10px;
+`;
+
+const MusicInfoContainer = styled.TouchableOpacity`
+  width: 80%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-content: space-around;
+  padding: 8px;
+`;
+
+const MusicWrapper = styled.View`
+  flex-direction: row;
+  margin: 0 8px;
+`;
+const CoverImg = styled.Image`
+  width: 40px;
+  height: 40px;
+`;
+const MusicInfo = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 15px;
+`;
+
+const MusicName = styled.Text`
+  font-size: 14px;
+  font-weight: bold;
+`;
+
+const ArtistName = styled.Text`
+  font-size: 12px;
+`;
+
 const ProfilePic = styled.Image`
-  width: 100;
-  height: 100;
-  padding: 15px;
-  margin: 10px;
-  position: relative;
-  right: 130px;
+  width: 80;
+  height: 80;
+  border-radius: 50;
 `;
-
-const ProfileText = styled.Text`
-  font-size: 16;
-  padding: 5px;
-  position: relative;
-  right: 130px;
-  bottom: 15px;
+const UserName = styled.Text`
+  font-size: 16px;
+  margin: 8px;
 `;
-const ProfileText2 = styled.Text`
-  font-size: 16;
-  padding: 5px;
-  position: relative;
-  left: 60px;
-  bottom: 120px;
+const CountContainer = styled.View`
+  margin: 6px;
+  flex-direction: row;
 `;
-const ProfileText3 = styled.Text`
-  font-size: 16;
-  padding: 5px;
-  position: relative;
-  bottom: 120px;
+const CountBtn = styled.TouchableOpacity`
+  align-items: center;
 `;
-
+const CountText = styled.Text`
+  font-weight: bold;
+  font-size: 14;
+  margin: 8px;
+`;
+const ProfileInfo = styled.View`
+  justify-content: center;
+`;
+const TagContainer = styled.View`
+  justify-content: center;
+  flex-direction: row;
+`;
+const TagBtn = styled.TouchableOpacity`
+  font-size: 10px;
+  padding: 0 2px;
+`;
+const TagText = styled.Text`
+  margin: 2px 0;
+  color: #b7b4df;
+`;
 export default Profile;

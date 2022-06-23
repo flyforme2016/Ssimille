@@ -32,3 +32,15 @@ exports.saveUserLocation = parameter => {
     payload: parameter,
   };
 };
+exports.saveUserLocationName = parameter => {
+  return {
+    type: types.SAVE_USER_LOCATION_NAME,
+    payload: parameter,
+  };
+};
+exports.saveMyPosts = parameter => {
+  return {
+    type: types.SAVE_MY_POST,
+    payload: parameter,
+  };
+};

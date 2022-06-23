@@ -3,164 +3,128 @@ import styled from 'styled-components/native';
 import {remote} from 'react-native-spotify-remote';
 import MarqueeView from 'react-native-marquee-view';
 import {MusicControlBtn} from './MusicControlBtn';
-import {useIsFocused} from '@react-navigation/native';
-import {remote as SpotifyRemote} from 'react-native-spotify-remote';
 import {useSelector} from 'react-redux';
+import Config from 'react-native-config';
+import {useQuery, useMutation} from 'react-query';
+
+const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
+const BASE_URL = Config.BASE_URL;
 
 const SpotifyTab = () => {
+  const {spotifyToken} = useSelector(state => state.spotifyToken);
   const SpotifyWebApi = require('spotify-web-api-node');
-
-  const [playIcon, setPlayIcon] = useState(false);
-  const isFocused = useIsFocused();
-  const [playingMusic, setPlayingMusic] = useState({
-    isPaused: true,
-    track: {name: '', artist: {name: ''}, duration: '', album: {uri: ''}},
-    playbackPosition: null,
-  });
-  const [coverImg, setCoverImg] = useState();
-  const spotifyToken = useSelector(state => state.spotifyToken);
-
   const spotifyWebApi = new SpotifyWebApi({
-    clientID: '9912bb2704184ec5acea5688b54c459b',
-    clientSecret: 'a060b8460dbd4fdd8e045aac32af1d9c',
-    redirectURL: 'http://192.168.0.124:3000/spotify/oauth/callback',
+    clientID: `${SPOTIFY_CLIENT_ID}`,
+    clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
+    redirectURL: `${BASE_URL}/spotify/oauth/callback`,
   });
-
   useLayoutEffect(() => {
-    const getMusic = async () => {
-      await connectSpotifyRemote();
-      await getPlayingMusic();
-      await timer();
+    const setToken = async () => {
+      await remote.connect(spotifyToken);
     };
-    if (playingMusic.playbackPosition === null) getMusic(); //처음에 무조건 spotify에서 재생중인 노래 가져오기 위한 조건
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused]);
-  useLayoutEffect(() => {
-    const processAlbumCover = async () => {
-      await getAlbumCover();
-    };
-    if (playingMusic.playbackPosition !== null) processAlbumCover();
-  }, [playingMusic]);
+    setToken();
+  }, []);
 
-  const connectSpotifyRemote = async () => {
-    try {
-      await SpotifyRemote.connect(spotifyToken.spotifyToken);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const {
+    isLoading,
+    data: CurrentMusic,
+    refetch,
+  } = useQuery(
+    'CurrentMusic',
+    async () => {
+      const data = await remote.getPlayerState();
+      return data;
+    },
+    {
+      onSuccess: async data => {
+        const uri = data.track.album.uri;
+        const exp = 'spotify:album:';
+        const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
+        const albumUri = uri.substring(startIndex + exp.length);
 
-  // 현재 재생중인 노래 가져오기
-  const getPlayingMusic = async () => {
-    const infos = await remote.getPlayerState();
-    if (infos.isPaused) {
-      //현재 스포티파이에서 노래를 정지중이라면
-      setPlayIcon(true); //재생/정지 버튼
-    }
-    setPlayingMusic({
-      ...playingMusic,
-      track: {
-        name: infos.track.name,
-        album: {uri: infos.track.album.uri},
-        artist: {name: infos.track.artist.name},
-        duration: infos.track.duration,
-      },
-      playbackPosition: infos.playbackPosition,
-    });
-  };
-  // 노래 변경시에 duration 재설정
-  const timer = async () => {
-    const time = await (playingMusic.track.duration / 1 -
-      playingMusic.playbackPosition / 1);
-    setTimeout(getPlayingMusic, time);
-  };
+        await spotifyWebApi.setAccessToken(spotifyToken);
+        await spotifyWebApi.getAlbum(albumUri).then(img => {
+          const albumImg = img.body.images[0].url;
 
-  const getAlbumCover = async () => {
-    const uri = playingMusic.track.album.uri;
-    const exp = 'spotify:album:';
-    const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
-    if (startIndex !== -1) {
-      const albumUri = uri.substring(startIndex + exp.length);
-      await spotifyWebApi.setAccessToken(spotifyToken.spotifyToken);
-      await spotifyWebApi
-        .getAlbum(albumUri)
-        .then(data => {
-          const albumImg = data.body.images[0].url;
           setCoverImg(albumImg);
           return albumImg;
-        })
-        .catch(
-          error => {
-            console.log(error);
-          },
-          error => {
-            console.log(error);
-          },
-        );
-    }
-  };
+        });
+      },
+    },
+  );
+
+  const musicMutation = useMutation(
+    async () => {
+      const {track} = await remote.getPlayerState();
+      return track;
+    },
+    {
+      onSuccess: data => {
+        console.log(data);
+        refetch();
+      },
+    },
+  );
+
+  const [coverImg, setCoverImg] = useState();
 
   return (
     <SpotifyTabBar>
-      <AlbumImg
-        source={{
-          uri: coverImg
-            ? coverImg
-            : 'https://ssimille-bucket.s3.ap-northeast-2.amazonaws.com/default/defaultProfileImg.png',
-        }}
-      />
-      <MusicInfo>
-        {playingMusic.track.name.length > 20 ? (
-          <MarqueeView speed={0.2}>
-            <MusicName>{playingMusic.track.name}</MusicName>
-          </MarqueeView>
-        ) : (
-          <MusicName>{playingMusic.track.name}</MusicName>
-        )}
-        <ArtistName>{playingMusic.track.artist.name}</ArtistName>
-      </MusicInfo>
-      <ContolContainer>
-        <MusicControlBtn //이전 곡으로
-          onPress={async () => {
-            await remote.skipToPrevious();
-            await getPlayingMusic();
-          }}
-          type="play-back"
-        />
-        {playIcon ? (
-          <MusicControlBtn //if spotify is pausing should enter here
-            //and if spotify is pausing playIcon is true
-            onPress={async () => {
-              setPlayIcon(!playIcon);
-              remote.resume();
-              await getPlayingMusic();
+      {!isLoading && (
+        <>
+          <AlbumImg
+            source={{
+              uri: coverImg ? coverImg : null,
             }}
-            type="play"
           />
-        ) : (
-          <MusicControlBtn //else if playIcon is true enter here
-            onPress={async () => {
-              setPlayIcon(!playIcon);
-              remote.pause();
-              await getPlayingMusic();
-            }}
-            type="pause"
-          />
-        )}
-        <MusicControlBtn //다음 곡으로
-          onPress={async () => {
-            await remote.skipToNext().then(
-              async () => {
-                await getPlayingMusic();
-              },
-              () => {
-                console.log('then 처리 실패 : 노래정보 업데이트 실패');
-              },
-            );
-          }}
-          type="play-forward"
-        />
-      </ContolContainer>
+          <MusicInfo>
+            {CurrentMusic.track.name.length > 20 ? (
+              <MarqueeView speed={0.2}>
+                <MusicName>{CurrentMusic.track.name}</MusicName>
+              </MarqueeView>
+            ) : (
+              <MusicName>{CurrentMusic.track.name}</MusicName>
+            )}
+            <ArtistName>{CurrentMusic.track.artist.name}</ArtistName>
+          </MusicInfo>
+          <ContolContainer>
+            <MusicControlBtn //이전 곡으로
+              onPress={() => {
+                remote.skipToPrevious();
+                musicMutation.mutate();
+              }}
+              type="play-back"
+            />
+            {CurrentMusic.isPaused ? (
+              <MusicControlBtn //if spotify is pausing should enter here
+                //and if spotify is pausing playIcon is true
+                onPress={async () => {
+                  remote.resume();
+                  musicMutation.mutate();
+                }}
+                type="play"
+              />
+            ) : (
+              <MusicControlBtn //else if playIcon is true enter here
+                onPress={async () => {
+                  remote.pause();
+                  musicMutation.mutate();
+                }}
+                type="pause"
+              />
+            )}
+            <MusicControlBtn //다음 곡으로
+              onPress={() => {
+                remote.skipToNext();
+                console.log('clicked');
+                musicMutation.mutate();
+              }}
+              type="play-forward"
+            />
+          </ContolContainer>
+        </>
+      )}
     </SpotifyTabBar>
   );
 };

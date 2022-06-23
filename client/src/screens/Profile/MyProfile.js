@@ -5,12 +5,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import {remote} from 'react-native-spotify-remote';
-import getSpotifyToken from '../../api/getSpotifyToken';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
 
 const Profile = ({navigation}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
-  console.log({myProfileData});
   const HashTag = [
     myProfileData.tag1_cd,
     myProfileData.tag2_cd,
@@ -30,7 +28,7 @@ const Profile = ({navigation}) => {
                 screen: 'ProfileEdit',
                 params: {
                   profileImg: myProfileData.profile_image,
-                  nicknmae: myProfileData.nickname,
+                  nickname: myProfileData.nickname,
                   hashTag: HashTag,
                   profileMusic: myProfileData.profile_music_uri,
                   albumImg: myProfileData.album_image,
@@ -52,18 +50,7 @@ const Profile = ({navigation}) => {
           <ProfileInfo>
             <CountContainer>
               <CountBtn>
-                <CountText
-                  onPress={() => {
-                    console.log('clicked');
-                    navigation.push('Stack', {
-                      screen: 'PostList',
-                      params: {
-                        userId: myProfileData.kakao_user_number,
-                      },
-                    });
-                  }}>
-                  POST
-                </CountText>
+                <CountText>POST</CountText>
                 <CountText>{myProfileData.post_count}</CountText>
               </CountBtn>
               <CountBtn>
@@ -83,35 +70,35 @@ const Profile = ({navigation}) => {
                 <CountText>{myProfileData.song_count}</CountText>
               </CountBtn>
             </CountContainer>
-
-            <TagContainer>
-              {HashTag.map(data => {
-                return (
-                  <TagBtn>
-                    <TagText>#{data} </TagText>
-                  </TagBtn>
-                );
-              })}
-            </TagContainer>
           </ProfileInfo>
         </ProfileContainer>
+        <TagContainer>
+          {HashTag.map(data => {
+            return (
+              <TagBtn>
+                <TagText>#{data} </TagText>
+              </TagBtn>
+            );
+          })}
+        </TagContainer>
+
         {myProfileData.album_image ? (
           <Card>
-            <MusicInfoContainer>
+            <MusicInfoContainer
+              onPress={() => {
+                remote.playUri(myProfileData.profile_music_uri);
+              }}>
               <MusicWrapper>
                 <CoverImg source={{uri: myProfileData.album_image}} />
                 <MusicInfo>
                   <MusicName> {myProfileData.album_title}</MusicName>
                   <ArtistName>{myProfileData.album_artist_name}</ArtistName>
                 </MusicInfo>
+                <MusicControlBtn type="play" />
               </MusicWrapper>
-              <MusicControlBtn type="play" />
             </MusicInfoContainer>
           </Card>
-        ) : (
-          <MusicName>프로필 뮤직을 설정해주세요</MusicName>
-        )}
-
+        ) : null}
         <ProfileTabBar />
       </Container>
       <SpotifyTab />
@@ -128,6 +115,7 @@ const Divider = styled.View`
   border-bottom-color: gray;
   border-bottom-width: 1px;
   width: 90%;
+  margin: 4px;
   align-self: center;
   elevation: 3;
 `;
@@ -139,7 +127,7 @@ const NavBar = styled.View`
 const NavText = styled.Text`
   color: #9b59b6;
   font-size: 24;
-  padding: 10px;
+  padding: 5px;
 `;
 const Btn = styled.TouchableOpacity`
   width: 60px;
@@ -147,7 +135,8 @@ const Btn = styled.TouchableOpacity`
   right: -1px;
 `;
 const ProfileContainer = styled.View`
-  margin: 12px;
+  justify-content: center;
+  align-items: center;
   flex-direction: row;
 `;
 const UserInfo = styled.View`
@@ -161,7 +150,6 @@ const Card = styled.View`
   align-items: center;
   margin: 5px 20px;
   border-radius: 10px;
-  //elevation: 3;
 `;
 
 const MusicInfoContainer = styled.TouchableOpacity`
@@ -170,7 +158,7 @@ const MusicInfoContainer = styled.TouchableOpacity`
   justify-content: space-between;
   align-items: center;
   align-content: space-around;
-  padding: 12px;
+  padding: 8px;
 `;
 
 const MusicWrapper = styled.View`
@@ -196,14 +184,9 @@ const ArtistName = styled.Text`
   font-size: 12px;
 `;
 
-const AlbumImg = styled.Image`
-  margin: 0 5px;
-  width: 50;
-  height: 50;
-`;
 const ProfilePic = styled.Image`
-  width: 100;
-  height: 100;
+  width: 80;
+  height: 80;
   border-radius: 50;
 `;
 const UserName = styled.Text`
@@ -230,24 +213,12 @@ const TagContainer = styled.View`
   flex-direction: row;
 `;
 const TagBtn = styled.TouchableOpacity`
-  padding: 0 4px;
+  font-size: 10px;
+  padding: 0 2px;
 `;
 const TagText = styled.Text`
-  margin-top: 8px;
+  margin: 2px 0;
   color: #b7b4df;
-`;
-const MusicContainer = styled.View`
-  justify-content: center;
-  align-items: center;
-`;
-const MusicPlayBtn = styled.TouchableOpacity`
-  border: 2px solid #b7b4df;
-  border-radius: 15px;
-  padding: 0 8px;
-  margin-bottom: 8px;
-`;
-const ProfileMusic = styled.Text`
-  margin: 8px 0;
 `;
 
 export default Profile;

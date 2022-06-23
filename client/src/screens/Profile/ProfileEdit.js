@@ -6,8 +6,10 @@ import actions from '../../actions/index';
 import RNFetchBlob from 'rn-fetch-blob';
 import axios from 'axios';
 import {HashTagIds} from '../../datas';
-import getSpotifyToken from '../../api/getSpotifyToken';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Config from 'react-native-config';
+import {Dimensions} from 'react-native';
+const {width} = Dimensions.get('window');
 
 const ProfileEdit = ({navigation, route}) => {
   const myUid = useSelector(state => state.kakaoUid);
@@ -15,6 +17,7 @@ const ProfileEdit = ({navigation, route}) => {
   const {profileImg} = useSelector(state => state.uploadProfileImg);
   const [idx, setIdx] = useState(route.params.hashTag);
   const [changeName, setChangeName] = useState();
+  const routeDatas = route.params;
   const BASE_URL = Config.BASE_URL;
 
   //프로필 사진 변경 함수(=사진가져오기)
@@ -66,16 +69,27 @@ const ProfileEdit = ({navigation, route}) => {
       await axios
         .post(`${BASE_URL}/profile/editProfile`, {
           key: myUid.kakaoUid,
-          nickname: changeName,
-          profileImg: result.imgUrl,
-          profileMusicUri: route.params.musicUri,
-          albumArtistName: route.params.albumArtistName,
-          albumTitle: route.params.albumTitle,
-          albumImage: route.params.albumImg,
-          hashTag: idx,
+          nickname: changeName ? changeName : routeDatas.nickname,
+          profileImg: result.imgUrl ? result.imgUrl : routeDatas.profileImg,
+          profileMusicUri: routeDatas.musicUri
+            ? routeDatas.musicUri
+            : routeDatas.profileMusic,
+          albumArtistName: routeDatas.albumArtistName
+            ? routeDatas.albumArtistName
+            : routeDatas.artistName,
+          albumTitle: routeDatas.albumTitle
+            ? routeDatas.albumTitle
+            : routeDatas.albumTitle,
+          albumImage: routeDatas.albumImg
+            ? routeDatas.albumImg
+            : routeDatas.albumImg,
+          hashTag: idx ? idx : routeDatas.hashTag,
         })
         .then(
-          res => console.log(res, '업로드 완료'),
+          res => {
+            reduxDispatch(actions.saveUserProfileAction(res.data));
+            console.log(res.data, '업로드 완료');
+          },
           err => {
             console.log('서버 전송실패', err);
           },
@@ -96,34 +110,43 @@ const ProfileEdit = ({navigation, route}) => {
       </NavBar>
       <Container>
         <ImgChangeBtn onPress={getProfileImage}>
-          <ImgPreview
+          <ImgBackground
+            imageStyle={{borderRadius: 100}}
             source={{
               uri: profileImg
                 ? 'file://' + (profileImg?.crop?.cropPath ?? profileImg.path)
                 : route.params.profileImg,
+            }}>
+            <Ionicons name="camera-outline" size={35} />
+          </ImgBackground>
+        </ImgChangeBtn>
+
+        <SelectContainer>
+          <NameInput
+            placeholder={route.params.nickname}
+            value={changeName}
+            text-center={true}
+            onChangeText={text => {
+              setChangeName(text);
             }}
           />
-        </ImgChangeBtn>
-        <NameInput
-          placeholder={route.params.nicknmae}
-          value={changeName}
-          text-center={true}
-          onChangeText={text => {
-            console.log(changeName);
-            setChangeName(text);
-          }}
-        />
+          <ControlBtn>
+            <Ionicons name="pencil-outline" size={15} />
+          </ControlBtn>
+        </SelectContainer>
 
-        {route.params ? (
+        {route.params.albumTitle ? (
           <SelectContainer>
-            <SelectedImg source={{uri: route.params.albumImg}} />
-            <SelectedMusic>
-              {route.params.albumTitle} - {route.params.artistName}
-            </SelectedMusic>
+            <SelectedWrapper>
+              <SelectedImg source={{uri: route.params.albumImg}} />
+              <SelectedMusic>
+                {route.params.albumTitle} - {route.params.artistName}
+              </SelectedMusic>
+            </SelectedWrapper>
+
             <ProfileMusicBtn
               onPress={async () => {
                 console.log('clicked');
-                await getSpotifyToken();
                 navigation.navigate('Stack', {
                   screen: 'SearchMusic',
                   params: {
@@ -131,14 +154,29 @@ const ProfileEdit = ({navigation, route}) => {
                   },
                 });
               }}>
-              <BtnText>프로필 음악 변경하기</BtnText>
+              <BtnText>변경하기</BtnText>
             </ProfileMusicBtn>
           </SelectContainer>
-        ) : null}
+        ) : (
+          <SelectContainer>
+            <SelectedMusic>프로필 뮤직을 설정해주세요</SelectedMusic>
+            <ProfileMusicBtn
+              onPress={async () => {
+                console.log('clicked');
+                navigation.navigate('Stack', {
+                  screen: 'SearchMusic',
+                  params: {
+                    page: 'ProfileEdit',
+                  },
+                });
+              }}>
+              <BtnText>설정하기</BtnText>
+            </ProfileMusicBtn>
+          </SelectContainer>
+        )}
 
         <InfoText>HashTag 설정</InfoText>
-
-        <HashTagContainer>
+        <HashTagContainer width={width}>
           {HashTagIds.map(data => {
             return (
               <HashTagBtn
@@ -170,7 +208,6 @@ const ProfileEdit = ({navigation, route}) => {
 const Container = styled.View`
   flex: 1;
   background-color: white;
-  padding: 10px;
   align-items: center;
   justify-content: center;
 `;
@@ -186,32 +223,36 @@ const NavText = styled.Text`
   font-size: 14px;
   padding: 8px;
 `;
-const ImgPreview = styled.Image`
-  margin: 10px;
+
+const ImgChangeBtn = styled.TouchableOpacity`
+  margin: 20px;
+`;
+
+const ImgBackground = styled.ImageBackground`
   width: 100;
   height: 100;
   border-radius: 100;
-  border: 1px solid gray;
-`;
-const ImgChangeBtn = styled.TouchableOpacity`
-  align-items: center;
   justify-content: center;
-  width: 100;
+  align-items: center;
+  opacity: 0.8;
 `;
+const ControlBtn = styled.TouchableOpacity`
+  justify-content: center;
+  margin-right: 5px;
+`;
+
 const InfoText = styled.Text`
   color: black;
   margin-top: 6px;
   font-size: 14px;
 `;
 const BtnText = styled.Text`
-  font-size: 14px;
+  font-size: 12px;
   color: white;
 `;
+
 const NameInput = styled.TextInput`
   width: 90%
-  margin-top: 10px;
-  border: 1px solid gray;
-  border-radius: 10px;
   text-align: center;
 `;
 
@@ -219,11 +260,20 @@ const SelectContainer = styled.View`
   width: 90%;
   border: 1px solid gray;
   border-radius: 10px;
-  padding: 8px;
-  margin-top: 8px;
+  margin: 4px 0;
+  padding-bottom: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+`;
+
+const SelectedWrapper = styled.View`
   align-items: center;
   justify-content: center;
   flex-direction: row;
+  margin-right: 10px;
+  padding: 8px;
 `;
 const SelectedMusic = styled.Text`
   font-size: 12px;
@@ -235,7 +285,7 @@ const SelectedImg = styled.Image`
   width: 35px;
   height: 35px;
 `;
-const HashTagBtn = styled.Pressable`
+const HashTagBtn = styled.TouchableOpacity`
   margin: 3px;
   padding: 6px;
   align-items: center;
@@ -245,10 +295,9 @@ const HashTagBtn = styled.Pressable`
   background-color: ${props => (props.isSelected ? '#b7b4df' : 'white')};
 `;
 const ProfileMusicBtn = styled.TouchableOpacity`
-  margin: 12px;
   justify-content: center;
   align-items: center;
-  padding: 12px;
+  padding: 8px;
   background-color: #b7b4df;
   border-radius: 10px;
 `;
@@ -257,6 +306,7 @@ const HashTagContainer = styled.View`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  width: ${({width}) => width - 40};
   margin: 8px;
   padding: 8px;
 `;
@@ -268,7 +318,7 @@ const SelectedTags = styled.Text`
 const SubmitBtn = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
-  padding: 12px;
+  padding: 10px;
   background-color: #b7b4df;
   border-radius: 10px;
 `;

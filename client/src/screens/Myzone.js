@@ -1,84 +1,98 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React from 'react';
 import Styled from 'styled-components/native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
-import {PermissionsAndroid} from 'react-native';
+import {Alert} from 'react-native';
 import axios from 'axios';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import actions from '../actions/index';
+import Config from 'react-native-config';
+import {useQuery} from 'react-query';
 
-const Myzone = () => {
-  const [location, setLocation] = useState();
+const KAKAOMAP_API_KEY = Config.KAKAOMAP_API_KEY;
+const BASE_URL = Config.BASE_URL;
+
+const Myzone = ({navigation}) => {
+  const {kakaoUid} = useSelector(state => state.kakaoUid);
+  const {userLocation} = useSelector(state => state.userLocation);
   const dispatch = useDispatch();
 
-  const getCurrentLocation = async () => {
-    // 위치 권한 허용 확인
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('권한 얻기 성공');
-      //위도 & 경도 불러오는 함수
-      Geolocation.getCurrentPosition(
-        position => {
-          const {latitude, longitude} = position.coords;
-          setLocation([longitude, latitude]);
+  const {isLoading, data: locationData} = useQuery(
+    'locationName',
+    () =>
+      fetch(
+        `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${userLocation['longitude']}&y=${userLocation['latitude']}`,
+        {
+          headers: {
+            Host: 'dapi.kakao.com',
+            Authorization: `KakaoAK ${KAKAOMAP_API_KEY}`,
+          },
         },
-        error => {
-          console.log(error.message);
-        },
-        {enableHighAccuracy: true, timeout: 15000},
-      );
-    } else {
-      console.log('권한얻기 실패 :', granted);
-    }
-  };
+      ).then(res => res.json()),
+    {
+      onError: e => {
+        // 401, 404 같은 error가 아니라 정말 api 호출이 실패한 경우만 호출
+        console.log(e.message);
+      },
+    },
+  );
 
-  // 현재위치를 행정동으로 바꿔주는 함수
-  const getLocationName = async () => {
-    await getCurrentLocation();
+  const postLocation = async () => {
+    console.log('지도에서 마커 눌림');
     try {
-      const res = await axios({
-        method: 'GET',
-        url: `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${location[0]}&y=${location[1]}`,
-        headers: {
-          Host: 'dapi.kakao.com',
-          Authorization: 'KakaoAK 1c1252b4d425329642c458690fe99854',
-          'Content-Type': 'application/json;',
-        },
-      });
-      const currentInfo = res.data.documents[0];
-      dispatch(actions.saveUserLocation(currentInfo));
-      console.log(currentInfo);
+      await axios
+        .post(`${BASE_URL}/profile/updateUserRegion`, {
+          key: kakaoUid,
+          regionCode: locationData.documents[0].code / 1,
+        })
+        .then(
+          Alert.alert('My Zone 설정', '현재 위치로 MYZONE이 설정되었습니다', [
+            {text: 'Cancel'},
+
+            {
+              text: 'OK',
+              onPress: () => {
+                console.log('OK Pressed');
+                dispatch(
+                  actions.saveUserLocationName(locationData.documents[0]),
+                );
+                navigation.navigate('TabBar', {screen: 'Home'});
+              },
+            },
+          ]),
+        );
     } catch (error) {
-      return error;
+      console.log('error: ', error);
     }
   };
-  useLayoutEffect(() => {
-    const location = async () => {
-      await getLocationName();
-    };
-    location();
-  }, []);
 
   return (
     <Container>
-      {location && (
+      {!isLoading && (
         <MapView
           style={{flex: 1}}
           provider={PROVIDER_GOOGLE}
           initialRegion={{
-            latitude: location[1],
-            longitude: location[0],
+            latitude: userLocation['latitude'],
+            longitude: userLocation['longitude'],
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}>
           <Marker
             coordinate={{
-              latitude: location[1],
-              longitude: location[0],
+              latitude: userLocation['latitude'],
+              longitude: userLocation['longitude'],
             }}
-          />
+            onPress={postLocation}>
+            <MarkerView>
+              {locationData ? (
+                <LocationText>
+                  {locationData.documents[0].address_name}
+                </LocationText>
+              ) : (
+                <LocationText>현재위치 확인중</LocationText>
+              )}
+            </MarkerView>
+          </Marker>
         </MapView>
       )}
     </Container>
@@ -87,6 +101,15 @@ const Myzone = () => {
 
 const Container = Styled.View`
   flex: 1;
+`;
+const MarkerView = Styled.View`
+  padding: 12px;
+  border: 2px solid #dddddd;
+  border-radius: 10px;
+  background-color: white;
+`;
+const LocationText = Styled.Text`
+  font-size: 14px;
 `;
 
 export default Myzone;

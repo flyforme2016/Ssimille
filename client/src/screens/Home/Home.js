@@ -1,6 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {ActivityIndicator, RefreshControl} from 'react-native';
+import React from 'react';
+import {ActivityIndicator} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -9,67 +8,34 @@ import axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
 import Config from 'react-native-config';
+import {useQuery} from 'react-query';
 
-const Home = ({navigation: {navigate}}) => {
+const Home = ({navigation: {navigate, push}}) => {
   const BASE_URL = Config.BASE_URL;
-
   const dispatch = useDispatch();
-  const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const myUid = useSelector(state => state.kakaoUid);
+  const {kakaoUid} = useSelector(state => state.kakaoUid);
+  const {locationName} = useSelector(state => state.locationName);
 
-  useLayoutEffect(() => {
-    getProfileElment();
-  }, []);
-
-  const getProfileElment = async () => {
-    try {
-      console.log('start getProfileElement');
-      if (myUid !== null) {
-        console.log('myUid: ', myUid.kakaoUid);
-        await axios
-          .get(`${BASE_URL}/profile/getUserProfile`, {
-            params: {
-              key: myUid.kakaoUid,
-            },
-          })
-          .then(res => {
-            console.log('res: ', res.data);
-            dispatch(actions.saveUserProfileAction(res.data));
-          });
-      }
-    } catch (error) {
-      console.log('error: ', error);
-    }
-  };
-  //새로고침 하면 데이터 다시 받아오는 함수
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await getData();
-    setRefreshing(false);
-  };
-  const getData = async () => {
-    try {
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  return loading ? (
+  //내 프로필 가져오기
+  const {isLoading} = useQuery('totalPostDatas', async () => {
+    const {data} = await axios
+      .get(`${BASE_URL}/profile/getUserProfile`, {
+        params: {
+          key: kakaoUid,
+        },
+      })
+      .then(res => {
+        dispatch(actions.saveUserProfileAction(res.data));
+      });
+    return data;
+  });
+  return isLoading ? (
     <Loader>
       <ActivityIndicator />
     </Loader>
   ) : (
     <>
-      <Container
-        refreshControl={
-          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
-        }>
+      <Container>
         <TopBar>
           <Logo source={logo} />
           <Notice onPress={() => navigate('Stack', {screen: 'Notice'})}>
@@ -77,8 +43,24 @@ const Home = ({navigation: {navigate}}) => {
           </Notice>
         </TopBar>
         <MyzoneContainer>
-          <Btn onPress={() => navigate('Stack', {screen: 'Myzone'})}>
-            <Text>MY ZONE</Text>
+          <Btn onPress={() => push('Stack', {screen: 'Myzone'})}>
+            <Text>MY ZONE </Text>
+            <Text> {locationName ? locationName.address_name : null}</Text>
+          </Btn>
+        </MyzoneContainer>
+        <MyzoneContainer>
+          <Btn onPress={() => push('TabBar', {screen: 'MyProfile'})}>
+            <Text>MY Profile</Text>
+          </Btn>
+        </MyzoneContainer>
+        <MyzoneContainer>
+          <Btn onPress={() => push('TabBar', {screen: 'Community'})}>
+            <Text>Community</Text>
+          </Btn>
+        </MyzoneContainer>
+        <MyzoneContainer>
+          <Btn onPress={() => push('TabBar', {screen: 'ChatingList'})}>
+            <Text>ChatList</Text>
           </Btn>
         </MyzoneContainer>
 
@@ -104,7 +86,7 @@ const Loader = styled.View`
 `;
 
 const Container = styled.ScrollView`
-  background-color: lightgrey;
+  background-color: white;
 `;
 const TopBar = styled.View`
   flex-direction: row;
@@ -119,10 +101,9 @@ const Notice = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
 `;
-const MyzoneContainer = styled.View`
-  flex: 1;
-`;
+const MyzoneContainer = styled.View``;
 const Btn = styled.TouchableOpacity`
+  padding: 10px;
   background-color: white;
   align-items: center;
   justify-content: center;
