@@ -1,8 +1,6 @@
 import React, {useState, useLayoutEffect, useCallback, useEffect} from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {
-  collection,
-  doc,
   addDoc,
   setDoc,
   getDoc,
@@ -13,7 +11,6 @@ import {
 } from 'firebase/firestore';
 import {useSelector} from 'react-redux';
 import getRef from '../../functions/getRef'
-import {database} from '../../config/firebase';
 
 export default function Chat({route}) {
   const otherUid = route.params.otherUid;
@@ -21,28 +18,19 @@ export default function Chat({route}) {
   const otherNickname = route.params.otherNickname;
   const otherProfleImg = route.params.otherProfleImg;
   const [messages, setMessages] = useState([]);
-  // const [otherUnReadMessageCount, setOtherUnreadMessageCount] = useState(0);
   const myData = useSelector(state => state.myProfile);
   const myUid = myData.myProfileData.kakao_user_number.toString();
   const myChatsRef = getRef.chatsRef(myUid, stringOtherUid) //my chats update
-  // const myUnReadMessageRef = getRef.unReadMessageRef(myUid, stringOtherUid) //상대방과의 대화에서 내쪽 읽지 않은 메세지 count=0으로 초기화
   const otherChatsRef = getRef.chatsRef(stringOtherUid, myUid); //other chats update
-  // const otherUnreadMessageRef = getRef.unReadMessageRef(stringOtherUid, myUid); //상대방과의 대화에서 상대방쪽 읽지 않은 메세지 update
   const myChatListRef = getRef.chatListRef(myUid, stringOtherUid) //my chatList update
   const otherChatListRef = getRef.chatListRef(stringOtherUid, myUid) //other chatList update
+  const myChatListCollectionRef = getRef.myChatListCollectionRef(myUid);
 
   useLayoutEffect(() => {
     const getChattingLog = async () => {
       console.log('start getChattingLog');
-      //firestore DB에서 채팅 데이터 get -> setMessage로 messages에 할당
-      // const myUnreadMessageDocSnap = await getDoc(myUnReadMessageRef) //상대방과의 대화에서 내가 읽지 않은 메세지 count = 0 으로 초기화
-      // if(myUnreadMessageDocSnap.exists()){
-      //   console.log('myUnreadMessageDocSnap.data(): ', myUnreadMessageDocSnap.data())
-      //   setDoc(myUnReadMessageRef, {
-      //     count:0
-      //   })
-      // }
-      const myChatListDocSnap = await getDoc(myChatListRef)
+    
+      const myChatListDocSnap = await getDoc(myChatListRef)     //채팅방 입장 시 stack = 0 으로 초기화
       if(myChatListDocSnap.exists() && myChatListDocSnap.data().stack !== 0){
         updateDoc(myChatListRef, {
           stack: 0
@@ -51,19 +39,15 @@ export default function Chat({route}) {
 
       const q2 = query(myChatsRef, orderBy('createdAt', 'desc'));
       const unsubscribe = onSnapshot(q2, querySnapshot => {
-        try {
-          console.log('Second onSnapshot')
-          setMessages(
-            querySnapshot.docs.map(doc => ({
-              _id: doc.data()._id,
-              createdAt: doc.data().createdAt.toDate(),
-              text: doc.data().text,
-              user: doc.data().user,
-            })),
-          );
-        } catch (error) {
-          console.log('Error second onSnapshot: ', error)
-        }
+        console.log('Second onSnapshot')
+        setMessages(
+          querySnapshot.docs.map(doc => ({
+            _id: doc.data()._id,
+            createdAt: doc.data().createdAt.toDate(),
+            text: doc.data().text,
+            user: doc.data().user,
+          })),
+        );
       })
 
       return unsubscribe;
@@ -76,41 +60,23 @@ export default function Chat({route}) {
   }, []);
 
   useEffect(() => {
-    const chatListCollectionRef = collection(database, 'chatList');
-    const chatListDocumentRef = doc(chatListCollectionRef, myUid);
-    const chatListFinalCollectionRef = collection(chatListDocumentRef, 'chatList');
-    const q = query(chatListFinalCollectionRef, orderBy('createdAt', 'desc'));
+    const q = query(myChatListCollectionRef, orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(q, querySnapshot => {
-      try {
-        console.log('First onSnapshot')
-        querySnapshot.docChanges().map(change => {        //실시간으로 대화하는 중에 상대방에게 메세지를 받을 경우에도
-          if(change.type === 'modified'){                //상대방이 증가시키는 stack 0으로 초기화
-            if(change.doc.data().setDocUserObj._id === stringOtherUid){   //대화목록중 현재 실시간 채팅중인 유저와의 chatList를 찾으면
-              updateDoc(myChatListRef, {
-                stack:0
-              })
-            }
+      console.log('First onSnapshot')
+      querySnapshot.docChanges().map(change => {        //실시간으로 대화하는 중에 상대방에게 메세지를 받을 경우에도
+        if(change.type === 'modified'){                //상대방이 증가시키는 stack 0으로 초기화
+          if(change.doc.data().setDocUserObj._id === stringOtherUid){   //대화목록중 현재 실시간 채팅중인 유저와의 chatList를 찾으면
+            updateDoc(myChatListRef, {
+              stack:0
+            })
           }
-        })
-      } catch (error) {
-        console.log('Error first onSnapshot: ', error)
-      }
-
+        }
+      })
     });
     return unsubscribe
   })
 
-  // useEffect(()=>{
-  //   const setOtherUnReadMessageCount = async()=>{
-  //     setDoc(otherUnreadMessageRef, {
-  //       count:otherUnReadMessageCount,
-  //     })
-  //   }
-  //   if(otherUnReadMessageCount){
-  //     setOtherUnReadMessageCount()
-  //   }
-  // }, [otherUnReadMessageCount])
 
   //메세지 전송 firestore에 저장
   const onSend = useCallback((messages = []) => {
@@ -123,7 +89,6 @@ export default function Chat({route}) {
 
       const otherChatListDocSnap = await getDoc(otherChatListRef)
       if(otherChatListDocSnap.exists()){
-        console.log('otherChatListDocSnap exists')
         setDoc(otherChatListRef, {
           _id,
           createdAt,
@@ -132,7 +97,6 @@ export default function Chat({route}) {
           stack : otherChatListDocSnap.data().stack + 1
         })
       }else{
-        console.log('otherChatListDocSnap does not exists')
         setDoc(otherChatListRef, {
           _id,
           createdAt,
@@ -141,7 +105,6 @@ export default function Chat({route}) {
           stack : 1
         })
       }
-      console.log('Check point1')
       setDoc(myChatListRef, { //my chatList update
         _id,
         createdAt,
@@ -153,14 +116,6 @@ export default function Chat({route}) {
         },
         stack : 0
       })
-      console.log('Check point2')
-
-      // const otherUnreadMessageDocSnap = await getDoc(otherUnreadMessageRef)
-      // if(otherUnreadMessageDocSnap.exists()){
-      //   setOtherUnreadMessageCount(otherUnreadMessageDocSnap.data().count+1)
-      // } else{
-      //   setOtherUnreadMessageCount(1);
-      // }
 
       addDoc(myChatsRef, {
         _id,
@@ -174,23 +129,6 @@ export default function Chat({route}) {
         text,
         user,
       });
-      // setDoc(myChatListRef, { //my chatList update
-      //   _id,
-      //   createdAt,
-      //   text,
-      //   setDocUserObj : {
-      //     _id: stringOtherUid,
-      //     name: otherNickname,
-      //     avatar: otherProfleImg,
-      //   },
-      // })
-      // setDoc(otherChatListRef, {  //other chatList update
-      //   _id,
-      //   createdAt,
-      //   text,
-      //   setDocUserObj : user
-      // })
-    
     };
     getMyUid();
   }, []);

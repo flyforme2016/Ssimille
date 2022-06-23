@@ -14,28 +14,23 @@ import {
 } from '../../../styles/MessageStyles';
 import styled from 'styled-components/native';
 import {
-  collection,
   orderBy,
   query,
   onSnapshot,
-  doc,
   getDocs,
 } from 'firebase/firestore';
-import {database} from '../../config/firebase';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import getChatListTime from '../../functions/getChatListTime';
-import getMyUnReadMessageCount from '../../functions/getMyUnReadMessageCount';
+import getRef from '../../functions/getRef'
 
 const ChatingList = ({navigation}) => {
   const [messages, setMessages] = useState([]);
   const myData = useSelector(state => state.myProfile);
   const myUid = myData.myProfileData.kakao_user_number.toString();
 
-  const chatListCollectionRef = collection(database, 'chatList');
-  const chatListDocumentRef = doc(chatListCollectionRef, myUid);
-  const chatListFinalCollectionRef = collection(chatListDocumentRef, 'chatList');
-  const q = query(chatListFinalCollectionRef, orderBy('createdAt', 'desc'));
+  const myChatListCollectionRef = getRef.myChatListCollectionRef(myUid)
+  const q = query(myChatListCollectionRef, orderBy('createdAt', 'desc'));
 
   useLayoutEffect(() => {
     getChatList();
