@@ -1,15 +1,45 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import Styled from 'styled-components/native';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Circle, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import {PermissionsAndroid} from 'react-native';
+import {Alert, PermissionsAndroid} from 'react-native';
 import axios from 'axios';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import actions from '../actions/index';
+import Config from 'react-native-config';
 
-const Myzone = () => {
+const KAKAOMAP_API_KEY = '1c1252b4d425329642c458690fe99854';
+
+const Myzone = ({navigation}) => {
+  const BASE_URL = Config.BASE_URL;
   const [location, setLocation] = useState();
+  const [locationName, setLocationName] = useState();
+  const {kakaoUid} = useSelector(state => state.kakaoUid);
   const dispatch = useDispatch();
+
+  const postLocation = async () => {
+    console.log('지도에서 마커 눌림');
+    try {
+      await axios
+        .post(`${BASE_URL}/profile/updateUserRegion`, {
+          key: kakaoUid,
+          regionCode: locationName.code / 1,
+        })
+        .then(
+          Alert.alert('My Zone 설정', '현재 위치로 MYZONE이 설정되었습니다', [
+            {
+              text: 'OK',
+              onPress: () => {
+                console.log('OK Pressed');
+                navigation.navigate('TabBar', {screen: 'Home'});
+              },
+            },
+          ]),
+        );
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  };
 
   const getCurrentLocation = async () => {
     // 위치 권한 허용 확인
@@ -36,30 +66,35 @@ const Myzone = () => {
 
   // 현재위치를 행정동으로 바꿔주는 함수
   const getLocationName = async () => {
-    await getCurrentLocation();
     try {
+      console.log('위치 정보 가져오기 시작');
       const res = await axios({
         method: 'GET',
         url: `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${location[0]}&y=${location[1]}`,
         headers: {
           Host: 'dapi.kakao.com',
-          Authorization: 'KakaoAK 1c1252b4d425329642c458690fe99854',
+          Authorization: `KakaoAK ${KAKAOMAP_API_KEY}`,
           'Content-Type': 'application/json;',
         },
       });
       const currentInfo = res.data.documents[0];
+      console.log('currentInfo: ', currentInfo)
       dispatch(actions.saveUserLocation(currentInfo));
-      console.log(currentInfo);
+      setLocationName(currentInfo);
     } catch (error) {
+      console.log('error: ', error)
       return error;
     }
   };
   useLayoutEffect(() => {
-    const location = async () => {
-      await getLocationName();
-    };
-    location();
+    console.log('위도경도 가져오기');
+    getCurrentLocation();
   }, []);
+
+  useEffect(() => {
+    console.log('행정동 이름 가져오기');
+    if (location) getLocationName();
+  }, [location]);
 
   return (
     <Container>
@@ -78,7 +113,19 @@ const Myzone = () => {
               latitude: location[1],
               longitude: location[0],
             }}
-          />
+            onPress={postLocation}>
+            <MarkerView>
+              {locationName ? (
+                <LocationText>{locationName.address_name}</LocationText>
+              ) : (
+                <LocationText>현재위치 확인중</LocationText>
+              )}
+            </MarkerView>
+          </Marker>
+          {/* <Circle
+            center={{latitude: location[1], longitude: location[0]}}
+            radius={3}
+          /> */}
         </MapView>
       )}
     </Container>
@@ -87,6 +134,15 @@ const Myzone = () => {
 
 const Container = Styled.View`
   flex: 1;
+`;
+const MarkerView = Styled.View`
+  padding: 12px;
+  border: 2px solid #dddddd;
+  border-radius: 10px;
+  background-color: white;
+`;
+const LocationText = Styled.Text`
+  font-size: 14px;
 `;
 
 export default Myzone;

@@ -58,13 +58,13 @@ const ChatingList = ({navigation}) => {
     })
   };
 
-  //chatList에 있는 동안 기존 or 새로운 상대에게 메세지가 오는 경우
-  //noSnapshot listener로 실시간 감지하여 채팅목록 갱신
+  //chatList에 있는 동안 기존 또는 새로운 상대에게 메세지가 오는 경우
+  //onSnapshot listener로 실시간 감지하여 채팅목록 갱신
   const unsubscribe = onSnapshot(q, querySnapshot => {
     console.log('onSnapshot');
     console.log('messages: ', messages)
-    querySnapshot.docChanges().map(change => {        
-      if(change.type === 'modified'){                   //chatList를 갱신할 때 messages 배열에서 modified된 index만 update.     
+    querySnapshot.docChanges().map(change => { //chatList를 갱신할 때 messages 배열에서 modified된 index만 update.
+      if(change.type === 'modified'){   //기존 상대에게 메세지가 오는 경우
         console.log('Enter modified: ', messages)               
         messages.map(async(object, index) => {
           console.log('change.doc.data(): ', change.doc.data())
@@ -84,7 +84,7 @@ const ChatingList = ({navigation}) => {
           }
         })
       }
-      else if(change.type === 'added'){async () => {
+      else if(change.type === 'added'){async () => {  //새로운 상대에게 메세지가 오는 경우
         const addObject = {
           _id: change.doc.data()._id,
           createdAt: getChatListTime(change.doc.data().createdAt.toDate().toISOString()),

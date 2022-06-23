@@ -11,8 +11,8 @@ exports.chatsRef = (uid1, uid2) => {
 exports.unReadMessageRef = (uid1, uid2) => {
     const chatsCollectionRef = collection(database, 'chats');
     const chatsDocumentRef = doc(chatsCollectionRef, uid1);
-    const chatsFinalCollectionRef = collection(chatsDocumentRef, uid2);
-    const myUnReadMessageRef = doc(chatsFinalCollectionRef, 'unReadMessage');
+    const chatsFinalCollectionRef = collection(chatsDocumentRef, 'unReadMessage');
+    const myUnReadMessageRef = doc(chatsFinalCollectionRef, uid2);
     return myUnReadMessageRef
 }
 

@@ -114,7 +114,6 @@ const CommunityUpload = ({navigation, route}) => {
             <MusicUploadBtn
               onPress={async () => {
                 console.log('clicked');
-                await getSpotifyToken();
                 navigation.navigate('Stack', {
                   screen: 'SearchMusic',
                   params: {

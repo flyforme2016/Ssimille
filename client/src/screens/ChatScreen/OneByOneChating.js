@@ -20,15 +20,11 @@ export default function Chat({route}) {
   const [otherUnReadMessageCount, setOtherUnreadMessageCount] = useState(0);
   const myData = useSelector(state => state.myProfile);
   const myUid = myData.myProfileData.kakao_user_number.toString();
-
-  const myChatsRef = getRef.chatsRef(myUid, stringOtherUid)
-  const myUnReadMessageRef = getRef.unReadMessageRef(myUid, stringOtherUid)
-
-  const otherChatsRef = getRef.chatsRef(stringOtherUid, myUid); //상대방과의 대화에서 상대방쪽 읽지 않은 메세지 update
-  const otherUnreadMessageRef = getRef.unReadMessageRef(stringOtherUid, myUid);
-
+  const myChatsRef = getRef.chatsRef(myUid, stringOtherUid) //my chats update
+  const myUnReadMessageRef = getRef.unReadMessageRef(myUid, stringOtherUid) //상대방과의 대화에서 내쪽 읽지 않은 메세지 count=0으로 초기화
+  const otherChatsRef = getRef.chatsRef(stringOtherUid, myUid); //other chats update
+  const otherUnreadMessageRef = getRef.unReadMessageRef(stringOtherUid, myUid); //상대방과의 대화에서 상대방쪽 읽지 않은 메세지 update
   const myChatListRef = getRef.chatListRef(myUid, stringOtherUid) //my chatList update
-
   const otherChatListRef = getRef.chatListRef(stringOtherUid, myUid) //other chatList update
 
   useLayoutEffect(() => {
