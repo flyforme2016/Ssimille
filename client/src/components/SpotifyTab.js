@@ -6,10 +6,9 @@ import {MusicControlBtn} from './MusicControlBtn';
 import {useIsFocused} from '@react-navigation/native';
 import {remote as SpotifyRemote} from 'react-native-spotify-remote';
 import {useSelector} from 'react-redux';
+const SpotifyWebApi = require('spotify-web-api-node');
 
 const SpotifyTab = () => {
-  const SpotifyWebApi = require('spotify-web-api-node');
-
   const [playIcon, setPlayIcon] = useState(false);
   const isFocused = useIsFocused();
   const [playingMusic, setPlayingMusic] = useState({
@@ -19,6 +18,7 @@ const SpotifyTab = () => {
   });
   const [coverImg, setCoverImg] = useState();
   const spotifyToken = useSelector(state => state.spotifyToken);
+  console.log('Check get spotiftToken correctly in SpotifyTab', spotifyToken)
 
   const spotifyWebApi = new SpotifyWebApi({
     clientID: '9912bb2704184ec5acea5688b54c459b',
@@ -81,6 +81,7 @@ const SpotifyTab = () => {
     const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
     if (startIndex !== -1) {
       const albumUri = uri.substring(startIndex + exp.length);
+      console.log('albumUri: ', albumUri)
       await spotifyWebApi.setAccessToken(spotifyToken.spotifyToken);
       await spotifyWebApi
         .getAlbum(albumUri)

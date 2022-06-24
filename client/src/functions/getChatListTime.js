@@ -3,7 +3,7 @@ const getChatListTime = (date) => { //where : 1 = community 0 = chatList
     const minute = 60;
     const hour = minute * 60; //3600
     const day = hour * 24;  //86400
-    const messageTime = new Date(date);
+    const messageTime = new Date(date); //Sat Jun 18 2022 23:30:08 GMT+0900 (대한민국 표준시)
     let resultTime = "";
     
     let timeLapse = Math.floor(

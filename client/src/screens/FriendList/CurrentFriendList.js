@@ -4,8 +4,9 @@ import styled from 'styled-components/native';
 import {useIsFocused} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
+import checkIsFriend from '../../api/checkIsFriend';
 
-const CurrentFriendList = ({navigation: {navigate}}) => {
+const CurrentFriendList = ({navigation}) => {
   const [friendList, setFriendData] = useState({});
   const isFocused = useIsFocused();
   const myUid = useSelector(state => state.kakaoUid);
@@ -43,12 +44,12 @@ const CurrentFriendList = ({navigation: {navigate}}) => {
         horizontal={false}
         renderItem={({item}) => (
           <Card
-            onPress={() => {
-              navigate('Stack', {
-                screen: 'OtherUserProfile',
-                params: {otherUid: item.friend_kakao_user_number},
-              });
-            }}>
+          onPress={() => {
+            navigation.navigate('Stack', {
+              screen: 'OtherUserProfile',
+              params: {otherUid: item.friend_kakao_user_number, isFriend: 1},
+            });
+          }}>
             <UserInfo>
               <UserImg>
                 <Avatar source={{uri: item.profileImg}} />
