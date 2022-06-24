@@ -1,5 +1,5 @@
 import React, {useState, useLayoutEffect, useCallback, useEffect} from 'react';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {GiftedChat, Bubble, InputToolbar, Send} from 'react-native-gifted-chat';
 import {
   addDoc,
   setDoc,
@@ -11,6 +11,10 @@ import {
 } from 'firebase/firestore';
 import {useSelector} from 'react-redux';
 import getRef from '../../functions/getRef'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {View} from 'react-native';
+import styled from 'styled-components/native';
+
 
 export default function Chat({route}) {
   const otherUid = route.params.otherUid;
@@ -132,26 +136,61 @@ export default function Chat({route}) {
     };
     getMyUid();
   }, []);
+  
+  const renderSend = props => {
+    return (
+      <Send {...props}>
+        <View>
+          <Ionicons name="send-sharp" size={35} color="#9b59b6" />
+        </View>
+      </Send>
+    );
+  };
 
   return (
     //messages state에 저장된 채팅내용을 랜더링
-    <GiftedChat
-      messages={messages}
-      showAvatarForEveryMessage={false} //메세지를 한번에 여러개 보낼 경우 가장 첫 메세지에만 프로필 사진 띄워주기
-      showUserAvatar={false} //채팅창에서 내 프로필 사진은 보이지 않도록 설정
-      onSend={messages => onSend(messages)}
-      messagesContainerStyle={{
-        backgroundColor: '#fff',
-      }}
-      textInputStyle={{
-        backgroundColor: '#fff',
-        borderRadius: 20,
-      }}
-      user={{
-        _id: myUid,
-        name: myData.myProfileData.nickname,
-        avatar: myData.myProfileData.profile_image,
-      }}
-    />
+    <View style={{flex: 1, backgroundColor: 'white'}}>
+      <FLATLIST source={require('../../assets/sample/background.jpg')} />
+      <GiftedChat
+        placeholder="메세지를 입력해주세요"
+        alwaysShowSend={true}
+        messages={messages}
+        renderSend={renderSend}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: myUid,
+          name: myData.myProfileData.nickname,
+          avatar: myData.myProfileData.profile_image,
+        }}
+        renderBubble={props => {
+          return (
+            <Bubble
+              {...props}
+              wrapperStyle={{
+                right: {
+                  backgroundColor: '#b7b4df',
+                },
+              }}
+            />
+          );
+        }}
+        renderInputToolbar={props => {
+          return (
+            <InputToolbar
+              {...props}
+              containerStyle={{borderTopColor: '#b7b4df'}}
+              textInputStyle={{color: '#9b59b6'}}
+            />
+          );
+        }}
+      />
+    </View>
   );
 }
+
+const FLATLIST = styled.ImageBackground`
+  position: absolute;
+  resize-mode: stretch;
+  width: 100%;
+  height: 100%;
+`;

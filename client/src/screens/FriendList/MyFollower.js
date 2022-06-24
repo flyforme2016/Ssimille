@@ -1,33 +1,39 @@
 import axios from 'axios';
-import React, {useEffect, useState, useLayoutEffect} from 'react';
+import React, {useState, useLayoutEffect} from 'react';
 import styled from 'styled-components/native';
 import {useIsFocused} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
+import MarqueeView from 'react-native-marquee-view';
+import {remote} from 'react-native-spotify-remote';
+import {Dimensions} from 'react-native';
+const {width} = Dimensions.get('window');
 import checkIsFriend from '../../api/checkIsFriend';
 
-const CurrentFriendList = ({navigation}) => {
+const MyFollower = ({navigation: {navigate}}) => {
   const [friendList, setFriendData] = useState({});
   const isFocused = useIsFocused();
   const myUid = useSelector(state => state.kakaoUid);
   const BASE_URL = Config.BASE_URL;
 
   useLayoutEffect(() => {
-    getMyFriendList();
+    getMyFollowerList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
-  const getMyFriendList = async () => {
+  const getMyFollowerList = async () => {
     try {
-      console.log('start getMyFriendList');
+      console.log('start getMyFollowerList');
       if (myUid.kakaoUid !== null) {
         await axios
-          .get(`${BASE_URL}/friend/getFriendList`, {
+          .get(`${BASE_URL}/friend/getMyFollwerList`, {
             params: {
               key: myUid.kakaoUid,
             },
           })
           .then(res => {
             console.log('res: ', res.data);
+
             setFriendData(res.data); //서버에게 받은 친구목록 setUseState 변수 할당
           });
       }
@@ -44,12 +50,17 @@ const CurrentFriendList = ({navigation}) => {
         horizontal={false}
         renderItem={({item}) => (
           <Card
-          onPress={() => {
-            navigation.navigate('Stack', {
-              screen: 'OtherUserProfile',
-              params: {otherUid: item.friend_kakao_user_number, isFriend: 1},
-            });
-          }}>
+            width={width}
+            nPress={ async () => {
+              const flag = await checkIsFriend(myUid, item.friend_kakao_user_number)
+              navigation.navigate('Stack', {
+                screen: 'OtherUserProfile',
+                params: {
+                  otherUid: item.friend_kakao_user_number,
+                  isFriend: flag,
+                },
+              });
+            }}>
             <UserInfo>
               <UserImg>
                 <Avatar source={{uri: item.profileImg}} />
@@ -58,13 +69,21 @@ const CurrentFriendList = ({navigation}) => {
                 <UserName>{item.nickname}</UserName>
               </InfoBox>
             </UserInfo>
-            <BtnContainer>
-              <UserMusic>
-                {item.profileMusicUri !== null
-                  ? item.profileMusicUri
-                  : '프로필뮤직이 없습니다'}
-              </UserMusic>
-            </BtnContainer>
+            <MusicPlay
+              onPress={async () => {
+                await remote.playUri(item.profileMusicUri);
+              }}>
+              {item.profileMusicUri !== null ? (
+                <BtnContainer>
+                  <MarqueeView speed={0.08}>
+                    <UserMusic>
+                      {item.albumTitle} - {item.albumArtistName}
+                    </UserMusic>
+                  </MarqueeView>
+                  <Playbutton> ▶︎</Playbutton>
+                </BtnContainer>
+              ) : null}
+            </MusicPlay>
           </Card>
         )}
       />
@@ -73,6 +92,7 @@ const CurrentFriendList = ({navigation}) => {
 };
 
 const Container = styled.View`
+  flex: 1;
   align-items: center;
   background-color: #ffffff;
 `;
@@ -80,7 +100,7 @@ const FriendList = styled.FlatList`
   margin: 12px 0;
 `;
 const Card = styled.TouchableOpacity`
-width : 85%;
+  width: ${({width}) => (width - 10) / 1.05};
   padding: 15px 10px;
   border-radius: 20px;
   background-color: #ffffff;
@@ -95,6 +115,7 @@ const UserInfo = styled.View`
   flex-direction: row;
   align-items: center;
 `;
+const MusicPlay = styled.TouchableOpacity``;
 
 const UserImg = styled.View`
   margin-right: 5px;
@@ -107,30 +128,27 @@ const Avatar = styled.Image`
   border-radius: 25px;
 `;
 const InfoBox = styled.View`
-  margin: 12px;
+  margin: 5px;
 `;
 const UserName = styled.Text`
   margin-bottom: 3px;
-  font-size: 20px;
-  color: gray;
+  font-size: 15px;
+  color: black;
 `;
 const UserMusic = styled.Text`
   font-size: 12px;
-  color: gray;
+  color: #9b59b6;
+`;
+const Playbutton = styled.Text`
+  font-size: 12px;
+  color: #9b59b6;
 `;
 const BtnContainer = styled.View`
   flex-direction: row;
+  padding: 5px;
+  border-radius: 10;
+  border: 1.5px #b7b4df;
+  width: 150;
 `;
-const Btn = styled.TouchableOpacity`
-  width: 80;
-  height: 40;
-  margin: 7px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid gray;
-  border-radius: 15px;
-`;
-const ChatText = styled.Text`
-  font-size: 14px;
-`;
-export default CurrentFriendList;
+
+export default MyFollower;

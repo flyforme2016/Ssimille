@@ -115,10 +115,11 @@ const ChatingList = ({navigation}) => {
                   </UserInfoText>
                   <UserInfoText>
                     <MessageText>{item.text}</MessageText>
-                      {
-                        item.stack===0 ? (<Text></Text>):
-                        (<Text>{item.stack}</Text>)
-                      }
+                    {item.stack === 0 ? null : (
+                      <CountContainer>
+                        <CountText>{item.stack}</CountText>
+                      </CountContainer>
+                    )}
                   </UserInfoText>
                 </TextSection>
               </UserInfo>
@@ -138,14 +139,18 @@ const NavText = styled.Text`
   font-size: 30;
   padding: 15px;
 `;
-const UnReadMessageCount = styled.TouchableOpacity`
-  margin: 1px;
 
-  padding: 8px;
+const CountContainer = styled.View`
+  align-items: center;
+  justify-content: center;
+  width: 23;
+  height: 23;
+
   background-color: #b7b4df;
-  border-radius: 7px;
+  border-radius: 50;
 `;
-const BtnText = styled.Text`
-  font-size: 10px;
+const CountText = styled.Text`
+  font-size: 12px;
+  font-weight: bold;
   color: white;
 `;

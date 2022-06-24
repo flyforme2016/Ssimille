@@ -85,7 +85,7 @@ const Home = ({navigation: {navigate}}) => {
         <RecommendText>음악 추천</RecommendText>
         <AlbumRecommendContainer>
           <AlbumContainer>
-            <AlbumImg source={require('../../assets/sample/5.jpg')} />
+            <AlbumImg source={require('../../assets/sample/background.jpg')} />
             <AlBumInfo>name</AlBumInfo>
             <AlBumInfo>artist</AlBumInfo>
           </AlbumContainer>

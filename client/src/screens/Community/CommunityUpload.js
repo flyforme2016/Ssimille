@@ -1,22 +1,25 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
+import {DeviceEventEmitter} from 'react-native';
 
 const CommunityUpload = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
-
-  const {userLocation} = useSelector(state => state.userLocation);
+  const {myProfileData} = useSelector(state => state.myProfile);
+  const {locationName} = useSelector(state => state.locationName);
   const [uploadImgs, setUploadImgs] = useState([]);
   const [postContent, setPostContent] = useState();
-  console.log({userLocation});
-
   let submitImgs = Array(5).fill(null);
 
+  useEffect(() => {
+    return () => {
+      DeviceEventEmitter.emit('test');
+    };
+  }, []);
   const handleImgUpload = async () => {
     try {
       const response = await MultipleImagePicker.openPicker({
@@ -63,18 +66,19 @@ const CommunityUpload = ({navigation, route}) => {
 
   //upload post to server process
   const onSubmitPost = async () => {
-    const value = await AsyncStorage.getItem('userNumber');
     try {
       await axios
         .post(`${BASE_URL}/post/uploadPost`, {
-          key: value,
-          regionDepth1: userLocation.region_1depth_name,
-          addressName: userLocation.address_name,
-          musicUri: route.params.musicUri,
-          albumTitle: route.params.albumTitle,
-          albumImg: route.params.albumImg,
-          albumArtistName: route.params.albumArtistName,
-          inputText: postContent,
+          key: myProfileData.kakao_user_number,
+          regionDepth1: locationName.region_1depth_name,
+          addressName: locationName.address_name,
+          musicUri: route.params.musicUri ? route.params.musicUri : null,
+          albumTitle: route.params.albumTitle ? route.params.albumTitle : null,
+          albumImg: route.params.albumImg ? route.params.albumImg : null,
+          albumArtistName: route.params.albumArtistName
+            ? route.params.albumArtistName
+            : null,
+          inputText: postContent ? postContent : null,
           images: submitImgs,
         })
         .then(
@@ -82,11 +86,11 @@ const CommunityUpload = ({navigation, route}) => {
           err => {
             console.log('게시글 전송실패', err);
           },
-        )
-        .then(navigation.navigate('TabBar', {screen: 'Community'}));
+        );
     } catch (e) {
       console.log(e.code, e.message);
     }
+    navigation.goBack('TabBar', {screen: 'Community'});
   };
 
   return (
@@ -94,9 +98,9 @@ const CommunityUpload = ({navigation, route}) => {
       <Container>
         <Card>
           <UserInfo>
-            <UserImg source={require('../../assets/sample/1.jpg')} />
+            <UserImg source={{uri: myProfileData.profile_image}} />
             <UserInfoText>
-              <UserName>윤승희</UserName>
+              <UserName>{myProfileData.nickname}</UserName>
             </UserInfoText>
           </UserInfo>
           <UploadContainer>
@@ -142,7 +146,6 @@ const CommunityUpload = ({navigation, route}) => {
             <SelectContainer>
               {uploadImgs[0]
                 ? uploadImgs.map(data => {
-                    console.log(data);
                     return (
                       <SelectedImg
                         source={{
