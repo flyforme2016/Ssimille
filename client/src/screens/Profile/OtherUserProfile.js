@@ -5,10 +5,16 @@ import ProfileTabBar from './ProfileTapBar';
 import CustomButton from '../../components/CustomButtons';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
 import Config from 'react-native-config';
+import {View, Text, TouchableOpacity} from 'react-native';
+import sendAlarm from '../../functions/sendAlarm'
+import deleteFriend from '../../functions/deleteFriend';
+import { useSelector } from 'react-redux';
 
 const Profile = ({navigation, route}) => {
+  const [isFollow, setIsFollow] = useState(route.params.isFriend);
   const [otherUserData, setOtherUserData] = useState({});
-
+  const myUid = useSelector(state => state.kakaoUid)
+  const otherUserUid = route.params.otherUid;
   const BASE_URL = Config.BASE_URL;
   const HashTag = [
     otherUserData.tag1_cd,
@@ -20,7 +26,6 @@ const Profile = ({navigation, route}) => {
 
   const getOtherUserProfile = async () => {
     try {
-      const otherUserUid = route.params.otherUid;
       if (otherUserUid !== null) {
         await axios
           .get(`${BASE_URL}/profile/getUserProfile`, {
@@ -40,6 +45,16 @@ const Profile = ({navigation, route}) => {
     getOtherUserProfile();
   }, []);
 
+  const addFriendListener = () => {
+    if(!isFollow){
+      setIsFollow(!isFollow);
+      sendAlarm(myUid.kakaoUid, otherUserData, "회원님을 팔로우 하였습니다.", 1)
+    }else{
+      setIsFollow(!isFollow);
+      deleteFriend(myUid.kakaoUid, otherUserUid)
+    }
+  }
+
   return (
     <Container>
       <NavBar>
@@ -49,7 +64,18 @@ const Profile = ({navigation, route}) => {
 
       <ProfileContainer>
         <UserInfo>
-          <ProfilePic source={{uri: otherUserData.profile_image}} />
+          <ProfileImage
+            onPress={() => {
+              console.log('clicked');
+              navigation.push('Stack', {
+                screen: 'BigPicture',
+                params: {
+                  userprofile: otherUserData.profile_image,
+                },
+              });
+            }}>
+            <ProfilePic source={{uri: otherUserData.profile_image}} />
+          </ProfileImage>
           <UserName>{otherUserData.nickname}</UserName>
         </UserInfo>
         <ProfileInfo>
@@ -95,20 +121,46 @@ const Profile = ({navigation, route}) => {
       ) : (
         <MusicName>프로필 뮤직이 없습니다.</MusicName>
       )}
+
       <BtnContainer>
-        <CustomButton
-          text="친구신청 or 채팅하기"
-          onPress={() => {
-            navigation.navigate('Stack', {
-              screen: 'OneByOneChating',
-              params: {
-                otherUid: route.params.otherUid,
-                otherProfleImg: otherUserData.profile_image,
-                otherNickname: otherUserData.nickname,
-              },
-            });
-          }}
-        />
+        <TouchableOpacity onPress={addFriendListener}>
+          <View
+            style={{
+              width: 95,
+              height: 55,
+              borderRadius: 5,
+              backgroundColor: isFollow ? null : '#b7b4df',
+              borderWidth: isFollow ? 1 : 0,
+              borderColor: '#DEDEDE',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                color: isFollow ? 'black' : 'white',
+                fontSize: 14,
+                fontWeight: 'bold',
+              }}>
+              {isFollow ? '팔로잉' : '팔로우'}
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+        <Button>
+          <CustomButton
+            text=" 채팅하기"
+            onPress={() => {
+              navigation.navigate('Stack', {
+                screen: 'OneByOneChating',
+                params: {
+                  otherUid: route.params.otherUid,
+                  otherProfleImg: otherUserData.profile_image,
+                  otherNickname: otherUserData.nickname,
+                },
+              });
+            }}
+          />
+        </Button>
       </BtnContainer>
 
       <ProfileTabBar />
@@ -140,12 +192,16 @@ const NavText = styled.Text`
 `;
 const BtnContainer = styled.TouchableOpacity`
   align-items: center;
+  flex-direction: row;
+  justify-content: center;
 `;
+const BtnContainer2 = styled.View``;
 const ProfileContainer = styled.View`
   justify-content: center;
   align-items: center;
   flex-direction: row;
 `;
+const ProfileImage = styled.TouchableOpacity``;
 const UserInfo = styled.View`
   margin: 6px 12px;
   align-items: center;
@@ -212,6 +268,13 @@ const CountText = styled.Text`
   font-size: 14;
   margin: 8px;
 `;
+const Button = styled.Text`
+  margin: 10px;
+`;
+const Button2 = styled.Text`
+  margin: 10px;
+`;
+
 const ProfileInfo = styled.View`
   justify-content: center;
 `;

@@ -4,15 +4,21 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 semi final">
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.24 Complete delete friend">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/api/getCurrentLocation.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/api/getCurrentLocation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/api/getPostTime.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/api/getPostTime.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SpotifyAuthentication.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/assets/sample/1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/assets/sample/2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/assets/sample/3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/assets/sample/4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/assets/sample/5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/assets/sample/6.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/KakaoLogin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Myzone.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Myzone.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/OneByOneChating.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/FriendList/CurrentFriendList.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/FriendList/FriendListTabBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/FriendList/FriendListTabBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/FriendList/FriendRequestList.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Home/Home.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +31,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="gijeonLoginChatting" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -50,7 +56,7 @@
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="Android Studio default JDK" />
-    <property name="last_opened_file_path" value="$USER_HOME$/StudioProjects/MUF" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.24108241" />
@@ -60,7 +66,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="7612c69c-f1f6-435c-a79e-2f9fbe5e7c8d" name="Default Changelist" comment="" />
+      <changelist id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.17 semi final" />
       <created>1648104694742</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -101,7 +107,63 @@
       <option name="project" value="LOCAL" />
       <updated>1655559428108</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="06.20 gijeong checkIsFriend">
+      <created>1655729086155</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1655729086157</updated>
+    </task>
+    <task id="LOCAL-00007" summary="06.20 gijeong checkIsFriend">
+      <created>1655729120324</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1655729120324</updated>
+    </task>
+    <task id="LOCAL-00008" summary="06.22 Clean ref &amp;&amp; 90% message count">
+      <created>1655899630643</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1655899630643</updated>
+    </task>
+    <task id="LOCAL-00009" summary="06.22 Clean ref &amp;&amp; 90% message count">
+      <created>1655899983768</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1655899983769</updated>
+    </task>
+    <task id="LOCAL-00010" summary="06.23 Modify unReadMessageRef">
+      <created>1655953332309</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1655953332309</updated>
+    </task>
+    <task id="LOCAL-00011" summary="06.23 Complete chatting">
+      <created>1655992655760</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1655992655760</updated>
+    </task>
+    <task id="LOCAL-00012" summary="06.23 Complete chatting">
+      <created>1655993273956</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1655993273956</updated>
+    </task>
+    <task id="LOCAL-00013" summary="06.24 Complete delete friend">
+      <created>1656054366169</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1656054366170</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -122,6 +184,11 @@
     <MESSAGE value="06.16 Complete login process and chatting" />
     <MESSAGE value="06.17 Complete login process and chatting" />
     <MESSAGE value="06.17 semi final" />
-    <option name="LAST_COMMIT_MESSAGE" value="06.17 semi final" />
+    <MESSAGE value="06.20 gijeong checkIsFriend" />
+    <MESSAGE value="06.22 Clean ref &amp;&amp; 90% message count" />
+    <MESSAGE value="06.23 Modify unReadMessageRef" />
+    <MESSAGE value="06.23 Complete chatting" />
+    <MESSAGE value="06.24 Complete delete friend" />
+    <option name="LAST_COMMIT_MESSAGE" value="06.24 Complete delete friend" />
   </component>
 </project>

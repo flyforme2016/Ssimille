@@ -8,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 import {COLORS, SIZES} from '../../components/index';
-import {OnboardingDatas} from '../../datas';
+import {OnboardingDatas} from '../../const/datas';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import styled from 'styled-components/native';
 

@@ -1,5 +1,5 @@
-import React, {useState, useLayoutEffect} from 'react';
-import {FlatList} from 'react-native';
+import React, {useState, useLayoutEffect, useEffect} from 'react';
+import {FlatList, Text} from 'react-native';
 import {
   Container,
   Card,
@@ -14,90 +14,88 @@ import {
 } from '../../../styles/MessageStyles';
 import styled from 'styled-components/native';
 import {
-  collection,
-  getDoc,
   orderBy,
   query,
   onSnapshot,
-  doc,
+  getDocs,
 } from 'firebase/firestore';
-import {database} from '../../config/firebase';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
-import getChatListTime from '../../api/getChatListTime';
-import {async} from '@firebase/util';
-// import {useSelector} from 'react-redux';
+import getChatListTime from '../../functions/getChatListTime';
+import getRef from '../../functions/getRef'
 
-const ChatingList = ({navigation: {navigate, push}}) => {
+const ChatingList = ({navigation}) => {
   const [messages, setMessages] = useState([]);
   const myData = useSelector(state => state.myProfile);
   const myUid = myData.myProfileData.kakao_user_number.toString();
-  //console.log(messages);
 
-  const getMyUnReadMessageCount = async otherUid => {
-    console.log('check');
-    console.log('otherUid: ', otherUid);
-    const chatsCollectionRef = collection(database, 'chats');
-    const chatsDocumentRef = doc(chatsCollectionRef, myUid);
-    const chatsFinalCollectionRef = collection(chatsDocumentRef, otherUid);
-    const myUnReadMessageRef = doc(chatsFinalCollectionRef, 'unReadMessage');
-
-    const myUnreadMessageDocSnap = await getDoc(myUnReadMessageRef); //상대방과의 대화에서 내가 읽지 않은 메세지 count = 0 으로 초기화
-
-    if (myUnreadMessageDocSnap.exists()) {
-      return myUnreadMessageDocSnap.data().count;
-    } else {
-      return 0;
-    }
-  };
+  const myChatListCollectionRef = getRef.myChatListCollectionRef(myUid)
+  const q = query(myChatListCollectionRef, orderBy('createdAt', 'desc'));
 
   useLayoutEffect(() => {
-    const getChatList = async () => {
-      console.log('start getChatList');
-
-      //firestore DB에서 채팅 데이터 get -> setMessage로 messages에 할당
-      const collectionRef = collection(database, 'chatList');
-      const documentRef = doc(collectionRef, myUid);
-      const realCollectionRef = collection(documentRef, 'chatList');
-      const q = query(realCollectionRef, orderBy('createdAt', 'desc'));
-
-      const unsubscribe = onSnapshot(q, querySnapshot => {
-        console.log('querySnapshot unsusbscribe');
-
-        querySnapshot.docs.map(async doc => {
-          const datas = {
-            _id: doc.data()._id,
-            createdAt: getChatListTime(
-              doc.data().createdAt.toDate().toISOString(),
-            ),
-            text: doc.data().text,
-            user: doc.data().setDocUserObj,
-            count: await getMyUnReadMessageCount(doc.data().setDocUserObj._id),
-          };
-          setMessages(prev => [...prev, datas]);
-        });
-      });
-      return unsubscribe;
-    };
-
     getChatList();
-    //return unsubscribe; //hook 상태 관리에서 return은 clean 작업을 의미하는데 ChatScreen.js가 unmount된 후
-    //다시 호출되어 mount될 시 어차피 다시 데이터를 불러오기 때문에 unmount 시점에 return unsubscribe로
-    //messages를 메모리 초기화? 시켜주는 것.
   }, []);
+
+  //chatList 입장시 한번만 채팅목록 가져오기 실시간 x
+  async function getChatList() {
+    console.log('start getChatList');
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(doc => {
+      console.log('doc.data(): ', doc.data())
+    })
+    querySnapshot.forEach( doc => {
+      const initObject = {
+        _id: doc.data()._id,
+        createdAt: getChatListTime(doc.data().createdAt.toDate().toISOString()),
+        text: doc.data().text,
+        user: doc.data().setDocUserObj,
+        stack: doc.data().stack,
+      }
+      setMessages(messages=>[...messages, initObject])
+    })
+  };
+
+  //chatList에 있는 동안 기존 또는 새로운 상대에게 메세지가 오는 경우
+  //onSnapshot listener로 실시간 감지하여 채팅목록 갱신
+  const unsubscribe = onSnapshot(q, querySnapshot => {
+    console.log('onSnapshot');
+    console.log('messages: ', messages)
+    querySnapshot.docChanges().map(change => { //chatList를 갱신할 때 messages 배열에서 modified된 index만 update.
+      console.log('Enter change')
+      if(change.type === 'modified'){   //기존 상대에게 메세지가 오는 경우
+        console.log('Enter modified: ', messages)
+        messages.map(async(object, index) => {
+          console.log('change.doc.data(): ', change.doc.data())
+          console.log('object: ', object)
+          if(object.user._id === change.doc.data().setDocUserObj._id){
+            console.log('Enter find')
+            const changeObject = {
+              _id: change.doc.data()._id,
+              createdAt: getChatListTime(change.doc.data().createdAt.toDate().toISOString()),
+              text: change.doc.data().text,
+              user: change.doc.data().setDocUserObj,
+              stack: change.doc.data().stack
+            }
+            let replaceMessages = [...messages]
+            replaceMessages[index] = changeObject
+            setMessages(replaceMessages)
+          }
+        })
+      }
+    })
+  });
 
   return (
     <>
       <Container>
         <NavText>채팅창</NavText>
-
         <FlatList
           data={messages}
           keyExtractor={item => item._id}
           renderItem={({item}) => (
             <Card
               onPress={() =>
-                push('Stack', {
+                navigation.push('Stack', {
                   screen: 'OneByOneChating',
                   params: {
                     otherProfleImg: item.user.avatar,
@@ -111,16 +109,17 @@ const ChatingList = ({navigation: {navigate, push}}) => {
                   <UserImg source={{uri: item.user.avatar}} />
                 </UserImgWrapper>
                 <TextSection>
-                  <UnReadMessageCount>
-                    <PostTime>{item.createdAt}</PostTime>
-                    <BtnText>{item.count}</BtnText>
-                  </UnReadMessageCount>
                   <UserInfoText>
                     <UserName>{item.user.name}</UserName>
                     <PostTime>{item.createdAt}</PostTime>
                   </UserInfoText>
                   <UserInfoText>
                     <MessageText>{item.text}</MessageText>
+                    {item.stack === 0 ? null : (
+                      <CountContainer>
+                        <CountText>{item.stack}</CountText>
+                      </CountContainer>
+                    )}
                   </UserInfoText>
                 </TextSection>
               </UserInfo>
@@ -140,13 +139,18 @@ const NavText = styled.Text`
   font-size: 30;
   padding: 15px;
 `;
-const UnReadMessageCount = styled.TouchableOpacity`
-  margin: 1px;
-  padding: 8px;
+
+const CountContainer = styled.View`
+  align-items: center;
+  justify-content: center;
+  width: 23;
+  height: 23;
+
   background-color: #b7b4df;
-  border-radius: 7px;
+  border-radius: 50;
 `;
-const BtnText = styled.Text`
-  font-size: 10px;
+const CountText = styled.Text`
+  font-size: 12px;
+  font-weight: bold;
   color: white;
 `;

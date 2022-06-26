@@ -12,6 +12,7 @@ import store from './src/store';
 import {QueryClient, QueryClientProvider} from 'react-query';
 
 LogBox.ignoreLogs(['Expected', 'Warning: ']);
+LogBox.ignoreLogs(['EventEmitter.removeListener'])
 LogBox.ignoreAllLogs(true);
 
 const queryClient = new QueryClient();
