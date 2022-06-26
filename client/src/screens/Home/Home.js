@@ -17,18 +17,22 @@ const Home = ({navigation: {navigate, push}}) => {
   const {locationName} = useSelector(state => state.locationName);
 
   //내 프로필 가져오기
-  const {isLoading} = useQuery('totalPostDatas', async () => {
-    const {data} = await axios
-      .get(`${BASE_URL}/profile/getUserProfile`, {
+  const {isLoading} = useQuery(
+    'getMyProfile',
+    async () => {
+      const {data} = await axios.get(`${BASE_URL}/profile/getUserProfile`, {
         params: {
           key: kakaoUid,
         },
-      })
-      .then(res => {
-        dispatch(actions.saveUserProfileAction(res.data));
       });
-    return data;
-  });
+      return data;
+    },
+    {
+      onSuccess: res => {
+        dispatch(actions.saveUserProfileAction(res));
+      },
+    },
+  );
   return isLoading ? (
     <Loader>
       <ActivityIndicator />

@@ -1,24 +1,30 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
-import RNFetchBlob from 'rn-fetch-blob';
 import axios from 'axios';
-import {HashTagIds} from '../../datas';
+import {HashTagIds} from '../../const/datas';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Config from 'react-native-config';
-import {Dimensions} from 'react-native';
+import {DeviceEventEmitter, Dimensions} from 'react-native';
+import postProfileImgToS3 from '../../api/postProfileImgToS3.js';
 const {width} = Dimensions.get('window');
 
 const ProfileEdit = ({navigation, route}) => {
   const myUid = useSelector(state => state.kakaoUid);
   const reduxDispatch = useDispatch();
-  const {profileImg} = useSelector(state => state.uploadProfileImg);
   const [idx, setIdx] = useState(route.params.hashTag);
   const [changeName, setChangeName] = useState();
   const routeDatas = route.params;
   const BASE_URL = Config.BASE_URL;
+  const [profileImg, setProfileImg] = useState();
+
+  useEffect(() => {
+    return () => {
+      DeviceEventEmitter.emit('newProfile');
+    };
+  }, []);
 
   //프로필 사진 변경 함수(=사진가져오기)
   const getProfileImage = async () => {
@@ -31,8 +37,7 @@ const ProfileEdit = ({navigation, route}) => {
         isCrop: true,
         isCropCircle: true,
       });
-      console.log('response: ', response);
-      reduxDispatch(actions.uploadProfileImgAction(response));
+      setProfileImg(response);
     } catch (e) {
       console.log('error: ', e.message);
     }
@@ -40,37 +45,32 @@ const ProfileEdit = ({navigation, route}) => {
   //submit하면 서버에 전송하는 함수(=프로필변경하기)
   const handleProfileEdit = async () => {
     try {
-      const formdata = new FormData();
-      const newImageUri = 'file://' + profileImg.path;
-      formdata.append('profileImg', {
-        uri: newImageUri,
-        type: profileImg.mime,
-        name: profileImg.fileName,
-      });
-      console.log('formdata: ', formdata);
+      let result;
+      if (profileImg?.path) {
+        result = await postProfileImgToS3(profileImg);
+        // const formdata = new FormData();
+        // const newImageUri = 'file://' + profileImg.path;
+        // formdata.append('profileImg', {
+        //   uri: newImageUri,
+        //   type: profileImg.mime,
+        //   name: profileImg.fileName,
+        // });
+        // console.log('formdata: ', formdata);
 
-      const result = await (
-        await RNFetchBlob.fetch(
-          'POST',
-          `${BASE_URL}/s3/uploadProfileImg`,
-          {
-            'Content-Type': 'multipart/form-data',
-          },
-          [
-            {
-              name: 'profileImg',
-              filename: profileImg.fileName,
-              data: RNFetchBlob.wrap(profileImg.path),
-            },
-          ],
-        ).then(console.log('result: ', result))
-      ).json();
+        // const result = await (
+        //   await fetch(`${BASE_URL}/s3/uploadProfileImg`, {
+        //     method: 'POST',
+        //     body: formdata,
+        //     redirect: 'follow',
+        //   })
+        // ).json();
+      }
 
       await axios
         .post(`${BASE_URL}/profile/editProfile`, {
           key: myUid.kakaoUid,
           nickname: changeName ? changeName : routeDatas.nickname,
-          profileImg: result.imgUrl ? result.imgUrl : routeDatas.profileImg,
+          profileImg: result ? result.imgUrl : routeDatas.profileImg,
           profileMusicUri: routeDatas.musicUri
             ? routeDatas.musicUri
             : routeDatas.profileMusic,
@@ -88,7 +88,6 @@ const ProfileEdit = ({navigation, route}) => {
         .then(
           res => {
             reduxDispatch(actions.saveUserProfileAction(res.data));
-            console.log(res.data, '업로드 완료');
           },
           err => {
             console.log('서버 전송실패', err);

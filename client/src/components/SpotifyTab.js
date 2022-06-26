@@ -60,8 +60,18 @@ const SpotifyTab = () => {
       return track;
     },
     {
-      onSuccess: data => {
-        console.log(data);
+      onSuccess: async data => {
+        console.log('refetch 성공', data);
+        const uri = data.track.album.uri;
+        const exp = 'spotify:album:';
+        const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
+        const albumUri = uri.substring(startIndex + exp.length);
+
+        await spotifyWebApi.setAccessToken(spotifyToken);
+        await spotifyWebApi.getAlbum(albumUri).then(img => {
+          const albumImg = img.body.images[0].url;
+          setCoverImg(albumImg);
+        });
         refetch();
       },
     },

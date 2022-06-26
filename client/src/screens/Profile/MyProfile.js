@@ -18,91 +18,93 @@ const Profile = ({navigation}) => {
   ].filter(tag => tag !== null);
 
   return (
-    <>
-      <Container>
-        <NavBar>
-          <NavText>PROFILE</NavText>
-          <Btn
-            onPress={() =>
-              navigation.push('Stack', {
-                screen: 'ProfileEdit',
-                params: {
-                  profileImg: myProfileData.profile_image,
-                  nickname: myProfileData.nickname,
-                  hashTag: HashTag,
-                  profileMusic: myProfileData.profile_music_uri,
-                  albumImg: myProfileData.album_image,
-                  albumTitle: myProfileData.album_title,
-                  artistName: myProfileData.album_artist_name,
-                },
-              })
-            }>
-            <Ionicons name="settings-outline" size={35} />
-          </Btn>
-        </NavBar>
-        <Divider />
+    myProfileData && (
+      <>
+        <Container>
+          <NavBar>
+            <NavText>PROFILE</NavText>
+            <Btn
+              onPress={() =>
+                navigation.push('Stack', {
+                  screen: 'ProfileEdit',
+                  params: {
+                    profileImg: myProfileData.profile_image,
+                    nickname: myProfileData.nickname,
+                    hashTag: HashTag,
+                    profileMusic: myProfileData.profile_music_uri,
+                    albumImg: myProfileData.album_image,
+                    albumTitle: myProfileData.album_title,
+                    artistName: myProfileData.album_artist_name,
+                  },
+                })
+              }>
+              <Ionicons name="settings-outline" size={35} />
+            </Btn>
+          </NavBar>
+          <Divider />
 
-        <ProfileContainer>
-          <UserInfo>
-            <ProfilePic source={{uri: myProfileData.profile_image}} />
-            <UserName>{myProfileData.nickname}</UserName>
-          </UserInfo>
-          <ProfileInfo>
-            <CountContainer>
-              <CountBtn>
-                <CountText>POST</CountText>
-                <CountText>{myProfileData.post_count}</CountText>
-              </CountBtn>
-              <CountBtn>
-                <CountText>FREIND</CountText>
-                <CountText>{myProfileData.friend_count}</CountText>
-              </CountBtn>
-              <CountBtn
+          <ProfileContainer>
+            <UserInfo>
+              <ProfilePic source={{uri: myProfileData.profile_image}} />
+              <UserName>{myProfileData.nickname}</UserName>
+            </UserInfo>
+            <ProfileInfo>
+              <CountContainer>
+                <CountBtn>
+                  <CountText>POST</CountText>
+                  <CountText>{myProfileData.post_count}</CountText>
+                </CountBtn>
+                <CountBtn>
+                  <CountText>FREIND</CountText>
+                  <CountText>{myProfileData.friend_count}</CountText>
+                </CountBtn>
+                <CountBtn
+                  onPress={() => {
+                    navigation.push('Stack', {
+                      screen: 'FavoriteSongs',
+                      params: {
+                        userId: myProfileData.kakao_user_number,
+                      },
+                    });
+                  }}>
+                  <CountText>SONG</CountText>
+                  <CountText>{myProfileData.song_count}</CountText>
+                </CountBtn>
+              </CountContainer>
+            </ProfileInfo>
+          </ProfileContainer>
+          <TagContainer>
+            {HashTag?.map(data => {
+              return (
+                <TagBtn>
+                  <TagText>#{data} </TagText>
+                </TagBtn>
+              );
+            })}
+          </TagContainer>
+
+          {myProfileData.album_image ? (
+            <Card>
+              <MusicInfoContainer
                 onPress={() => {
-                  navigation.push('Stack', {
-                    screen: 'FavoriteSongs',
-                    params: {
-                      userId: myProfileData.kakao_user_number,
-                    },
-                  });
+                  remote.playUri(myProfileData.profile_music_uri);
                 }}>
-                <CountText>SONG</CountText>
-                <CountText>{myProfileData.song_count}</CountText>
-              </CountBtn>
-            </CountContainer>
-          </ProfileInfo>
-        </ProfileContainer>
-        <TagContainer>
-          {HashTag.map(data => {
-            return (
-              <TagBtn>
-                <TagText>#{data} </TagText>
-              </TagBtn>
-            );
-          })}
-        </TagContainer>
-
-        {myProfileData.album_image ? (
-          <Card>
-            <MusicInfoContainer
-              onPress={() => {
-                remote.playUri(myProfileData.profile_music_uri);
-              }}>
-              <MusicWrapper>
-                <CoverImg source={{uri: myProfileData.album_image}} />
-                <MusicInfo>
-                  <MusicName> {myProfileData.album_title}</MusicName>
-                  <ArtistName>{myProfileData.album_artist_name}</ArtistName>
-                </MusicInfo>
-                <MusicControlBtn type="play" />
-              </MusicWrapper>
-            </MusicInfoContainer>
-          </Card>
-        ) : null}
-        <ProfileTabBar />
-      </Container>
-      <SpotifyTab />
-    </>
+                <MusicWrapper>
+                  <CoverImg source={{uri: myProfileData.album_image}} />
+                  <MusicInfo>
+                    <MusicName> {myProfileData.album_title}</MusicName>
+                    <ArtistName>{myProfileData.album_artist_name}</ArtistName>
+                  </MusicInfo>
+                  <MusicControlBtn type="play" />
+                </MusicWrapper>
+              </MusicInfoContainer>
+            </Card>
+          ) : null}
+          <ProfileTabBar />
+        </Container>
+        <SpotifyTab />
+      </>
+    )
   );
 };
 

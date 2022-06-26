@@ -1,3 +1,1 @@
-exports.deleteAlarm = () =>{
-    
-}
+exports.deleteAlarm = () => {};

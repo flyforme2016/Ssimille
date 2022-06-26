@@ -73,6 +73,7 @@ const Container = styled.View`
 `;
 const Post = styled.TouchableOpacity`
   width: ${({width}) => (width - 5) / 3};
+  height: ${({width}) => (width - 5) / 3};
   background-color: #b7b4df;
   align-items: center;
   justify-content: center;

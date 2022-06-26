@@ -9,7 +9,7 @@ import PostComments from './PostComments';
 import Config from 'react-native-config';
 import checkIsFriend from '../api/checkIsFriend';
 import {useSelector} from 'react-redux';
-import getPostTime from '../api/getPostTime';
+import getPostTime from '../functions/getPostTime';
 import {Alert} from 'react-native';
 
 const CommunityPost = ({navigation, route}) => {

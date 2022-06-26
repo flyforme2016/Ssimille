@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import getPostTime from '../../api/getPostTime';
+import getPostTime from '../../functions/getPostTime';
 import axios from 'axios';
 import {Alert} from 'react-native';
 import Swiper from 'react-native-swiper';
@@ -14,7 +14,13 @@ import {useQuery, useMutation} from 'react-query';
 const TotalCommunity = ({navigation}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
-
+  // 이미지 null 값 테스트
+  // const IMAGE = [
+  //   'https://velog.velcdn.com/images/citron03/profile/f42f4daf-0c74-4615-b7ef-cfc6db3f05d4/image.jpg',
+  //   'https://velog.velcdn.com/images/citron03/profile/f42f4daf-0c74-4615-b7ef-cfc6db3f05d4/image.jpg',
+  //   'https://velog.velcdn.com/images/citron03/profile/f42f4daf-0c74-4615-b7ef-cfc6db3f05d4/image.jpg',
+  //   'https://velog.velcdn.com/images/citron03/profile/f42f4daf-0c74-4615-b7ef-cfc6db3f05d4/image.jpg',
+  // ];
   // 값 변경시 refecth하는 함수 (게시글 삭제, 좋아요)
   const postMutation = useMutation(
     async () => {
@@ -37,14 +43,22 @@ const TotalCommunity = ({navigation}) => {
     isLoading: totalPostDataLoading,
     data: totalPostDatas,
     refetch,
-  } = useQuery('totalPostDatas', async () => {
-    const {data} = await axios(`${BASE_URL}/post/getPostList`, {
-      params: {
-        key: kakaoUid,
+  } = useQuery(
+    'totalPostDatas',
+    async () => {
+      const {data} = await axios(`${BASE_URL}/post/getPostList`, {
+        params: {
+          key: kakaoUid,
+        },
+      });
+      return data;
+    },
+    {
+      onSuccess: res => {
+        console.log(res);
       },
-    });
-    return data;
-  });
+    },
+  );
   const handleLike = async (seq, like) => {
     try {
       await axios.post(`${BASE_URL}/post/postLike`, {
@@ -58,16 +72,13 @@ const TotalCommunity = ({navigation}) => {
   };
   const deletePost = async seq => {
     try {
-      await axios.get(`${BASE_URL}/post/deletePost`, {
-        params: {
-          postSeq: seq,
-        },
+      await axios.delete(`${BASE_URL}/post/deletePost`, {
+        data: {key: kakaoUid, postSeq: seq},
       });
     } catch {
       err => console.log(err);
     }
   };
-
   return (
     <Container>
       {!totalPostDataLoading && (
@@ -96,7 +107,7 @@ const TotalCommunity = ({navigation}) => {
                       });
                     }
                   }}>
-                  <UserImg source={{uri: item.profileImg}} />
+                  <UserImg source={{uri: item.profile_image}} />
                   <UserInfoView>
                     <UserName>{item.nickname}</UserName>
                     <PostTime>{getPostTime(item.reg_time)}</PostTime>
@@ -122,39 +133,49 @@ const TotalCommunity = ({navigation}) => {
                 ) : null}
               </UserWrapper>
 
-              <Divider />
-              <Swiper height={200} loadMinimal={true} showsButtons={true} loop>
-                <AlbumImgBtn
-                  onPress={async () => {
-                    await remote.playUri(item.music_uri);
-                  }}>
-                  <SelectedMusic>
-                    {item.album_title} - {item.album_artist_name}
-                  </SelectedMusic>
-                  <PostImg
-                    resizeMode="cover"
-                    source={{uri: item.album_image}}
-                  />
-                </AlbumImgBtn>
-                <ImageContainer>
-                  <PostImg resizeMode="cover" source={{uri: item.image1}} />
-                </ImageContainer>
-                <ImageContainer>
-                  <PostImg resizeMode="cover" source={{uri: item.image2}} />
-                </ImageContainer>
-                <ImageContainer>
-                  <PostImg resizeMode="cover" source={{uri: item.image3}} />
-                </ImageContainer>
-                <ImageContainer>
-                  <PostImg resizeMode="cover" source={{uri: item.image4}} />
-                </ImageContainer>
-                <ImageContainer>
-                  <PostImg resizeMode="cover" source={{uri: item.image5}} />
-                </ImageContainer>
-              </Swiper>
-              <Divider />
+              {item.album_title || item.image1 ? (
+                <>
+                  <Swiper height={200} showsButtons={true} loop>
+                    {item.album_title ? (
+                      <AlbumImgBtn
+                        onPress={async () => {
+                          await remote.playUri(item.music_uri);
+                        }}>
+                        <SelectedMusic>
+                          {item.album_title} - {item.album_artist_name}
+                        </SelectedMusic>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.album_image}}
+                        />
+                      </AlbumImgBtn>
+                    ) : null}
+                    {item.image1
+                      ? [
+                          item.image1,
+                          item.image2,
+                          item.image3,
+                          item.image4,
+                          item.image5,
+                        ]
+                          .filter(imgs => imgs !== null)
+                          .map(img => {
+                            return (
+                              <ImageContainer>
+                                <PostImg
+                                  resizeMode="cover"
+                                  source={{uri: img}}
+                                />
+                              </ImageContainer>
+                            );
+                          })
+                      : null}
+                  </Swiper>
+                </>
+              ) : null}
               <PostText> {item.input_text}</PostText>
 
+              <Divider />
               <InterContainer>
                 <Interaction
                   onPress={() => {
@@ -257,11 +278,10 @@ const SelectedMusic = styled.Text`
   font-size: 14px;
 `;
 
-const ImageContainer = styled.View`
+const ImageContainer = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
 `;
-
 const PostImg = styled.Image`
   width: 200;
   height: 200;

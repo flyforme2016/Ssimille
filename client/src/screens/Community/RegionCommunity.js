@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import getPostTime from '../../api/getPostTime';
+import getPostTime from '../../functions/getPostTime';
 import axios from 'axios';
 import Swiper from 'react-native-swiper';
 import {remote} from 'react-native-spotify-remote';

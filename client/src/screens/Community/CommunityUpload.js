@@ -11,6 +11,7 @@ const CommunityUpload = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
   const {myProfileData} = useSelector(state => state.myProfile);
   const {locationName} = useSelector(state => state.locationName);
+
   const [uploadImgs, setUploadImgs] = useState([]);
   const [postContent, setPostContent] = useState();
   let submitImgs = Array(5).fill(null);
@@ -30,14 +31,15 @@ const CommunityUpload = ({navigation, route}) => {
         isCropCircle: true,
       });
       setUploadImgs(response);
+      console.log('1', response);
     } catch (e) {
       console.log(e.code, e.message);
     }
-    await submitPhotos();
   };
   //사진 업로드
-  const submitPhotos = async event => {
+  const submitPhotos = async () => {
     const formdata = new FormData();
+    console.log('2', uploadImgs);
     try {
       await uploadImgs.map(MultipleImg => {
         formdata.append('multipleImg', {
@@ -54,6 +56,8 @@ const CommunityUpload = ({navigation, route}) => {
       const result = await (
         await fetch(`${BASE_URL}/s3/uploadMultipleImg`, requestOptions)
       ).json();
+      console.log('3', result);
+
       result.map(data => {
         submitImgs.shift();
         submitImgs.push(data.transforms[0].location);
@@ -62,22 +66,22 @@ const CommunityUpload = ({navigation, route}) => {
       err => console.log(err);
     }
     submitImgs.reverse();
+    console.log('4', submitImgs);
   };
 
   //upload post to server process
   const onSubmitPost = async () => {
+    await submitPhotos();
     try {
       await axios
         .post(`${BASE_URL}/post/uploadPost`, {
           key: myProfileData.kakao_user_number,
           regionDepth1: locationName.region_1depth_name,
           addressName: locationName.address_name,
-          musicUri: route.params.musicUri ? route.params.musicUri : null,
-          albumTitle: route.params.albumTitle ? route.params.albumTitle : null,
-          albumImg: route.params.albumImg ? route.params.albumImg : null,
-          albumArtistName: route.params.albumArtistName
-            ? route.params.albumArtistName
-            : null,
+          musicUri: route.params ? route.params.musicUri : null,
+          albumTitle: route.params ? route.params.albumTitle : null,
+          albumImg: route.params ? route.params.albumImg : null,
+          albumArtistName: route.params ? route.params.albumArtistName : null,
           inputText: postContent ? postContent : null,
           images: submitImgs,
         })
