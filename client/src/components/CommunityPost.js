@@ -4,83 +4,60 @@ import Swiper from 'react-native-swiper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {remote} from 'react-native-spotify-remote';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import PostComments from './PostComments';
 import Config from 'react-native-config';
 import checkIsFriend from '../api/checkIsFriend';
 import {useSelector} from 'react-redux';
 import getPostTime from '../functions/getPostTime';
 import {Alert} from 'react-native';
+import {deletePost} from '../api/community/deletePost';
+import {useQuery, useMutation} from 'react-query';
+import {handleLike} from '../api/community/handleLike';
+import {uploadComment} from '../api/community/uploadComment';
+import {deleteComment} from '../api/community/deleteComment';
 
 const CommunityPost = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
-
   const [comment, setComment] = useState();
-  const [data, setData] = useState();
-  const postSeq = route.params.post_seq;
-
-  useLayoutEffect(() => {
-    getComment();
-  }, []);
-  const getComment = async () => {
-    try {
-      await axios
-        .get(`${BASE_URL}/post/getPostComments`, {
-          params: {
-            postSeq: postSeq,
-          },
-        })
-        .then(
-          res => {
-            setData(res.data);
-            console.log('댓글', res.data);
-          },
-          err => {
-            console.log(err);
-          },
-        );
-    } catch {
-      err => console.log(err);
-    }
-  };
-
-  const uploadComment = async () => {
-    const value = await AsyncStorage.getItem('userNumber');
-    try {
-      await axios
-        .post(`${BASE_URL}/post/inputPostComment`, {
-          key: value,
-          postSeq: postSeq,
-          parent: 2,
-          comment: comment,
-        })
-        .then(
-          result => console.log(result, '업로드 완료'),
-          err => {
-            console.log(err);
-          },
-        );
-    } catch {
-      err => console.log(err);
-    }
-  };
-  const deletePost = async seq => {
-    await axios
-      .get(`${BASE_URL}/post/deletePost`, {
+  console.log(route.params.data);
+  const {
+    isLoading: commentsLoading,
+    data: postComments,
+    refetch,
+  } = useQuery(
+    'postComments',
+    async () => {
+      const {data} = await axios(`${BASE_URL}/post/getPostComments`, {
         params: {
-          postSeq: seq,
+          postSeq: route.params.data.post_seq,
         },
-      })
-      .then(
-        res => {
-          console.log('게시글 삭제 성공: ', res.data);
+      });
+      return data;
+    },
+    {
+      onSuccess: res => {
+        console.log('댓글', res);
+      },
+    },
+  );
+  const commentMutation = useMutation(
+    async () => {
+      const {data} = await axios(`${BASE_URL}/post/getPostComments`, {
+        params: {
+          postSeq: route.params.data.post_seq,
         },
-        err => {
-          console.log('삭제 실패', err);
-        },
-      );
-  };
+      });
+      return data;
+    },
+    {
+      onSuccess: data => {
+        console.log(data);
+        refetch();
+      },
+    },
+  );
+
   return (
     <Container>
       <Card>
@@ -89,7 +66,7 @@ const CommunityPost = ({navigation, route}) => {
             onPress={async () => {
               const flag = await checkIsFriend(
                 kakaoUid,
-                route.params.kakao_user_number,
+                route.params.data.kakao_user_number,
               );
               console.log('flag: ', flag);
               if (flag === -1) {
@@ -98,19 +75,19 @@ const CommunityPost = ({navigation, route}) => {
                 navigation.navigate('Stack', {
                   screen: 'OtherUserProfile',
                   params: {
-                    otherUid: route.params.kakao_user_number,
+                    otherUid: route.params.data.kakao_user_number,
                     isFriend: flag,
                   },
                 });
               }
             }}>
-            <UserImg source={{uri: route.params.profileImg}} />
+            <UserImg source={{uri: route.params.data.profile_image}} />
             <UserInfoView>
-              <UserName>{route.params.nickname}</UserName>
-              <PostTime>{getPostTime(route.params.reg_time)}</PostTime>
+              <UserName>{route.params.data.nickname}</UserName>
+              <PostTime>{getPostTime(route.params.data.reg_time)}</PostTime>
             </UserInfoView>
           </UserInfo>
-          {kakaoUid === route.params.kakao_user_number + '' ? (
+          {kakaoUid === route.params.data.kakao_user_number + '' ? (
             <Ionicons
               onPress={async () => {
                 Alert.alert('게시글 삭제', '게시글을 삭제하시겠습니까?', [
@@ -118,7 +95,7 @@ const CommunityPost = ({navigation, route}) => {
                   {
                     text: 'OK',
                     onPress: () => {
-                      deletePost(route.params.post_seq);
+                      deletePost(kakaoUid, route.params.data.post_seq);
                       // 프로필 or 전체 게시글로 다시 돌아감
                       navigation.goBack();
                     },
@@ -130,7 +107,7 @@ const CommunityPost = ({navigation, route}) => {
             />
           ) : null}
         </UserWrapper>
-        <PostText> {route.params.input_text}</PostText>
+        <PostText> {route.params.data.input_text}</PostText>
         <Divider />
 
         {/* <Swiper height={200} loadMinimal={true} showsButtons={true}>
@@ -150,26 +127,73 @@ const CommunityPost = ({navigation, route}) => {
         </Swiper> */}
 
         <InterContainer>
-          <Interaction onPress={() => {}}>
-            {route.params.likeNy ? (
+          <Interaction
+            onPress={() => {
+              handleLike(
+                kakaoUid,
+                route.params.data.post_seq,
+                route.params.data.likeNy,
+              );
+            }}>
+            {route.params.data.likeNy ? (
               <Ionicons name="heart" color="red" size={25} />
             ) : (
               <Ionicons name="heart-outline" size={25} />
             )}
-            <InteractionText> Like ({route.params.like_count})</InteractionText>
+            <InteractionText>
+              Like ({route.params.data.like_count})
+            </InteractionText>
           </Interaction>
           <Interaction>
             <Ionicons name="md-chatbubble-outline" size={25} />
             <InteractionText>
-              Comment ({route.params.commentCount})
+              Comment (
+              {postComments
+                ? postComments.length
+                : route.params.data.commentCount}
+              )
             </InteractionText>
           </Interaction>
         </InterContainer>
         <Divider />
-        <PostComments
-          data={data}
-          keyExtractor={item => item.comment_seq + ''}
-        />
+        {!commentsLoading && (
+          <CommentList
+            data={postComments}
+            horizontal={false}
+            keyExtractor={item => item.comment_seq + ''}
+            renderItem={({item}) => (
+              <CommentsContainer>
+                <CommentWrapper>
+                  <CommentUser source={{uri: item.profileImg}} />
+                  <CommentBox>
+                    <UserText>{item.nickname}</UserText>
+                    <CommentText>{item.comment}</CommentText>
+                  </CommentBox>
+                  <PostTime>{getPostTime(item.reg_time)}</PostTime>
+
+                  {kakaoUid === item.kakao_user_number + '' ? (
+                    <Ionicons
+                      onPress={async () => {
+                        Alert.alert('댓글 삭제', '댓글을 삭제하시겠습니까?', [
+                          {text: 'Cancel'},
+                          {
+                            text: 'OK',
+                            onPress: () => {
+                              deleteComment(item.comment_seq);
+                              commentMutation.mutate();
+                            },
+                          },
+                        ]);
+                      }}
+                      name="ellipsis-horizontal"
+                      size={25}
+                    />
+                  ) : null}
+                </CommentWrapper>
+              </CommentsContainer>
+            )}
+          />
+        )}
         <CommentInputContainer>
           <CommentInput
             multiline={true}
@@ -177,7 +201,12 @@ const CommunityPost = ({navigation, route}) => {
             value={comment}
             onChangeText={text => setComment(text)}
           />
-          <PostBtn onPress={uploadComment}>
+          <PostBtn
+            onPress={() => {
+              uploadComment(kakaoUid, route.params.data.post_seq, comment);
+              setComment('');
+              commentMutation.mutate();
+            }}>
             <Ionicons name="send" size={25} />
           </PostBtn>
         </CommentInputContainer>
@@ -289,5 +318,35 @@ const CommentInput = styled.TextInput`
   margin-right: 10px;
 `;
 const PostBtn = styled.TouchableOpacity``;
+
+const CommentList = styled.FlatList`
+  width: 90%;
+`;
+
+const CommentsContainer = styled.View`
+  align-items: center;
+  flex-direction: row;
+  margin: 4px 0;
+  padding: 4px;
+`;
+const CommentWrapper = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+const CommentUser = styled.Image`
+  width: 40;
+  height: 40;
+  border-radius: 20px;
+  margin-right: 8px;
+`;
+const CommentBox = styled.View``;
+const UserText = styled.Text`
+  font-size: 12px;
+`;
+const CommentText = styled.Text`
+  font-size: 10px;
+  margin-top: 2px;
+`;
 
 export default CommunityPost;

@@ -8,9 +8,8 @@ import axios from 'axios';
 
 const {width} = Dimensions.get('window');
 
-const GridPosts = ({navigation}) => {
+const GridPosts = ({navigation, userId}) => {
   const BASE_URL = Config.BASE_URL;
-  const {kakaoUid} = useSelector(state => state.kakaoUid);
 
   //내 게시글 가져오기
   const {isLoading: postDataLoading, data: postDatas} = useQuery(
@@ -18,7 +17,7 @@ const GridPosts = ({navigation}) => {
     async () => {
       const {data} = await axios(`${BASE_URL}/post/getMyPost`, {
         params: {
-          key: kakaoUid,
+          key: userId,
         },
       });
       return data;
@@ -32,24 +31,25 @@ const GridPosts = ({navigation}) => {
             return (
               <Post
                 width={width}
-                // onPress={navigation.push('Stack', {
-                //   screen: 'CommunityPost',
-                //   params: {
-                //     post_seq: item.post_seq,
-                //     kakao_user_id: item.kakao_user_number,
-                //     profileImg: item.profileImg,
-                //     nickname: item.nickname,
-                //     input_text: item.input_text,
-                //     like_count: item.like_count,
-                //     albumTitle: item.album_title,
-                //     albumArtistName: item.album_artist_name,
-                //     albumImg: item.album_image,
-                //     musicUri: item.music_uri,
-                //     commentCount: item.commentCount,
-                //     likeNy: item.likeNy,
-                //   },
-                // })}>
-              >
+                onPress={() => {
+                  navigation.push('Stack', {
+                    screen: 'CommunityPost',
+                    params: {
+                      post_seq: item.post_seq,
+                      kakao_user_id: item.kakao_user_number,
+                      profileImg: item.profileImg,
+                      nickname: item.nickname,
+                      input_text: item.input_text,
+                      like_count: item.like_count,
+                      albumTitle: item.album_title,
+                      albumArtistName: item.album_artist_name,
+                      albumImg: item.album_image,
+                      musicUri: item.music_uri,
+                      commentCount: item.commentCount,
+                      likeNy: item.likeNy,
+                    },
+                  });
+                }}>
                 {item.album_image ? (
                   <PostImg width={width} source={{uri: item.album_image}} />
                 ) : (

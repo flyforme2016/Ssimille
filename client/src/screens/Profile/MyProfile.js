@@ -100,7 +100,7 @@ const Profile = ({navigation}) => {
               </MusicInfoContainer>
             </Card>
           ) : null}
-          <ProfileTabBar />
+          <ProfileTabBar userId={myProfileData.kakao_user_number} />
         </Container>
         <SpotifyTab />
       </>

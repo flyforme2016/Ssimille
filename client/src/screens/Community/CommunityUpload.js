@@ -11,14 +11,13 @@ const CommunityUpload = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
   const {myProfileData} = useSelector(state => state.myProfile);
   const {locationName} = useSelector(state => state.locationName);
-
   const [uploadImgs, setUploadImgs] = useState([]);
   const [postContent, setPostContent] = useState();
   let submitImgs = Array(5).fill(null);
 
   useEffect(() => {
     return () => {
-      DeviceEventEmitter.emit('test');
+      DeviceEventEmitter.emit('refetch community');
     };
   }, []);
   const handleImgUpload = async () => {
@@ -31,7 +30,6 @@ const CommunityUpload = ({navigation, route}) => {
         isCropCircle: true,
       });
       setUploadImgs(response);
-      console.log('1', response);
     } catch (e) {
       console.log(e.code, e.message);
     }
@@ -39,7 +37,6 @@ const CommunityUpload = ({navigation, route}) => {
   //사진 업로드
   const submitPhotos = async () => {
     const formdata = new FormData();
-    console.log('2', uploadImgs);
     try {
       await uploadImgs.map(MultipleImg => {
         formdata.append('multipleImg', {
@@ -56,7 +53,6 @@ const CommunityUpload = ({navigation, route}) => {
       const result = await (
         await fetch(`${BASE_URL}/s3/uploadMultipleImg`, requestOptions)
       ).json();
-      console.log('3', result);
 
       result.map(data => {
         submitImgs.shift();
@@ -66,7 +62,6 @@ const CommunityUpload = ({navigation, route}) => {
       err => console.log(err);
     }
     submitImgs.reverse();
-    console.log('4', submitImgs);
   };
 
   //upload post to server process

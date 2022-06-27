@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import getPostTime from '../../functions/getPostTime';
@@ -10,17 +10,20 @@ import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import checkIsFriend from '../../api/checkIsFriend';
 import {useQuery, useMutation} from 'react-query';
+import {DeviceEventEmitter} from 'react-native';
+import {deletePost} from '../../api/community/deletePost';
+import {handleLike} from '../../api/community/handleLike';
 
 const TotalCommunity = ({navigation}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
-  // 이미지 null 값 테스트
-  // const IMAGE = [
-  //   'https://velog.velcdn.com/images/citron03/profile/f42f4daf-0c74-4615-b7ef-cfc6db3f05d4/image.jpg',
-  //   'https://velog.velcdn.com/images/citron03/profile/f42f4daf-0c74-4615-b7ef-cfc6db3f05d4/image.jpg',
-  //   'https://velog.velcdn.com/images/citron03/profile/f42f4daf-0c74-4615-b7ef-cfc6db3f05d4/image.jpg',
-  //   'https://velog.velcdn.com/images/citron03/profile/f42f4daf-0c74-4615-b7ef-cfc6db3f05d4/image.jpg',
-  // ];
+
+  useEffect(() => {
+    DeviceEventEmitter.addListener('refetch community', () => {
+      refetch();
+    });
+  }, []);
+
   // 값 변경시 refecth하는 함수 (게시글 삭제, 좋아요)
   const postMutation = useMutation(
     async () => {
@@ -59,26 +62,7 @@ const TotalCommunity = ({navigation}) => {
       },
     },
   );
-  const handleLike = async (seq, like) => {
-    try {
-      await axios.post(`${BASE_URL}/post/postLike`, {
-        key: kakaoUid,
-        postSeq: seq,
-        check: !like,
-      });
-    } catch {
-      err => console.log(err);
-    }
-  };
-  const deletePost = async seq => {
-    try {
-      await axios.delete(`${BASE_URL}/post/deletePost`, {
-        data: {key: kakaoUid, postSeq: seq},
-      });
-    } catch {
-      err => console.log(err);
-    }
-  };
+
   return (
     <Container>
       {!totalPostDataLoading && (
@@ -121,7 +105,7 @@ const TotalCommunity = ({navigation}) => {
                         {
                           text: 'OK',
                           onPress: () => {
-                            deletePost(item.post_seq);
+                            deletePost(kakaoUid, item.post_seq);
                             postMutation.mutate();
                           },
                         },
@@ -136,7 +120,7 @@ const TotalCommunity = ({navigation}) => {
               {item.album_title || item.image1 ? (
                 <>
                   <Swiper height={200} showsButtons={true} loop>
-                    {item.album_title ? (
+                    {/* {item.album_title ? (
                       <AlbumImgBtn
                         onPress={async () => {
                           await remote.playUri(item.music_uri);
@@ -149,7 +133,7 @@ const TotalCommunity = ({navigation}) => {
                           source={{uri: item.album_image}}
                         />
                       </AlbumImgBtn>
-                    ) : null}
+                    ) : null} */}
                     {item.image1
                       ? [
                           item.image1,
@@ -179,9 +163,7 @@ const TotalCommunity = ({navigation}) => {
               <InterContainer>
                 <Interaction
                   onPress={() => {
-                    const seq = item.post_seq;
-                    const like = item.likeNy;
-                    handleLike(seq, like);
+                    handleLike(kakaoUid, item.post_seq, item.likeNy);
                     postMutation.mutate();
                   }}>
                   {item.likeNy ? (
@@ -196,18 +178,7 @@ const TotalCommunity = ({navigation}) => {
                     navigation.navigate('Stack', {
                       screen: 'CommunityPost',
                       params: {
-                        post_seq: item.post_seq,
-                        kakao_user_id: item.kakao_user_number,
-                        profileImg: item.profileImg,
-                        nickname: item.nickname,
-                        input_text: item.input_text,
-                        like_count: item.like_count,
-                        albumTitle: item.album_title,
-                        albumArtistName: item.album_artist_name,
-                        albumImg: item.album_image,
-                        musicUri: item.music_uri,
-                        commentCount: item.commentCount,
-                        likeNy: item.likeNy,
+                        data: item,
                       },
                     });
                   }}>

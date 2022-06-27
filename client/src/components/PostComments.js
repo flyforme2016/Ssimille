@@ -1,8 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
+import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {Alert} from 'react-native';
+import {deleteComment} from '../api/community/deleteComment';
+import {useMutation, useQuery} from 'react-query';
+import axios from 'axios';
+import Config from 'react-native-config';
+const BASE_URL = Config.BASE_URL;
 
 const PostComments = ({data, keyExtractor}) => {
-  const [visible, setVisible] = useState();
+  const {kakaoUid} = useSelector(state => state.kakaoUid);
 
   return (
     <CommentList
@@ -15,47 +23,25 @@ const PostComments = ({data, keyExtractor}) => {
           <CommentBox>
             <UserText>{item.nickname}</UserText>
             <CommentText>{item.comment}</CommentText>
-            <CommentText>{item.comment_seq}</CommentText>
           </CommentBox>
-          <RecommentBtn
-            onPress={() => {
-              const clicked = item.comment_seq;
-              console.log('clicked', clicked);
-              setVisible(prev => !prev);
-            }}>
-            <RecommnetText>
-              {item.del_ny ? '답글보기'(item.del_ny) : '답글달기'}
-            </RecommnetText>
-          </RecommentBtn>
-          {visible &&
-            // <RecommentList
-            //   clicked={clicked}
-            //   data={data.filter(content => content.parent === clicked)}
-            //   horizontal={false}
-            //   keyExtractor={res => res.comment_seq + ''}
-            //   renderItem={({res}) => (
-            //     <CommentsContainer>
-            //       <CommentUser source={{uri: res.profileImg}} />
-            //       <CommentBox>
-            //         <UserText>{res.nickname}</UserText>
-            //         <CommentText>{res.comment}</CommentText>
-            //       </CommentBox>
-            //     </CommentsContainer>
-            //   )}
-            // />
-            data
-              .filter(content => content.parent === 0)
-              .map(items => {
-                return (
-                  <RecommentContainer>
-                    <CommentUser source={{uri: items.profileImg}} />
-                    <CommentBox>
-                      <UserText>{items.nickname}</UserText>
-                      <CommentText>{items.comment}</CommentText>
-                    </CommentBox>
-                  </RecommentContainer>
-                );
-              })}
+
+          {kakaoUid === item.kakao_user_number + '' ? (
+            <Ionicons
+              onPress={async () => {
+                Alert.alert('댓글 삭제', '댓글을 삭제하시겠습니까?', [
+                  {text: 'Cancel'},
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      deleteComment(item.comment_seq);
+                    },
+                  },
+                ]);
+              }}
+              name="ellipsis-horizontal"
+              size={25}
+            />
+          ) : null}
         </CommentsContainer>
       )}
     />
@@ -84,20 +70,5 @@ const CommentText = styled.Text`
   font-size: 10px;
   margin-top: 2px;
 `;
-const RecommentContainer = styled.View`
-  background-color: tomato;
 
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-left: 20px;
-`;
-const RecommentBtn = styled.TouchableOpacity`
-  position: absolute;
-  right: 0px;
-  margin: 8px;
-  padding: 3px;
-`;
-const RecommnetText = styled.Text`
-  font-size: 8px;
-`;
 export default PostComments;

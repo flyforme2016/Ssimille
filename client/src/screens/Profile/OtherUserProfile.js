@@ -6,14 +6,14 @@ import CustomButton from '../../components/CustomButtons';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
 import Config from 'react-native-config';
 import {View, Text, TouchableOpacity} from 'react-native';
-import sendAlarm from '../../functions/sendAlarm'
+import sendAlarm from '../../functions/sendAlarm';
 import deleteFriend from '../../functions/deleteFriend';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 const Profile = ({navigation, route}) => {
   const [isFollow, setIsFollow] = useState(route.params.isFriend);
   const [otherUserData, setOtherUserData] = useState({});
-  const myUid = useSelector(state => state.kakaoUid)
+  const myUid = useSelector(state => state.kakaoUid);
   const otherUserUid = route.params.otherUid;
   const BASE_URL = Config.BASE_URL;
   const HashTag = [
@@ -46,14 +46,19 @@ const Profile = ({navigation, route}) => {
   }, []);
 
   const addFriendListener = () => {
-    if(!isFollow){
+    if (!isFollow) {
       setIsFollow(!isFollow);
-      sendAlarm(myUid.kakaoUid, otherUserData, "회원님을 팔로우 하였습니다.", 1)
-    }else{
+      sendAlarm(
+        myUid.kakaoUid,
+        otherUserData,
+        '회원님을 팔로우 하였습니다.',
+        1,
+      );
+    } else {
       setIsFollow(!isFollow);
-      deleteFriend(myUid.kakaoUid, otherUserUid)
+      deleteFriend(myUid.kakaoUid, otherUserUid);
     }
-  }
+  };
 
   return (
     <Container>
@@ -163,7 +168,7 @@ const Profile = ({navigation, route}) => {
         </Button>
       </BtnContainer>
 
-      <ProfileTabBar />
+      <ProfileTabBar userId={otherUserUid} />
     </Container>
   );
 };

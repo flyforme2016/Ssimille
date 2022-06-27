@@ -3,7 +3,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GridPosts from './GridPosts';
 
-const ProfileTabBar = () => {
+const ProfileTabBar = ({userId}) => {
   const Tab = createMaterialTopTabNavigator();
 
   return (
@@ -25,7 +25,10 @@ const ProfileTabBar = () => {
           return <Ionicons name={iconName} color={color} size={20} />;
         },
       })}>
-      <Tab.Screen name="GridPosts" component={GridPosts} />
+      <Tab.Screen
+        name="GridPosts"
+        children={() => <GridPosts userId={userId} />}
+      />
     </Tab.Navigator>
   );
 };

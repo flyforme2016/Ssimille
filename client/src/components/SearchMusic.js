@@ -4,13 +4,15 @@ import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import Config from 'react-native-config';
 
-const SearchMusic = ({navigation, route}) => {
-  const BASE_URL = Config.BASE_URL;
+const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
+const BASE_URL = Config.BASE_URL;
 
+const SearchMusic = ({navigation, route}) => {
   const SpotifyWebApi = require('spotify-web-api-node');
   const spotifyApi = new SpotifyWebApi({
-    clientID: '9912bb2704184ec5acea5688b54c459b',
-    clientSecret: 'a060b8460dbd4fdd8e045aac32af1d9c',
+    clientID: `${SPOTIFY_CLIENT_ID}`,
+    clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
     redirectURL: `${BASE_URL}/spotify/oauth/callback`,
   });
   const [searchName, setSearchName] = useState();
@@ -21,20 +23,22 @@ const SearchMusic = ({navigation, route}) => {
     await spotifyApi.setAccessToken(spotifyToken);
     await spotifyApi.searchTracks(searchName).then(
       data => {
+        console.log('data', data);
         setData(data.body.tracks.items);
       },
-      err => {
-        console.error(err);
-      },
+      err => console.log(err),
     );
   };
+
   return (
     <Container>
       <SearchContainer>
         <SearchInput
           placeholder="음악을 검색해주세요"
           value={searchName}
-          onChangeText={text => setSearchName(text)}
+          onChangeText={text => {
+            setSearchName(text);
+          }}
         />
         <SearchBtn
           onPress={async () => {
