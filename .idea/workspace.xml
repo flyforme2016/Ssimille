@@ -4,21 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.24 Complete delete friend">
-      <change beforePath="$PROJECT_DIR$/client/src/components/CommunityPost.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/CommunityPost.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/PostComments.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/PostComments.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/SearchMusic.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SearchMusic.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/GridPosts.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/GridPosts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/PostList.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/ProfileTapBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/ProfileTapBar.js" afterDir="false" />
-    </list>
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.28 Alarm">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.24 Complete delete friend" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,7 +16,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="gijeong" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
