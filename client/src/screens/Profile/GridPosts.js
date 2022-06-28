@@ -10,7 +10,6 @@ const {width} = Dimensions.get('window');
 
 const GridPosts = ({navigation, userId}) => {
   const BASE_URL = Config.BASE_URL;
-
   //내 게시글 가져오기
   const {isLoading: postDataLoading, data: postDatas} = useQuery(
     'myPostDatas',
@@ -23,6 +22,7 @@ const GridPosts = ({navigation, userId}) => {
       return data;
     },
   );
+
   return (
     <GridList>
       <Container>
@@ -35,18 +35,7 @@ const GridPosts = ({navigation, userId}) => {
                   navigation.push('Stack', {
                     screen: 'CommunityPost',
                     params: {
-                      post_seq: item.post_seq,
-                      kakao_user_id: item.kakao_user_number,
-                      profileImg: item.profileImg,
-                      nickname: item.nickname,
-                      input_text: item.input_text,
-                      like_count: item.like_count,
-                      albumTitle: item.album_title,
-                      albumArtistName: item.album_artist_name,
-                      albumImg: item.album_image,
-                      musicUri: item.music_uri,
-                      commentCount: item.commentCount,
-                      likeNy: item.likeNy,
+                      data: item,
                     },
                   });
                 }}>

@@ -5,7 +5,6 @@ import GridPosts from './GridPosts';
 
 const ProfileTabBar = ({userId}) => {
   const Tab = createMaterialTopTabNavigator();
-
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({

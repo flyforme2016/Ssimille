@@ -17,6 +17,8 @@ const Profile = ({navigation}) => {
     myProfileData.tag5_cd,
   ].filter(tag => tag !== null);
 
+  const refetch = () => {};
+
   return (
     myProfileData && (
       <>
@@ -28,13 +30,8 @@ const Profile = ({navigation}) => {
                 navigation.push('Stack', {
                   screen: 'ProfileEdit',
                   params: {
-                    profileImg: myProfileData.profile_image,
-                    nickname: myProfileData.nickname,
+                    data: myProfileData,
                     hashTag: HashTag,
-                    profileMusic: myProfileData.profile_music_uri,
-                    albumImg: myProfileData.album_image,
-                    albumTitle: myProfileData.album_title,
-                    artistName: myProfileData.album_artist_name,
                   },
                 })
               }>
@@ -88,6 +85,7 @@ const Profile = ({navigation}) => {
               <MusicInfoContainer
                 onPress={() => {
                   remote.playUri(myProfileData.profile_music_uri);
+                  console.log('uri로 노래 재생하기 테스트 ');
                 }}>
                 <MusicWrapper>
                   <CoverImg source={{uri: myProfileData.album_image}} />
@@ -102,7 +100,7 @@ const Profile = ({navigation}) => {
           ) : null}
           <ProfileTabBar userId={myProfileData.kakao_user_number} />
         </Container>
-        <SpotifyTab />
+        <SpotifyTab refetch={refetch} />
       </>
     )
   );
@@ -147,7 +145,6 @@ const UserInfo = styled.View`
 `;
 
 const Card = styled.View`
-  background-color: #ffffff;
   justify-content: center;
   align-items: center;
   margin: 5px 20px;
@@ -155,7 +152,6 @@ const Card = styled.View`
 `;
 
 const MusicInfoContainer = styled.TouchableOpacity`
-  width: 80%;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;

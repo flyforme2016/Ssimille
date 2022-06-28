@@ -25,22 +25,9 @@ const TotalCommunity = ({navigation}) => {
   }, []);
 
   // 값 변경시 refecth하는 함수 (게시글 삭제, 좋아요)
-  const postMutation = useMutation(
-    async () => {
-      const {data} = await axios(`${BASE_URL}/post/getPostList`, {
-        params: {
-          key: kakaoUid,
-        },
-      });
-      return data;
-    },
-    {
-      onSuccess: data => {
-        console.log(data);
-        refetch();
-      },
-    },
-  );
+  const postMutation = useMutation(async () => {
+    refetch();
+  });
   // 전체 게시글 가져오기
   const {
     isLoading: totalPostDataLoading,
@@ -120,7 +107,7 @@ const TotalCommunity = ({navigation}) => {
               {item.album_title || item.image1 ? (
                 <>
                   <Swiper height={200} showsButtons={true} loop>
-                    {/* {item.album_title ? (
+                    {item.album_title ? (
                       <AlbumImgBtn
                         onPress={async () => {
                           await remote.playUri(item.music_uri);
@@ -133,7 +120,7 @@ const TotalCommunity = ({navigation}) => {
                           source={{uri: item.album_image}}
                         />
                       </AlbumImgBtn>
-                    ) : null} */}
+                    ) : null}
                     {item.image1
                       ? [
                           item.image1,

@@ -1,6 +1,6 @@
 import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
-import {remote} from 'react-native-spotify-remote';
+import {remote, SpotifyRemoteEvents} from 'react-native-spotify-remote';
 import MarqueeView from 'react-native-marquee-view';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useSelector} from 'react-redux';
@@ -12,6 +12,7 @@ const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
 const BASE_URL = Config.BASE_URL;
 
 const SpotifyTab = () => {
+  console.log('enter spotify tab and render music');
   const {spotifyToken} = useSelector(state => state.spotifyToken);
   const SpotifyWebApi = require('spotify-web-api-node');
   const spotifyWebApi = new SpotifyWebApi({
@@ -19,13 +20,10 @@ const SpotifyTab = () => {
     clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
     redirectURL: `${BASE_URL}/spotify/oauth/callback`,
   });
-  useLayoutEffect(() => {
-    const setToken = async () => {
-      await remote.connect(spotifyToken);
-    };
-    setToken();
-  }, []);
 
+  remote.addListener('playerStateChanged', event => {
+    refetch();
+  });
   const {
     isLoading,
     data: CurrentMusic,
@@ -33,6 +31,7 @@ const SpotifyTab = () => {
   } = useQuery(
     'CurrentMusic',
     async () => {
+      await remote.connect(spotifyToken);
       const data = await remote.getPlayerState();
       return data;
     },
@@ -46,36 +45,15 @@ const SpotifyTab = () => {
         await spotifyWebApi.setAccessToken(spotifyToken);
         await spotifyWebApi.getAlbum(albumUri).then(img => {
           const albumImg = img.body.images[0].url;
-
           setCoverImg(albumImg);
-          return albumImg;
         });
       },
     },
   );
 
-  const musicMutation = useMutation(
-    async () => {
-      const {track} = await remote.getPlayerState();
-      return track;
-    },
-    {
-      onSuccess: async data => {
-        console.log('refetch 성공', data);
-        const uri = data.track.album.uri;
-        const exp = 'spotify:album:';
-        const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
-        const albumUri = uri.substring(startIndex + exp.length);
-
-        await spotifyWebApi.setAccessToken(spotifyToken);
-        await spotifyWebApi.getAlbum(albumUri).then(img => {
-          const albumImg = img.body.images[0].url;
-          setCoverImg(albumImg);
-        });
-        refetch();
-      },
-    },
-  );
+  const musicMutation = useMutation(async () => {
+    refetch();
+  });
 
   const [coverImg, setCoverImg] = useState();
 
@@ -100,8 +78,8 @@ const SpotifyTab = () => {
           </MusicInfo>
           <ContolContainer>
             <MusicControlBtn //이전 곡으로
-              onPress={() => {
-                remote.skipToPrevious();
+              onPress={async () => {
+                await remote.skipToPrevious();
                 musicMutation.mutate();
               }}
               type="play-back"
@@ -125,9 +103,10 @@ const SpotifyTab = () => {
               />
             )}
             <MusicControlBtn //다음 곡으로
-              onPress={() => {
-                remote.skipToNext();
+              onPress={async () => {
                 console.log('clicked');
+
+                await remote.skipToNext();
                 musicMutation.mutate();
               }}
               type="play-forward"

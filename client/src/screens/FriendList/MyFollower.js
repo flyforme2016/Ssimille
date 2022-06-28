@@ -18,7 +18,6 @@ const MyFollower = ({navigation: {navigate}}) => {
 
   useLayoutEffect(() => {
     getMyFollowerList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
   const getMyFollowerList = async () => {
@@ -51,8 +50,11 @@ const MyFollower = ({navigation: {navigate}}) => {
         renderItem={({item}) => (
           <Card
             width={width}
-            nPress={ async () => {
-              const flag = await checkIsFriend(myUid, item.friend_kakao_user_number)
+            nPress={async () => {
+              const flag = await checkIsFriend(
+                myUid,
+                item.friend_kakao_user_number,
+              );
               navigation.navigate('Stack', {
                 screen: 'OtherUserProfile',
                 params: {

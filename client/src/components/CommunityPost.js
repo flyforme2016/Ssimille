@@ -1,10 +1,9 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import Swiper from 'react-native-swiper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {remote} from 'react-native-spotify-remote';
 import axios from 'axios';
-import PostComments from './PostComments';
 import Config from 'react-native-config';
 import checkIsFriend from '../api/checkIsFriend';
 import {useSelector} from 'react-redux';
@@ -20,7 +19,7 @@ const CommunityPost = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const [comment, setComment] = useState();
-  console.log(route.params.data);
+  console.log('gridpost datas', route.params.data);
   const {
     isLoading: commentsLoading,
     data: postComments,
@@ -41,22 +40,9 @@ const CommunityPost = ({navigation, route}) => {
       },
     },
   );
-  const commentMutation = useMutation(
-    async () => {
-      const {data} = await axios(`${BASE_URL}/post/getPostComments`, {
-        params: {
-          postSeq: route.params.data.post_seq,
-        },
-      });
-      return data;
-    },
-    {
-      onSuccess: data => {
-        console.log(data);
-        refetch();
-      },
-    },
-  );
+  const commentMutation = useMutation(async () => {
+    refetch();
+  });
 
   return (
     <Container>

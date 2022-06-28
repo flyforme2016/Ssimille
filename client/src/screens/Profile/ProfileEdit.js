@@ -16,7 +16,8 @@ const ProfileEdit = ({navigation, route}) => {
   const reduxDispatch = useDispatch();
   const [idx, setIdx] = useState(route.params.hashTag);
   const [changeName, setChangeName] = useState();
-  const routeDatas = route.params;
+  const routeDatas = route.params.data;
+  console.log(routeDatas);
   const BASE_URL = Config.BASE_URL;
   const [profileImg, setProfileImg] = useState();
 
@@ -48,22 +49,6 @@ const ProfileEdit = ({navigation, route}) => {
       let result;
       if (profileImg?.path) {
         result = await postProfileImgToS3(profileImg);
-        // const formdata = new FormData();
-        // const newImageUri = 'file://' + profileImg.path;
-        // formdata.append('profileImg', {
-        //   uri: newImageUri,
-        //   type: profileImg.mime,
-        //   name: profileImg.fileName,
-        // });
-        // console.log('formdata: ', formdata);
-
-        // const result = await (
-        //   await fetch(`${BASE_URL}/s3/uploadProfileImg`, {
-        //     method: 'POST',
-        //     body: formdata,
-        //     redirect: 'follow',
-        //   })
-        // ).json();
       }
 
       await axios
@@ -83,7 +68,7 @@ const ProfileEdit = ({navigation, route}) => {
           albumImage: routeDatas.albumImg
             ? routeDatas.albumImg
             : routeDatas.albumImg,
-          hashTag: idx ? idx : routeDatas.hashTag,
+          hashTag: idx ? idx : route.params.hashTag,
         })
         .then(
           res => {
@@ -114,7 +99,7 @@ const ProfileEdit = ({navigation, route}) => {
             source={{
               uri: profileImg
                 ? 'file://' + (profileImg?.crop?.cropPath ?? profileImg.path)
-                : route.params.profileImg,
+                : route.params.data.profile_image,
             }}>
             <Ionicons name="camera-outline" size={35} />
           </ImgBackground>
@@ -122,7 +107,7 @@ const ProfileEdit = ({navigation, route}) => {
 
         <SelectContainer>
           <NameInput
-            placeholder={route.params.nickname}
+            placeholder={route.params.data.nickname}
             value={changeName}
             text-center={true}
             onChangeText={text => {
@@ -134,12 +119,13 @@ const ProfileEdit = ({navigation, route}) => {
           </ControlBtn>
         </SelectContainer>
 
-        {route.params.albumTitle ? (
+        {route.params.data.album_title ? (
           <SelectContainer>
             <SelectedWrapper>
-              <SelectedImg source={{uri: route.params.albumImg}} />
+              <SelectedImg source={{uri: route.params.data.album_image}} />
               <SelectedMusic>
-                {route.params.albumTitle} - {route.params.artistName}
+                {route.params.data.album_title} -
+                {route.params.data.album_artist_name}
               </SelectedMusic>
             </SelectedWrapper>
 
