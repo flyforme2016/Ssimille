@@ -23,9 +23,18 @@ exports.myChatListCollectionRef = (uid1) => {
     return chatListFinalCollectionRef
 }
 
-exports.alarmRef = (myUid) => {
+exports.alarmRef = (uid) => {
     const alarmCollectionRef = collection(database, 'Alarm')
-    const alarmDocumentRef = doc(alarmCollectionRef, myUid)
+    const alarmDocumentRef = doc(alarmCollectionRef, uid)
     const alarmFinalCollectionRef = collection(alarmDocumentRef, 'AlarmList')
     return alarmFinalCollectionRef
 }
+
+exports.stackAlarmDocRef = (uid) => {
+    const stackAlarmCollectionRef = collection(database, 'Alarm')
+    const stackAlarmDocumentRef = doc(stackAlarmCollectionRef, uid)
+    const stackAlarmCollectionRef2 = collection(stackAlarmDocumentRef, 'AlarmList')
+    const stackAlarmFinalDocument = doc(stackAlarmCollectionRef2, 'stackAlarm')
+    return stackAlarmFinalDocument
+}
+

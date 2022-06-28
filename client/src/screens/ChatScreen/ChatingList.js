@@ -39,20 +39,31 @@ const ChatingList = ({navigation}) => {
   //chatList 입장시 한번만 채팅목록 가져오기 실시간 x
   async function getChatList() {
     console.log('start getChatList');
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(doc => {
-      console.log('doc.data(): ', doc.data())
+    const subscrebe = onSnapshot(q, querySnapshot => {
+      setMessages(
+        querySnapshot.docs.map(doc=>({
+          _id: doc.data()._id,
+          createdAt: doc.data().createdAt,
+          text: doc.data().text,
+          user: doc.data().setDocUserObj,
+          stack: doc.data().stack,
+        }))
+      )
     })
-    querySnapshot.forEach( doc => {
-      const initObject = {
-        _id: doc.data()._id,
-        createdAt: getChatListTime(doc.data().createdAt.toDate().toISOString()),
-        text: doc.data().text,
-        user: doc.data().setDocUserObj,
-        stack: doc.data().stack,
-      }
-      setMessages(messages=>[...messages, initObject])
-    })
+    // const querySnapshot = await getDocs(q);
+    // querySnapshot.forEach(doc => {
+    //   console.log('doc.data(): ', doc.data())
+    // })
+    // querySnapshot.forEach( doc => {
+    //   const initObject = {
+    //     _id: doc.data()._id,
+    //     createdAt: getChatListTime(doc.data().createdAt.toDate().toISOString()),
+    //     text: doc.data().text,
+    //     user: doc.data().setDocUserObj,
+    //     stack: doc.data().stack,
+    //   }
+    //   setMessages(messages=>[...messages, initObject])
+    // })
   };
 
   //chatList에 있는 동안 기존 또는 새로운 상대에게 메세지가 오는 경우
@@ -111,7 +122,7 @@ const ChatingList = ({navigation}) => {
                 <TextSection>
                   <UserInfoText>
                     <UserName>{item.user.name}</UserName>
-                    <PostTime>{item.createdAt}</PostTime>
+                    <PostTime>{getChatListTime(item.createdAt.toDate().toISOString())}</PostTime>
                   </UserInfoText>
                   <UserInfoText>
                     <MessageText>{item.text}</MessageText>

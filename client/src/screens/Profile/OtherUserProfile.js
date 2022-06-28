@@ -13,7 +13,8 @@ import {useSelector} from 'react-redux';
 const Profile = ({navigation, route}) => {
   const [isFollow, setIsFollow] = useState(route.params.isFriend);
   const [otherUserData, setOtherUserData] = useState({});
-  const myUid = useSelector(state => state.kakaoUid);
+  const {myProfileData} = useSelector(state => state.myProfile)
+  const myUid = useSelector(state => state.kakaoUid)
   const otherUserUid = route.params.otherUid;
   const BASE_URL = Config.BASE_URL;
   const HashTag = [
@@ -46,19 +47,21 @@ const Profile = ({navigation, route}) => {
   }, []);
 
   const addFriendListener = () => {
-    if (!isFollow) {
+    if(!isFollow){
       setIsFollow(!isFollow);
-      sendAlarm(
-        myUid.kakaoUid,
-        otherUserData,
-        '회원님을 팔로우 하였습니다.',
-        1,
-      );
-    } else {
+      const myData = {
+        uid: myProfileData.kakao_user_number.toString(),
+        nickname: myProfileData.nickname,
+        profile_image: myProfileData.profile_image
+      }
+      sendAlarm(myData, otherUserData, "회원님을 팔로우 하였습니다.", 1)
+      myProfileData.friend_count += 1
+    }else{
       setIsFollow(!isFollow);
-      deleteFriend(myUid.kakaoUid, otherUserUid);
+      deleteFriend(myUid.kakaoUid, otherUserUid)
+      myProfileData.friend_count -= 1
     }
-  };
+  }
 
   return (
     <Container>
