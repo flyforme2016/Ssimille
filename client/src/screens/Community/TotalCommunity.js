@@ -276,7 +276,6 @@ const InteractionText = styled.Text`
   font-size: 12px;
   font-weight: bold;
   margin: 5px;
-  //color: ${props => (props.active ? '#2e64e5' : '#333')};
 `;
 
 export default TotalCommunity;

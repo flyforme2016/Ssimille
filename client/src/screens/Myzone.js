@@ -111,5 +111,12 @@ const MarkerView = Styled.View`
 const LocationText = Styled.Text`
   font-size: 14px;
 `;
+const AcceptBtn = Styled.TouchableOpacity`
+  margin-top: 20px;
+  padding: 12px;
+  border: 2px solid #dddddd;
+  border-radius: 10px;
+  background-color: white;
+`;
 
 export default Myzone;

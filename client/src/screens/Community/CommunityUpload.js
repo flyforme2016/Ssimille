@@ -131,9 +131,10 @@ const CommunityUpload = ({navigation, route}) => {
             </MusicUploadBtn>
             {route.params ? (
               <SelectContainer>
-                <SelectedImg source={{uri: route.params.albumImg}} />
+                <SelectedImg source={{uri: route.params.data.albumImg}} />
                 <SelectedMusic>
-                  {route.params.albumTitle} - {route.params.albumArtistName}
+                  {route.params.data.albumTitle} -
+                  {route.params.data.albumArtistName}
                 </SelectedMusic>
               </SelectContainer>
             ) : null}

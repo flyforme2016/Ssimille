@@ -3,21 +3,16 @@ import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommunityTabBar from './CommunityTabBar';
 import SpotifyTab from '../../components/SpotifyTab';
-import {useIsFocused} from '@react-navigation/native';
 
 const Community = ({navigation: {push}}) => {
   return (
     <>
       <Container>
-        <NavBar>
-          <NavText>Community</NavText>
-          <UploadBtn onPress={() => push('Stack', {screen: 'CommunityUpload'})}>
-            <Ionicons name="duplicate" size={35} color="#b7b4df" />
-          </UploadBtn>
-        </NavBar>
-        <NavDivider />
         <CommunityTabBar />
       </Container>
+      <UploadBtn onPress={() => push('Stack', {screen: 'CommunityUpload'})}>
+        <BtnText>+</BtnText>
+      </UploadBtn>
       <SpotifyTab />
     </>
   );
@@ -28,25 +23,22 @@ const Container = styled.View`
   background-color: #ffffff;
 `;
 
-const NavDivider = styled.View`
-  border-bottom-color: gray;
-  border-bottom-width: 1px;
-  width: 90%;
-  align-self: center;
-`;
-const NavBar = styled.View`
-  flex-direction: row;
+const UploadBtn = styled.TouchableOpacity`
+  width: 50;
+  height: 50;
+  border-radius: 25px;
+  background-color: #b7b4df;
+  position: absolute;
+  z-index: 1;
+  right: 10;
+  bottom: 50;
   justify-content: center;
   align-items: center;
+  elevation: 5;
 `;
-const NavText = styled.Text`
-  color: #9b59b6;
-  font-size: 24;
-  padding: 10px;
-`;
-const UploadBtn = styled.TouchableOpacity`
-  width: 60;
-  position: relative;
+const BtnText = styled.Text`
+  font-size: 30px;
+  color: white;
 `;
 
 export default Community;

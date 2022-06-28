@@ -5,7 +5,7 @@ import {View, LogBox, PermissionsAndroid} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {useDispatch} from 'react-redux';
 import actions from '../actions/index';
-import SpotifyAuthentication from '../components/SpotifyAuthentication';
+import SpotifyAuthentication from '../functions/SpotifyAuthentication';
 import Config from 'react-native-config';
 import Geolocation from '@react-native-community/geolocation';
 

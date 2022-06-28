@@ -8,10 +8,10 @@ import ProfileEdit from '../screens/Profile/ProfileEdit';
 import KakaoLogin from '../screens/KakaoLogin';
 import SearchMusic from '../components/SearchMusic';
 import CommunityPost from '../components/CommunityPost';
-import SpotifyAuthentication from '../components/SpotifyAuthentication';
 import OtherUserProfile from '../screens/Profile/OtherUserProfile';
 import Onboarding from '../screens/Start/Start';
 import FavoriteSongs from '../components/FavoriteSongs';
+import SpotifyAuthentication from '../functions/SpotifyAuthentication';
 
 const NativeStack = createNativeStackNavigator();
 

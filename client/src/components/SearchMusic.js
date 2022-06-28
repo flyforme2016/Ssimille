@@ -23,7 +23,6 @@ const SearchMusic = ({navigation, route}) => {
     await spotifyApi.setAccessToken(spotifyToken);
     await spotifyApi.searchTracks(searchName).then(
       data => {
-        console.log('data', data);
         setData(data.body.tracks.items);
       },
       err => console.log(err),

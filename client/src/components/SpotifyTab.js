@@ -1,18 +1,17 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import {remote, SpotifyRemoteEvents} from 'react-native-spotify-remote';
+import {remote} from 'react-native-spotify-remote';
 import MarqueeView from 'react-native-marquee-view';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
-import {useQuery, useMutation} from 'react-query';
+import {useQuery} from 'react-query';
 
 const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
 const BASE_URL = Config.BASE_URL;
 
 const SpotifyTab = () => {
-  console.log('enter spotify tab and render music');
   const {spotifyToken} = useSelector(state => state.spotifyToken);
   const SpotifyWebApi = require('spotify-web-api-node');
   const spotifyWebApi = new SpotifyWebApi({
@@ -51,10 +50,6 @@ const SpotifyTab = () => {
     },
   );
 
-  const musicMutation = useMutation(async () => {
-    refetch();
-  });
-
   const [coverImg, setCoverImg] = useState();
 
   return (
@@ -80,7 +75,6 @@ const SpotifyTab = () => {
             <MusicControlBtn //이전 곡으로
               onPress={async () => {
                 await remote.skipToPrevious();
-                musicMutation.mutate();
               }}
               type="play-back"
             />
@@ -89,7 +83,6 @@ const SpotifyTab = () => {
                 //and if spotify is pausing playIcon is true
                 onPress={async () => {
                   remote.resume();
-                  musicMutation.mutate();
                 }}
                 type="play"
               />
@@ -97,17 +90,13 @@ const SpotifyTab = () => {
               <MusicControlBtn //else if playIcon is true enter here
                 onPress={async () => {
                   remote.pause();
-                  musicMutation.mutate();
                 }}
                 type="pause"
               />
             )}
             <MusicControlBtn //다음 곡으로
               onPress={async () => {
-                console.log('clicked');
-
                 await remote.skipToNext();
-                musicMutation.mutate();
               }}
               type="play-forward"
             />

@@ -9,6 +9,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';
+import TopNavBar from '../../components/TopNavBar';
 
 const Home = ({navigation: {navigate, push}}) => {
   const BASE_URL = Config.BASE_URL;
@@ -27,9 +28,9 @@ const Home = ({navigation: {navigate, push}}) => {
       });
       return data;
     },
-    { 
+    {
       onSuccess: res => {
-        console.log('myProfileData save by redux')
+        console.log('myProfileData save by redux');
         dispatch(actions.saveUserProfileAction(res));
       },
     },
@@ -41,12 +42,11 @@ const Home = ({navigation: {navigate, push}}) => {
   ) : (
     <>
       <Container>
-        <TopBar>
-          <Logo source={logo} />
-          <Notice onPress={() => navigate('Stack', {screen: 'Notice'})}>
-            <Ionicons name="alert-circle-outline" size={30} />
-          </Notice>
-        </TopBar>
+        <TopNavBar
+          iconName="alert-circle-outline"
+          onPress={() => navigate('Stack', {screen: 'Notice'})}
+        />
+
         <MyzoneContainer>
           <Btn onPress={() => push('Stack', {screen: 'Myzone'})}>
             <Text>MY ZONE </Text>
@@ -92,19 +92,6 @@ const Loader = styled.View`
 
 const Container = styled.ScrollView`
   background-color: white;
-`;
-const TopBar = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-`;
-const Logo = styled.Image`
-  background-color: white;
-  width: 100;
-  height: 50;
-`;
-const Notice = styled.TouchableOpacity`
-  align-items: center;
-  justify-content: center;
 `;
 const MyzoneContainer = styled.View``;
 const Btn = styled.TouchableOpacity`
