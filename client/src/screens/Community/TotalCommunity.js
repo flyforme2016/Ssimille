@@ -13,7 +13,8 @@ import {useQuery, useMutation} from 'react-query';
 
 const TotalCommunity = ({navigation}) => {
   const BASE_URL = Config.BASE_URL;
-  const {kakaoUid} = useSelector(state => state.kakaoUid);
+  const myUid = useSelector(state => state.kakaoUid);
+  const {myProfileData} = useSelector(state => state.myProfile);
   // 이미지 null 값 테스트
   // const IMAGE = [
   //   'https://velog.velcdn.com/images/citron03/profile/f42f4daf-0c74-4615-b7ef-cfc6db3f05d4/image.jpg',
@@ -26,8 +27,9 @@ const TotalCommunity = ({navigation}) => {
     async () => {
       const {data} = await axios(`${BASE_URL}/post/getPostList`, {
         params: {
-          key: kakaoUid,
+          key: myUid,
         },
+
       });
       return data;
     },
@@ -48,7 +50,7 @@ const TotalCommunity = ({navigation}) => {
     async () => {
       const {data} = await axios(`${BASE_URL}/post/getPostList`, {
         params: {
-          key: kakaoUid,
+          key: myUid,
         },
       });
       return data;
@@ -62,7 +64,7 @@ const TotalCommunity = ({navigation}) => {
   const handleLike = async (seq, like) => {
     try {
       await axios.post(`${BASE_URL}/post/postLike`, {
-        key: kakaoUid,
+        key: myUid,
         postSeq: seq,
         check: !like,
       });
@@ -73,8 +75,9 @@ const TotalCommunity = ({navigation}) => {
   const deletePost = async seq => {
     try {
       await axios.delete(`${BASE_URL}/post/deletePost`, {
-        data: {key: kakaoUid, postSeq: seq},
+        data: {key: myUid, postSeq: seq},
       });
+      myProfileData.post_count -= 1
     } catch {
       err => console.log(err);
     }
@@ -92,7 +95,7 @@ const TotalCommunity = ({navigation}) => {
                 <UserInfo
                   onPress={async () => {
                     const flag = await checkIsFriend(
-                      kakaoUid,
+                      myUid,
                       item.kakao_user_number,
                     );
                     if (flag === -1) {
@@ -113,7 +116,7 @@ const TotalCommunity = ({navigation}) => {
                     <PostTime>{getPostTime(item.reg_time)}</PostTime>
                   </UserInfoView>
                 </UserInfo>
-                {kakaoUid === item.kakao_user_number + '' ? (
+                {myUid === item.kakao_user_number + '' ? (
                   <Ionicons
                     onPress={async () => {
                       Alert.alert('게시글 삭제', '게시글을 삭제하시겠습니까?', [

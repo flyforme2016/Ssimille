@@ -27,8 +27,9 @@ const Home = ({navigation: {navigate, push}}) => {
       });
       return data;
     },
-    {
+    { 
       onSuccess: res => {
+        console.log('myProfileData save by redux')
         dispatch(actions.saveUserProfileAction(res));
       },
     },

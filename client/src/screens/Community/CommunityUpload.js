@@ -3,14 +3,16 @@ import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import axios from 'axios';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Config from 'react-native-config';
 import {DeviceEventEmitter} from 'react-native';
+import actions from '../../actions/index'
 
 const CommunityUpload = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
   const {myProfileData} = useSelector(state => state.myProfile);
   const {locationName} = useSelector(state => state.locationName);
+  const dispatch = useDispatch();
 
   const [uploadImgs, setUploadImgs] = useState([]);
   const [postContent, setPostContent] = useState();
@@ -86,7 +88,10 @@ const CommunityUpload = ({navigation, route}) => {
           images: submitImgs,
         })
         .then(
-          result => console.log(result, '업로드 완료'),
+          result => {
+            console.log(result, '업로드 완료')
+            myProfileData.post_count += 1
+          },
           err => {
             console.log('게시글 전송실패', err);
           },
