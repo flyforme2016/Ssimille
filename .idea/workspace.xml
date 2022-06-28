@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.24 Complete delete friend">
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.28 Alarm">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/functions/getRef.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/functions/getRef.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/functions/sendAlarm.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/functions/sendAlarm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/ChatScreen/ChatingList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/CommunityUpload.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Notice.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Notice.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/OtherUserProfile.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +43,7 @@
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="Android Studio default JDK" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/StudioProjects/MUF" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.24108241" />
@@ -158,7 +150,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656054366170</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="06.28 Alarm">
+      <created>1656405284190</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1656405284190</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -184,6 +183,7 @@
     <MESSAGE value="06.23 Modify unReadMessageRef" />
     <MESSAGE value="06.23 Complete chatting" />
     <MESSAGE value="06.24 Complete delete friend" />
-    <option name="LAST_COMMIT_MESSAGE" value="06.24 Complete delete friend" />
+    <MESSAGE value="06.28 Alarm" />
+    <option name="LAST_COMMIT_MESSAGE" value="06.28 Alarm" />
   </component>
 </project>
