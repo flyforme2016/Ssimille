@@ -3,40 +3,40 @@ import styled from 'styled-components/native';
 import {useSelector} from 'react-redux';
 import {Dimensions} from 'react-native';
 import {orderBy, query, onSnapshot} from 'firebase/firestore';
-import getRef from '../functions/getRef'
-import getPostTime from '../functions/getPostTime'
+import getRef from '../functions/getRef';
+import getPostTime from '../functions/getPostTime';
 import checkIsFriend from '../api/checkIsFriend';
-import updateStackOfAlarm from '../functions/updateStackOfAlarm'
+import updateStackOfAlarm from '../functions/updateStackOfAlarm';
 import updateAlarmReadState from '../functions/updateAlarmReadState';
 const {width} = Dimensions.get('window');
 
 const Notice = ({navigation}) => {
   const [alarmList, setAlarmList] = useState([]);
   const {kakaoUid} = useSelector(state => state.kakaoUid);
-  
 
   useLayoutEffect(() => {
-    getAlarmList()
-  }, [])
+    getAlarmList();
+  }, []);
   const getAlarmList = async () => {
-    const alarmListRef = getRef.alarmRef(kakaoUid)  //my alarmList
+    const alarmListRef = getRef.alarmRef(kakaoUid); //my alarmList
     const q = query(alarmListRef, orderBy('createdAt', 'desc'));
     const subscribe = onSnapshot(q, querySnapshot => {
       setAlarmList(
-        querySnapshot.docs.map(doc=>({
-            createdAt: doc.data().createdAt,
-            deleteKey: doc.data().deleteKey,
-            moveKey: doc.data().moveKey,
-            nickname: doc.data().nickname,
-            profileImg: doc.data().profileImg,
-            text: doc.data().text,
-            type: doc.data().type,
-            readState: doc.data().readState
-        }))
-      )
-      return subscribe
-    })
-  }
+        querySnapshot.docs.map(doc => ({
+          createdAt: doc.data().createdAt,
+          deleteKey: doc.data().deleteKey,
+          moveKey: doc.data().moveKey,
+          nickname: doc.data().nickname,
+          profileImg: doc.data().profileImg,
+          text: doc.data().text,
+          type: doc.data().type,
+          readState: doc.data().readState,
+        })),
+      );
+      return subscribe;
+    });
+    console.log('alarmList : ', alarmList);
+  };
 
   return (
     <Container>
@@ -49,11 +49,13 @@ const Notice = ({navigation}) => {
           <Card
             width={width}
             onPress={async () => {
-              if(!item.readState){ //읽지 않은 알림인 경우
-                updateStackOfAlarm.decrease(getRef.stackAlarmDocRef(kakaoUid))
-                updateAlarmReadState(kakaoUid, item.deleteKey)
+              if (!item.readState) {
+                //읽지 않은 알림인 경우
+                updateStackOfAlarm.decrease(getRef.stackAlarmDocRef(kakaoUid));
+                updateAlarmReadState(kakaoUid, item.deleteKey);
               }
-              if(item.type){ //친구요청
+              if (item.type) {
+                //친구요청
                 const flag = await checkIsFriend(
                   kakaoUid,
                   item.moveKey, //친구요청 알림인 경우 moveKey = otherUid
@@ -71,9 +73,14 @@ const Notice = ({navigation}) => {
               <UserImg>
                 <Avatar source={{uri: item.profileImg}} />
               </UserImg>
-                <Text>{item.nickname}님이 {item.text}</Text>
-                 <Time>{getPostTime(item.createdAt)}</Time>
+
+              <Text>
+                {item.nickname}님이 {item.text}
+              </Text>
             </Contents>
+            <TimeView>
+              <Time>{getPostTime(item.createdAt)}</Time>
+            </TimeView>
           </Card>
         )}
       />
@@ -82,23 +89,30 @@ const Notice = ({navigation}) => {
 };
 
 const Container = styled.View`
-  flex : 1;
+  flex: 1;
   align-items: center;
   background-color: #ffffff;
+`;
+const UserInfo = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+const InfoBox = styled.View`
+  margin: 5px;
 `;
 const NavText = styled.Text`
   color: #9b59b6;
   font-size: 30;
   padding: 15px;
 `;
-const FriendList = styled.FlatList`
-`;
+const FriendList = styled.FlatList``;
 const Card = styled.TouchableOpacity`
-  width: ${({width}) => (width)*0.9};
+  width: ${({width}) => width * 0.9};
   border-radius: 20px;
   background-color: #ffffff;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between
   margin: 8px;
   elevation: 3;
 `;
@@ -106,6 +120,7 @@ const Card = styled.TouchableOpacity`
 const Contents = styled.View`
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
 `;
 
 const UserImg = styled.View`
@@ -127,6 +142,10 @@ const Text = styled.Text`
 const Time = styled.Text`
   font-size: 12px;
   color: black;
-`
+  margin-right: 5px;
+`;
+const TimeView = styled.View`
+  align-items: flex-end;
+`;
 
 export default Notice;

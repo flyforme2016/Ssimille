@@ -77,11 +77,10 @@ const MyFollower = ({navigation: {navigate}}) => {
               }}>
               {item.profileMusicUri !== null ? (
                 <BtnContainer>
-                  <MarqueeView speed={0.08}>
-                    <UserMusic>
-                      {item.albumTitle} - {item.albumArtistName}
-                    </UserMusic>
-                  </MarqueeView>
+                  <UserMusic numberOfLines={1}>
+                    {item.albumTitle} - {item.albumArtistName}
+                  </UserMusic>
+
                   <Playbutton> ▶︎</Playbutton>
                 </BtnContainer>
               ) : null}
@@ -150,7 +149,7 @@ const BtnContainer = styled.View`
   padding: 5px;
   border-radius: 10;
   border: 1.5px #b7b4df;
-  width: 150;
+  width: 200;
 `;
 
 export default MyFollower;

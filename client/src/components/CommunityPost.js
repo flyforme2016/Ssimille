@@ -19,7 +19,7 @@ const CommunityPost = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const [comment, setComment] = useState();
-  console.log('gridpost datas', route.params.data);
+  console.log('gridpost datas :', route.params.data);
   const {
     isLoading: commentsLoading,
     data: postComments,

@@ -6,11 +6,14 @@ import updateStackOfAlarm from './updateStackOfAlarm';
 //dataObject : userData/postData
 const sendAlarm = (myData, dataObject, text, type) => {
   const alarmRef = getRef.alarmRef(dataObject.kakao_user_number.toString()); //상대방 uid
-  const stackAlarmRef = getRef.stackAlarmDocRef(dataObject.kakao_user_number.toString());
-  if (type) { //친구요청 알람인 경우
+  const stackAlarmRef = getRef.stackAlarmDocRef(
+    dataObject.kakao_user_number.toString(),
+  );
+  if (type) {
+    //친구요청 알람인 경우
     requestFriend(myData.uid, dataObject.kakao_user_number);
   }
-  
+
   let addDocObject;
   if (type) {
     addDocObject = {
@@ -24,7 +27,7 @@ const sendAlarm = (myData, dataObject, text, type) => {
       deleteKey: Date.now(),
       moveKey: myData.uid,
       type: type,
-      readState: 0
+      readState: 0,
     };
   } else {
     addDocObject = {
@@ -38,12 +41,11 @@ const sendAlarm = (myData, dataObject, text, type) => {
       deleteKey: Date.now(),
       moveKey: dataObject.post_seq,
       type: type,
-      readState: 0
+      readState: 0,
     };
   }
   addDoc(alarmRef, addDocObject);
-  updateStackOfAlarm.increase(stackAlarmRef)
-  
+  updateStackOfAlarm.increase(stackAlarmRef);
 };
 
 export default sendAlarm;

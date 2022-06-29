@@ -1,6 +1,7 @@
 import React from 'react';
 import {Dimensions} from 'react-native';
 import {useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
 import {useQuery} from 'react-query';
 import Config from 'react-native-config';
@@ -8,8 +9,10 @@ import axios from 'axios';
 
 const {width} = Dimensions.get('window');
 
-const GridPosts = ({navigation, userId}) => {
+const GridPosts = ({userId}) => {
+  const navigation = useNavigation();
   const BASE_URL = Config.BASE_URL;
+
   //내 게시글 가져오기
   const {isLoading: postDataLoading, data: postDatas} = useQuery(
     'myPostDatas',
@@ -19,6 +22,7 @@ const GridPosts = ({navigation, userId}) => {
           key: userId,
         },
       });
+      console.log('datta : ', data);
       return data;
     },
   );
@@ -32,7 +36,7 @@ const GridPosts = ({navigation, userId}) => {
               <Post
                 width={width}
                 onPress={() => {
-                  navigation.push('Stack', {
+                  navigation.navigate('Stack', {
                     screen: 'CommunityPost',
                     params: {
                       data: item,

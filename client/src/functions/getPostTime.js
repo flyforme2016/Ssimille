@@ -1,13 +1,16 @@
 const getPostTime = date => {
   //where : 1 = community 0 = chatList
+  console.log('date: ', date);
   const minute = 60;
   const hour = minute * 60; //3600
   const day = hour * 24; //86400
   const postTime = new Date(date);
+  console.log('postTime: ', postTime);
   //postTime :Sat Jun 18 2022 23:30:08 GMT+0900 (대한민국 표준시)
   let postedTime = Math.floor(
     (new Date().getTime() - postTime.getTime()) / 1000,
   );
+  console.log('postedTiem: ', postedTime);
   // postedTime 게시글 등록시간과 현재 시간의 차이를 초단위로 반환
 
   let postTimeText = '';

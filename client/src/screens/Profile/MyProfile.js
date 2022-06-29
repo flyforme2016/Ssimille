@@ -42,7 +42,18 @@ const Profile = ({navigation}) => {
 
           <ProfileContainer>
             <UserInfo>
-              <ProfilePic source={{uri: myProfileData.profile_image}} />
+              <ProfileImage
+                onPress={() => {
+                  console.log('clicked');
+                  navigation.push('Stack', {
+                    screen: 'BigPicture',
+                    params: {
+                      userprofile: myProfileData.profile_image,
+                    },
+                  });
+                }}>
+                <ProfilePic source={{uri: myProfileData.profile_image}} />
+              </ProfileImage>
               <UserName>{myProfileData.nickname}</UserName>
             </UserInfo>
             <ProfileInfo>
@@ -110,7 +121,7 @@ const Container = styled.View`
   flex: 1;
   background-color: #ffffff;
 `;
-
+const ProfileImage = styled.TouchableOpacity``;
 const Divider = styled.View`
   border-bottom-color: gray;
   border-bottom-width: 1px;

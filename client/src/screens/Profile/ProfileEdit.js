@@ -275,7 +275,7 @@ const HashTagBtn = styled.TouchableOpacity`
   padding: 6px;
   align-items: center;
   justify-content: center;
-  border: ${props => (props.isSelected ? '#dddddd' : '#b7b4df')}
+  border: ${props => (props.isSelected ? '#dddddd' : '#b7b4df')};
   border-radius: 20;
   background-color: ${props => (props.isSelected ? '#b7b4df' : 'white')};
 `;

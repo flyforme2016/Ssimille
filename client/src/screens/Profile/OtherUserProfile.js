@@ -9,12 +9,13 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import sendAlarm from '../../functions/sendAlarm';
 import deleteFriend from '../../functions/deleteFriend';
 import {useSelector} from 'react-redux';
+import {Alert} from 'react-native';
 
 const Profile = ({navigation, route}) => {
   const [isFollow, setIsFollow] = useState(route.params.isFriend);
   const [otherUserData, setOtherUserData] = useState({});
-  const {myProfileData} = useSelector(state => state.myProfile)
-  const myUid = useSelector(state => state.kakaoUid)
+  const {myProfileData} = useSelector(state => state.myProfile);
+  const myUid = useSelector(state => state.kakaoUid);
   const otherUserUid = route.params.otherUid;
   const BASE_URL = Config.BASE_URL;
   const HashTag = [
@@ -47,21 +48,29 @@ const Profile = ({navigation, route}) => {
   }, []);
 
   const addFriendListener = () => {
-    if(!isFollow){
+    if (!isFollow) {
       setIsFollow(!isFollow);
       const myData = {
         uid: myProfileData.kakao_user_number.toString(),
         nickname: myProfileData.nickname,
-        profile_image: myProfileData.profile_image
-      }
-      sendAlarm(myData, otherUserData, "회원님을 팔로우 하였습니다.", 1)
-      myProfileData.friend_count += 1
-    }else{
-      setIsFollow(!isFollow);
-      deleteFriend(myUid.kakaoUid, otherUserUid)
-      myProfileData.friend_count -= 1
+        profile_image: myProfileData.profile_image,
+      };
+      sendAlarm(myData, otherUserData, '회원님을 팔로우 하였습니다.', 1);
+      myProfileData.friend_count += 1;
+    } else {
+      Alert.alert('팔로잉 끊기', '팔로잉을 끊으시겠습니까?', [
+        {text: 'Cancel'},
+        {
+          text: 'OK',
+          onPress: () => {
+            setIsFollow(!isFollow);
+            deleteFriend(myUid.kakaoUid, otherUserUid);
+            myProfileData.friend_count -= 1;
+          },
+        },
+      ]);
     }
-  }
+  };
 
   return (
     <Container>
@@ -92,7 +101,15 @@ const Profile = ({navigation, route}) => {
               <CountText>POST</CountText>
               <CountText>{otherUserData.post_count}</CountText>
             </CountBtn>
-            <CountBtn>
+            <CountBtn
+              onPress={() => {
+                navigation.push('Stack', {
+                  screen: 'OtherTabBar',
+                  params: {
+                    userId: otherUserUid,
+                  },
+                });
+              }}>
               <CountText>FREIND</CountText>
               <CountText>{otherUserData.friend_count}</CountText>
             </CountBtn>
@@ -132,26 +149,11 @@ const Profile = ({navigation, route}) => {
 
       <BtnContainer>
         <TouchableOpacity onPress={addFriendListener}>
-          <View
-            style={{
-              width: 95,
-              height: 55,
-              borderRadius: 5,
-              backgroundColor: isFollow ? null : '#b7b4df',
-              borderWidth: isFollow ? 1 : 0,
-              borderColor: '#DEDEDE',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                color: isFollow ? 'black' : 'white',
-                fontSize: 14,
-                fontWeight: 'bold',
-              }}>
+          <FriendView isFollow={isFollow}>
+            <FriendText isFollow={isFollow}>
               {isFollow ? '팔로잉' : '팔로우'}
-            </Text>
-          </View>
+            </FriendText>
+          </FriendView>
         </TouchableOpacity>
 
         <Button>
@@ -188,6 +190,22 @@ const Divider = styled.View`
   align-self: center;
   elevation: 3;
 `;
+const FriendView = styled.View`
+  width: 95;
+  height: 55;
+  border-radius: 5;
+  border-color: #000;
+  justify-content: center;
+  align-items: center;
+  background-color: ${props => (props.isFollow ? 'white' : '#b7b4df')};
+  border-width: ${props => (props.isFollow ? 1 : 0)};
+`;
+const FriendText = styled.Text`
+  color: ${props => (props.isFollow ? 'black' : 'white')};
+  font-size: 14;
+  font-weight: bold;
+`;
+
 const NavBar = styled.View`
   flex-direction: row;
   justify-content: center;
