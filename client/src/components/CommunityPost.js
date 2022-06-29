@@ -247,24 +247,6 @@ const PostText = styled.Text`
   font-size: 14px;
   padding: 0 15px;
 `;
-const SelectedMusic = styled.Text`
-  font-size: 14px;
-`;
-
-const ImageContainer = styled.View`
-  justify-content: center;
-  align-items: center;
-`;
-
-const PostImg = styled.Image`
-  width: 200;
-  height: 200;
-  margin: 5px;
-`;
-const AlbumImgBtn = styled.TouchableOpacity`
-  justify-content: center;
-  align-items: center;
-`;
 const Divider = styled.View`
   border-bottom-color: #dddddd;
   border-bottom-width: 1px;

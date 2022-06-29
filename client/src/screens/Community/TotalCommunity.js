@@ -13,10 +13,12 @@ import {useQuery, useMutation} from 'react-query';
 import {DeviceEventEmitter} from 'react-native';
 import {deletePost} from '../../api/community/deletePost';
 import {handleLike} from '../../api/community/handleLike';
+import sendAlarm from '../../functions/sendAlarm';
 
 const TotalCommunity = ({navigation}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
+  const {myProfileData} = useSelector(state => state.myProfile)
 
   useEffect(() => {
     DeviceEventEmitter.addListener('refetch community', () => {
@@ -151,6 +153,12 @@ const TotalCommunity = ({navigation}) => {
                 <Interaction
                   onPress={() => {
                     handleLike(kakaoUid, item.post_seq, item.likeNy);
+                    const myData = {
+                      uid: myProfileData.kakao_user_number.toString(),
+                      nickname: myProfileData.nickname,
+                      profile_image: myProfileData.profile_image
+                    }
+                    sendAlarm(myData, item, '회원님의 게시물을 좋아합니다', 0)
                     postMutation.mutate();
                   }}>
                   {item.likeNy ? (

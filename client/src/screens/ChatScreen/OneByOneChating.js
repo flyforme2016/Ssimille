@@ -12,9 +12,9 @@ import {
 import {useSelector} from 'react-redux';
 import getRef from '../../functions/getRef'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import styled from 'styled-components/native';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default function Chat({route}) {
   const otherUid = route.params.otherUid;
@@ -140,9 +140,9 @@ export default function Chat({route}) {
   const renderSend = props => {
     return (
       <Send {...props}>
-        <View>
-          <Ionicons name="send-sharp" size={35} color="#9b59b6" />
-        </View>
+        <CommentInputContainer>
+          <SendText>전송</SendText>
+        </CommentInputContainer>
       </Send>
     );
   };
@@ -193,4 +193,14 @@ const FLATLIST = styled.ImageBackground`
   resize-mode: stretch;
   width: 100%;
   height: 100%;
+`;
+
+const CommentInputContainer = styled.View`
+  margin-bottom: 13px;
+  margin-right: 15px;
+`;
+const SendText = styled.Text`
+  font-size: 15px;
+  font-weight: bold;
+  color: #b7b4df;
 `;

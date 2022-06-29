@@ -1,12 +1,5 @@
 import types from './ActionTypes';
 
-exports.uploadProfileImgAction = parameter => {
-  return {
-    type: types.UPLOAD_PROFILE_IMG,
-    payload: parameter,
-  };
-};
-
 exports.saveKakaoUidAction = parameter => {
   return {
     type: types.SAVE_KAKAO_UID,
