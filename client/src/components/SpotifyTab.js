@@ -1,11 +1,14 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {remote} from 'react-native-spotify-remote';
 import MarqueeView from 'react-native-marquee-view';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
-import {useQuery} from 'react-query';
+import {useMutation, useQuery} from 'react-query';
+import getRef from '../functions/getRef';
+import updateCurrentMusic from '../functions/updateCurrentMusic';
+import {DeviceEventEmitter} from 'react-native';
 
 const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
@@ -13,6 +16,7 @@ const BASE_URL = Config.BASE_URL;
 
 const SpotifyTab = () => {
   const {spotifyToken} = useSelector(state => state.spotifyToken);
+  const {myProfileData} = useSelector(state => state.myProfile);
   const SpotifyWebApi = require('spotify-web-api-node');
   const spotifyWebApi = new SpotifyWebApi({
     clientID: `${SPOTIFY_CLIENT_ID}`,
@@ -20,9 +24,19 @@ const SpotifyTab = () => {
     redirectURL: `${BASE_URL}/spotify/oauth/callback`,
   });
 
-  remote.addListener('playerStateChanged', event => {
-    refetch();
-  });
+  useEffect(() => {
+    DeviceEventEmitter.addListener('refetchMusic', async () => {
+      console.log('music refetch');
+      await refetch();
+      if (!isLoading) {
+        const regionCode = myProfileData.region_code.toString();
+        const myUid = myProfileData.kakao_user_number.toString();
+        const currentMusicDocRef = getRef.currentMusicDocRef(regionCode, myUid);
+        updateCurrentMusic(currentMusicDocRef, myProfileData, CurrentMusic);
+      }
+    });
+  }, []);
+
   const {
     isLoading,
     data: CurrentMusic,
@@ -32,6 +46,7 @@ const SpotifyTab = () => {
     async () => {
       await remote.connect(spotifyToken);
       const data = await remote.getPlayerState();
+      console.log('useQuery refetch');
       return data;
     },
     {
@@ -75,6 +90,7 @@ const SpotifyTab = () => {
             <MusicControlBtn //이전 곡으로
               onPress={async () => {
                 await remote.skipToPrevious();
+                DeviceEventEmitter.emit('refetchMusic');
               }}
               type="play-back"
             />
@@ -97,6 +113,7 @@ const SpotifyTab = () => {
             <MusicControlBtn //다음 곡으로
               onPress={async () => {
                 await remote.skipToNext();
+                DeviceEventEmitter.emit('refetchMusic');
               }}
               type="play-forward"
             />

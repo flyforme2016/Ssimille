@@ -12,7 +12,8 @@ import OtherUserProfile from '../screens/Profile/OtherUserProfile';
 import Onboarding from '../screens/Start/Start';
 import FavoriteSongs from '../components/FavoriteSongs';
 import SpotifyAuthentication from '../functions/SpotifyAuthentication';
-
+import PostComments from '../components/PostComments';
+import EditFavoriteSongs from '../screens/Profile/EditFavoriteSongs';
 const NativeStack = createNativeStackNavigator();
 
 const Stack = () => {
@@ -29,6 +30,8 @@ const Stack = () => {
       <NativeStack.Screen name="SearchMusic" component={SearchMusic} />
       <NativeStack.Screen name="CommunityUpload" component={CommunityUpload} />
       <NativeStack.Screen name="CommunityPost" component={CommunityPost} />
+      <NativeStack.Screen name="PostComments" component={PostComments} />
+
       <NativeStack.Screen name="KakaoLogin" component={KakaoLogin} />
       <NativeStack.Screen
         name="SpotifyAuthentication"
@@ -40,6 +43,10 @@ const Stack = () => {
       />
       <NativeStack.Screen name="Onboarding" component={Onboarding} />
       <NativeStack.Screen name="FavoriteSongs" component={FavoriteSongs} />
+      <NativeStack.Screen
+        name="EditFavoriteSongs"
+        component={EditFavoriteSongs}
+      />
     </NativeStack.Navigator>
   );
 };

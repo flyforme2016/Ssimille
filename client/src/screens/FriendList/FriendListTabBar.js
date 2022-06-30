@@ -2,7 +2,6 @@ import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import MyFollower from './MyFollower';
 import MyFollwing from './MyFollowing';
-import styled from 'styled-components/native';
 
 const FriendListTabBar = () => {
   const Tab = createMaterialTopTabNavigator();
@@ -25,9 +24,4 @@ const FriendListTabBar = () => {
   );
 };
 
-const NavText = styled.Text`
-  color: #9b59b6;
-  font-size: 24;
-  padding: 5px;
-`;
 export default FriendListTabBar;

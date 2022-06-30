@@ -1,14 +1,16 @@
 import React from 'react';
 import {Dimensions} from 'react-native';
-import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import {useQuery} from 'react-query';
 import Config from 'react-native-config';
 import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
-const GridPosts = ({navigation, userId}) => {
+const GridPosts = ({userId}) => {
+  const navigation = useNavigation();
+
   const BASE_URL = Config.BASE_URL;
   //내 게시글 가져오기
   const {isLoading: postDataLoading, data: postDatas} = useQuery(
