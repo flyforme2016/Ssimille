@@ -1,11 +1,12 @@
 import React, {useState, useLayoutEffect} from 'react';
 import styled from 'styled-components/native';
-import {orderBy, query, onSnapshot, getDocs} from 'firebase/firestore';
+import {orderBy, query, onSnapshot} from 'firebase/firestore';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import getChatListTime from '../../functions/getChatListTime';
 import getRef from '../../functions/getRef';
 import {Dimensions} from 'react-native';
+
 const {width} = Dimensions.get('window');
 
 const ChatingList = ({navigation}) => {
@@ -20,69 +21,22 @@ const ChatingList = ({navigation}) => {
     getChatList();
   }, []);
 
-  //chatList 입장시 한번만 채팅목록 가져오기 실시간 x
+  //chatList 입장시 한번만 채팅목록 가져오기 실시간
   async function getChatList() {
     console.log('start getChatList');
-    const subscrebe = onSnapshot(q, querySnapshot => {
+    const subscribe = onSnapshot(q, querySnapshot => {
       setMessages(
         querySnapshot.docs.map(doc => ({
           _id: doc.data()._id,
-          createdAt: doc.data().createdAt,
+          createdAt: doc.data().createdAt.toDate().toISOString(),
           text: doc.data().text,
           user: doc.data().setDocUserObj,
           stack: doc.data().stack,
         })),
       );
+      return subscribe;
     });
-    // const querySnapshot = await getDocs(q);
-    // querySnapshot.forEach(doc => {
-    //   console.log('doc.data(): ', doc.data())
-    // })
-    // querySnapshot.forEach( doc => {
-    //   const initObject = {
-    //     _id: doc.data()._id,
-    //     createdAt: getChatListTime(doc.data().createdAt.toDate().toISOString()),
-    //     text: doc.data().text,
-    //     user: doc.data().setDocUserObj,
-    //     stack: doc.data().stack,
-    //   }
-    //   setMessages(messages=>[...messages, initObject])
-    // })
   }
-
-  //chatList에 있는 동안 기존 또는 새로운 상대에게 메세지가 오는 경우
-  //onSnapshot listener로 실시간 감지하여 채팅목록 갱신
-  const unsubscribe = onSnapshot(q, querySnapshot => {
-    console.log('onSnapshot');
-    console.log('messages: ', messages);
-    querySnapshot.docChanges().map(change => {
-      //chatList를 갱신할 때 messages 배열에서 modified된 index만 update.
-      console.log('Enter change');
-      if (change.type === 'modified') {
-        //기존 상대에게 메세지가 오는 경우
-        console.log('Enter modified: ', messages);
-        messages.map(async (object, index) => {
-          console.log('change.doc.data(): ', change.doc.data());
-          console.log('object: ', object);
-          if (object.user._id === change.doc.data().setDocUserObj._id) {
-            console.log('Enter find');
-            const changeObject = {
-              _id: change.doc.data()._id,
-              createdAt: getChatListTime(
-                change.doc.data().createdAt.toDate().toISOString(),
-              ),
-              text: change.doc.data().text,
-              user: change.doc.data().setDocUserObj,
-              stack: change.doc.data().stack,
-            };
-            let replaceMessages = [...messages];
-            replaceMessages[index] = changeObject;
-            setMessages(replaceMessages);
-          }
-        });
-      }
-    });
-  });
 
   return (
     <>
@@ -112,16 +66,14 @@ const ChatingList = ({navigation}) => {
                 </TextSection>
               </ChatContainer>
 
-              <TextSection>
-                <PostTime>
-                  {getChatListTime(item.createdAt.toDate().toISOString())}
-                </PostTime>
+              <InfoSection>
+                <PostTime>{getChatListTime(item.createdAt)}</PostTime>
                 {item.stack === 0 ? null : (
                   <CountContainer>
                     <CountText>{item.stack}</CountText>
                   </CountContainer>
                 )}
-              </TextSection>
+              </InfoSection>
             </Card>
           )}
         />
@@ -153,7 +105,7 @@ const Card = styled.TouchableOpacity`
   justify-content: space-between;
   border-bottom-width: 1px;
   border-bottom-color: #cccccc;
-  padding-bottom: 5px;
+  margin-bottom: 5px;
 `;
 
 const UserImg = styled.Image`
@@ -163,10 +115,16 @@ const UserImg = styled.Image`
   margin-right: 10px;
 `;
 const ChatContainer = styled.View`
+  margin: 8px;
   flex-direction: row;
 `;
 
-const TextSection = styled.View``;
+const InfoSection = styled.View`
+  align-items: flex-end;
+`;
+const TextSection = styled.View`
+  align-items: flex-start;
+`;
 
 const InfoText = styled.Text``;
 

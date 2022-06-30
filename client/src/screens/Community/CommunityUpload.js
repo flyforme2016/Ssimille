@@ -71,8 +71,12 @@ const CommunityUpload = ({navigation, route}) => {
       await axios
         .post(`${BASE_URL}/post/uploadPost`, {
           key: myProfileData.kakao_user_number,
-          regionDepth1: locationName.region_1depth_name,
-          addressName: locationName.address_name,
+          regionDepth1: locationName.region_1depth_name
+            ? locationName.region_1depth_name
+            : null,
+          addressName: locationName.address_name
+            ? locationName.address_name
+            : null,
           musicUri: route.params ? route.params.musicUri : null,
           albumTitle: route.params ? route.params.albumTitle : null,
           albumImg: route.params ? route.params.albumImg : null,
@@ -131,10 +135,9 @@ const CommunityUpload = ({navigation, route}) => {
             </MusicUploadBtn>
             {route.params ? (
               <SelectContainer>
-                <SelectedImg source={{uri: route.params.data.albumImg}} />
+                <SelectedImg source={{uri: route.params.albumImg}} />
                 <SelectedMusic>
-                  {route.params.data.albumTitle} -
-                  {route.params.data.albumArtistName}
+                  {route.params.albumTitle} -{route.params.albumArtistName}
                 </SelectedMusic>
               </SelectContainer>
             ) : null}

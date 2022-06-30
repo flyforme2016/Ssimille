@@ -30,7 +30,6 @@ const Home = ({navigation: {navigate, push}}) => {
     },
     {
       onSuccess: res => {
-        console.log('myProfileData save by redux');
         dispatch(actions.saveUserProfileAction(res));
       },
     },

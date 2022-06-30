@@ -152,7 +152,7 @@ export default function Chat({route}) {
   return (
     //messages state에 저장된 채팅내용을 랜더링
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <BackgroundImg source={require('../../assets/sample/background.jpg')} />
+      <FLATLIST source={require('../../assets/sample/background.jpg')} />
       <GiftedChat
         placeholder="메세지를 입력해주세요"
         alwaysShowSend={true}
@@ -190,8 +190,9 @@ export default function Chat({route}) {
   );
 }
 
-const BackgroundImg = styled.ImageBackground`
+const FLATLIST = styled.ImageBackground`
   position: absolute;
+  resize-mode: stretch;
   width: 100%;
   height: 100%;
 `;

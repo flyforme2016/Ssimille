@@ -31,7 +31,7 @@ const UploadBtn = styled.TouchableOpacity`
   position: absolute;
   z-index: 1;
   right: 10;
-  bottom: 50;
+  bottom: 60;
   justify-content: center;
   align-items: center;
   elevation: 5;

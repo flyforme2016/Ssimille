@@ -1,15 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import ProfileTabBar from './ProfileTapBar';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import {remote} from 'react-native-spotify-remote';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
-import {Dimensions} from 'react-native';
 import TopNavBar from '../../components/TopNavBar';
-
-const {width} = Dimensions.get('window');
+import {DeviceEventEmitter} from 'react-native';
 
 const Profile = ({navigation}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
@@ -20,6 +17,7 @@ const Profile = ({navigation}) => {
     myProfileData.tag4_cd,
     myProfileData.tag5_cd,
   ].filter(tag => tag !== null);
+  console.log(myProfileData);
 
   return (
     myProfileData && (
@@ -90,6 +88,7 @@ const Profile = ({navigation}) => {
               <MusicInfoContainer
                 onPress={() => {
                   remote.playUri(myProfileData.profile_music_uri);
+                  DeviceEventEmitter.emit('refetchMusic');
                 }}>
                 <MusicWrapper>
                   <CoverImg source={{uri: myProfileData.album_image}} />

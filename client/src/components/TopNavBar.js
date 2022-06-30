@@ -7,7 +7,7 @@ const TopNavBar = ({navText, iconName, onPress}) => {
     <NavBar>
       <NavText>{navText}</NavText>
       <Btn onPress={onPress}>
-        <Ionicons name={iconName} size={35} />
+        <Ionicons name={iconName} size={30} />
       </Btn>
     </NavBar>
   );

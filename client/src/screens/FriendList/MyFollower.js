@@ -7,10 +7,10 @@ import Config from 'react-native-config';
 import MarqueeView from 'react-native-marquee-view';
 import {remote} from 'react-native-spotify-remote';
 import {Dimensions} from 'react-native';
-const {width} = Dimensions.get('window');
 import checkIsFriend from '../../api/checkIsFriend';
+const {width} = Dimensions.get('window');
 
-const MyFollower = ({navigation: {navigate}}) => {
+const MyFollower = ({navigation}) => {
   const [friendList, setFriendData] = useState({});
   const isFocused = useIsFocused();
   const myUid = useSelector(state => state.kakaoUid);
