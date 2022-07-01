@@ -14,9 +14,11 @@ import {useQuery} from 'react-query';
 import {deleteComment} from '../api/community/deleteComment';
 import {uploadComment} from '../api/community/uploadComment';
 import axios from 'axios';
+import sendAlarm from '../functions/sendAlarm';
 
 const CommunityPost = ({navigation, route}) => {
   const {kakaoUid} = useSelector(state => state.kakaoUid);
+  const {myProfileData} = useSelector(state => state.myProfile);
   const [comment, setComment] = useState();
   const BASE_URL = Config.BASE_URL;
   console.log(route.params.data);
