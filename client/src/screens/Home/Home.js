@@ -57,11 +57,6 @@ const Home = ({navigation: {navigate, push}}) => {
   ) : (
     <>
       <Container>
-        <TopNavBar
-          iconName="alert-circle-outline"
-          onPress={() => navigate('Stack', {screen: 'Notice'})}
-        />
-
         <TopBar>
           <Logo source={logo} />
           <AlarmWrapper>

@@ -4,25 +4,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.29 Complete deleteAlarm &amp; homeAlarm">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/SpotifyTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SpotifyTab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/functions/getRef.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/functions/getRef.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/Comunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/Comunity.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Community/TotalCommunity.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/FriendList/FriendList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/FriendList/FriendList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Notice.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Notice.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Profile/MyProfile.js" afterDir="false" />
-    </list>
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="07.01 CurrentMusic" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="origin/gijeong" />
+    <option name="BRANCH" value="origin/master" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -180,7 +169,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656504409327</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="07.01 CurrentMusic">
+      <created>1656657772429</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1656657772430</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -209,6 +205,7 @@
     <MESSAGE value="06.28 Alarm" />
     <MESSAGE value="06.28 Merge marster from gijeong" />
     <MESSAGE value="06.29 Complete deleteAlarm &amp; homeAlarm" />
-    <option name="LAST_COMMIT_MESSAGE" value="06.29 Complete deleteAlarm &amp; homeAlarm" />
+    <MESSAGE value="07.01 CurrentMusic" />
+    <option name="LAST_COMMIT_MESSAGE" value="07.01 CurrentMusic" />
   </component>
 </project>
