@@ -152,13 +152,15 @@ const TotalCommunity = ({navigation}) => {
               <InterContainer>
                 <Interaction
                   onPress={() => {
-                    handleLike(kakaoUid, item.post_seq, item.likeNy);
-                    const myData = {
-                      uid: myProfileData.kakao_user_number.toString(),
-                      nickname: myProfileData.nickname,
-                      profile_image: myProfileData.profile_image
+                    if(!item.likeNy){
+                      const myData = {
+                        uid: myProfileData.kakao_user_number.toString(),
+                        nickname: myProfileData.nickname,
+                        profile_image: myProfileData.profile_image
+                      }
+                      sendAlarm(myData, item, '회원님의 게시물을 좋아합니다', 0)
                     }
-                    sendAlarm(myData, item, '회원님의 게시물을 좋아합니다', 0)
+                    handleLike(kakaoUid, item.post_seq, item.likeNy);
                     postMutation.mutate();
                   }}>
                   {item.likeNy ? (

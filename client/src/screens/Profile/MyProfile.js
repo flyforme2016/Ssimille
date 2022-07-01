@@ -100,7 +100,7 @@ const Profile = ({navigation}) => {
           ) : null}
           <ProfileTabBar userId={myProfileData.kakao_user_number} />
         </Container>
-        <SpotifyTab refetch={refetch} />
+        {/* <SpotifyTab refetch={refetch} /> */}
       </>
     )
   );

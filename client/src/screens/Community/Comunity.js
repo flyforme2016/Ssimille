@@ -18,7 +18,7 @@ const Community = ({navigation: {push}}) => {
         <NavDivider />
         <CommunityTabBar />
       </Container>
-      <SpotifyTab />
+      {/* <SpotifyTab /> */}
     </>
   );
 };

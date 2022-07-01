@@ -16,7 +16,6 @@ const Notice = ({navigation}) => {
   const [alarmList, setAlarmList] = useState([]);
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const [modalVisible, setModalVisible] = useState(false);
-  const [deleteKey, setDleteKey] = useState();
 
   useLayoutEffect(() => {
     getAlarmList();
@@ -52,11 +51,11 @@ const Notice = ({navigation}) => {
         renderItem={({item}) => (
           <Card style={item.readState ? {backgroundColor:'white'} : {backgroundColor: '#b7b4df'}}
             width={width}
-            delayLongPress={2000}
+            delayLongPress={200}
             onPress={async () => {
               if (!item.readState) {
                 //읽지 않은 알림인 경우
-                updateAlarmStack.decrease(getRef.stackAlarmDocRef(kakaoUid));
+                updateAlarmStack.decrease(getRef.alarmStackDocRef(kakaoUid));
                 updateAlarmReadState(kakaoUid, item.deleteKey);
               }
               if (item.type) {
@@ -76,7 +75,6 @@ const Notice = ({navigation}) => {
             }}
             onLongPress={async () => {
               setModalVisible(true)
-              setDleteKey(item.deleteKey)
             }}
             >
             <Contents>
@@ -89,39 +87,39 @@ const Notice = ({navigation}) => {
             <TimeView>
               <Time>{getPostTime(item.createdAt)}</Time>
             </TimeView>
+            <Modal
+              onBackButtonPress={ () => setModalVisible(false)}
+              //isVisible Props에 State 값을 물려주어 On/off control
+              isVisible={modalVisible}
+              //아이폰에서 모달창 동작시 깜박임이 있었는데, useNativeDriver Props를 True로 주니 해결되었다.
+              useNativeDriver={true}
+              hideModalContentWhileAnimating={true}
+              style={{ flex: 1,justifyContent: "flex-end"}}
+            >
+              <ModalContentsWrapper>
+                  <ModalButton
+                    onPress={() => {
+                      delteAlarm(kakaoUid)
+                      setModalVisible(false)
+                    }}
+                  >
+                    <TrashImage source={require('../assets/sample/trashCan.png')}/>
+                    <ModalText>전체 삭제</ModalText>
+                  </ModalButton>
+                  <ModalButton
+                    onPress={() => {
+                      delteAlarm(kakaoUid, item.deleteKey)
+                      setModalVisible(false)
+                    }}
+                  >
+                    <TrashImage source={require('../assets/sample/trashCan.png')}/>
+                    <ModalText>삭제</ModalText>
+                  </ModalButton>
+              </ModalContentsWrapper>
+            </Modal>
           </Card>
         )}
       />
-        <Modal
-          onBackButtonPress={ () => setModalVisible(false)}
-          //isVisible Props에 State 값을 물려주어 On/off control
-          isVisible={modalVisible}
-          //아이폰에서 모달창 동작시 깜박임이 있었는데, useNativeDriver Props를 True로 주니 해결되었다.
-          useNativeDriver={true}
-          hideModalContentWhileAnimating={true}
-          style={{ flex: 1,justifyContent: "flex-end"}}
-        >
-          <ModalContentsWrapper>
-              <ModalButton
-                onPress={() => {
-                  delteAlarm(kakaoUid)
-                  setModalVisible(false)
-                }}
-              >
-                <TrashImage source={require('../assets/sample/trashCan.png')}/>
-                <ModalText>전체 삭제</ModalText>
-              </ModalButton>
-              <ModalButton
-                onPress={() => {
-                  delteAlarm(kakaoUid, deleteKey)
-                  setModalVisible(false)
-                }}
-              >
-                <TrashImage source={require('../assets/sample/trashCan.png')}/>
-                <ModalText>삭제</ModalText>
-              </ModalButton>
-          </ModalContentsWrapper>
-        </Modal>
     </Container>
   );
 };

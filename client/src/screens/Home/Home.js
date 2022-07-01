@@ -44,7 +44,9 @@ const Home = ({navigation: {navigate, push}}) => {
   const getAlarmStack = async () => {
     const stackAlarmDocRef = getRef.alarmStackDocRef(kakaoUid)
     onSnapshot(stackAlarmDocRef, doc=>{
-      setAlarmStack(doc.data().stack)
+      if(doc.exists()){
+        setAlarmStack(doc.data().stack)
+      }
     })
   }
 
@@ -61,9 +63,11 @@ const Home = ({navigation: {navigate, push}}) => {
             <AlarmButton onPress={() => navigate('Stack', {screen: 'Notice'})}>
               <Ionicons name="notifications-outline" size={30} color="#b7b4df" />
             </AlarmButton>
-            <AlarmStackWrapper>
-             <AlarmStack>{alarmStack ? alarmStack : null}</AlarmStack>
-            </AlarmStackWrapper>
+            {alarmStack !== 0 ? (
+              <AlarmStackWrapper>
+                <AlarmStack>{alarmStack ? alarmStack : null}</AlarmStack>
+              </AlarmStackWrapper>
+            ) : null}
           </AlarmWrapper>
         </TopBar>
         <MyzoneContainer>
