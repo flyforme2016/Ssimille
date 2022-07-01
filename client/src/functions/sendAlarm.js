@@ -1,12 +1,12 @@
 import getRef from './getRef';
 import {addDoc} from 'firebase/firestore';
 import requestFriend from '../api/requestFriend';
-import updateStackOfAlarm from './updateStackOfAlarm';
+import updateAlarmStack from './updateAlarmStack';
 //type 1 : 친구신청, 0:게시글
 //dataObject : userData/postData
 const sendAlarm = (myData, dataObject, text, type) => {
-  const alarmRef = getRef.alarmRef(dataObject.kakao_user_number.toString()); //상대방 uid
-  const stackAlarmRef = getRef.stackAlarmDocRef(dataObject.kakao_user_number.toString());
+  const alarmRef = getRef.alarmColRef(dataObject.kakao_user_number.toString()); //상대방 uid
+  const stackAlarmRef = getRef.alarmStackDocRef(dataObject.kakao_user_number.toString());
   if (type) { //친구요청 알람인 경우
     requestFriend(myData.uid, dataObject.kakao_user_number);
   }
@@ -42,7 +42,7 @@ const sendAlarm = (myData, dataObject, text, type) => {
     };
   }
   addDoc(alarmRef, addDocObject);
-  updateStackOfAlarm.increase(stackAlarmRef)
+  updateAlarmStack.increase(stackAlarmRef)
   
 };
 

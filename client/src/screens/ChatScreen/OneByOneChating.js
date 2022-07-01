@@ -10,9 +10,9 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import {useSelector} from 'react-redux';
-import getRef from '../../functions/getRef';
+import getRef from '../../functions/getRef'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import styled from 'styled-components/native';
 
 export default function Chat({route}) {
@@ -66,16 +66,13 @@ export default function Chat({route}) {
     const q = query(myChatListCollectionRef, orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(q, querySnapshot => {
-      console.log('First onSnapshot');
-      querySnapshot.docChanges().map(change => {
-        //실시간으로 대화하는 중에 상대방에게 메세지를 받을 경우에도
-        if (change.type === 'modified') {
-          //상대방이 증가시키는 stack 0으로 초기화
-          if (change.doc.data().setDocUserObj._id === stringOtherUid) {
-            //대화목록중 현재 실시간 채팅중인 유저와의 chatList를 찾으면
+      console.log('First onSnapshot')
+      querySnapshot.docChanges().map(change => {        //실시간으로 대화하는 중에 상대방에게 메세지를 받을 경우에도
+        if(change.type === 'modified'){                //상대방이 증가시키는 stack 0으로 초기화
+          if(change.doc.data().setDocUserObj._id === stringOtherUid){   //대화목록중 현재 실시간 채팅중인 유저와의 chatList를 찾으면
             updateDoc(myChatListRef, {
-              stack: 0,
-            });
+              stack:0
+            })
           }
         }
       });
@@ -142,9 +139,9 @@ export default function Chat({route}) {
   const renderSend = props => {
     return (
       <Send {...props}>
-        <View>
-          <Ionicons name="send-sharp" size={35} color="#9b59b6" />
-        </View>
+        <CommentInputContainer>
+          <SendText>전송</SendText>
+        </CommentInputContainer>
       </Send>
     );
   };
@@ -195,4 +192,14 @@ const FLATLIST = styled.ImageBackground`
   resize-mode: stretch;
   width: 100%;
   height: 100%;
+`;
+
+const CommentInputContainer = styled.View`
+  margin-bottom: 13px;
+  margin-right: 15px;
+`;
+const SendText = styled.Text`
+  font-size: 15px;
+  font-weight: bold;
+  color: #b7b4df;
 `;
