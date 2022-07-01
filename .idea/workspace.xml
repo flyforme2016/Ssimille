@@ -4,19 +4,19 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="06.24 Complete delete friend" />
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="07.01 CurrentMusic" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="origin/gijeong" />
+    <option name="BRANCH" value="origin/master" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="gijeong" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -155,7 +155,28 @@
       <option name="project" value="LOCAL" />
       <updated>1656405284190</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="06.28 Merge marster from gijeong">
+      <created>1656416934750</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1656416934750</updated>
+    </task>
+    <task id="LOCAL-00016" summary="06.29 Complete deleteAlarm &amp; homeAlarm">
+      <created>1656504409327</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1656504409327</updated>
+    </task>
+    <task id="LOCAL-00017" summary="07.01 CurrentMusic">
+      <created>1656657772429</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1656657772430</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -182,6 +203,9 @@
     <MESSAGE value="06.23 Complete chatting" />
     <MESSAGE value="06.24 Complete delete friend" />
     <MESSAGE value="06.28 Alarm" />
-    <option name="LAST_COMMIT_MESSAGE" value="06.28 Alarm" />
+    <MESSAGE value="06.28 Merge marster from gijeong" />
+    <MESSAGE value="06.29 Complete deleteAlarm &amp; homeAlarm" />
+    <MESSAGE value="07.01 CurrentMusic" />
+    <option name="LAST_COMMIT_MESSAGE" value="07.01 CurrentMusic" />
   </component>
 </project>

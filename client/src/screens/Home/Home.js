@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import {ActivityIndicator} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
@@ -9,6 +9,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';
+import getRef from '../../functions/getRef'
+import {onSnapshot} from 'firebase/firestore';
 import TopNavBar from '../../components/TopNavBar';
 
 const Home = ({navigation: {navigate, push}}) => {
@@ -16,6 +18,7 @@ const Home = ({navigation: {navigate, push}}) => {
   const dispatch = useDispatch();
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {locationName} = useSelector(state => state.locationName);
+  const [alarmStack, setAlarmStack] = useState(0)
 
   //내 프로필 가져오기
   const {isLoading} = useQuery(
@@ -34,6 +37,19 @@ const Home = ({navigation: {navigate, push}}) => {
       },
     },
   );
+
+  useLayoutEffect(() => {
+    getAlarmStack()
+  }, [])
+  const getAlarmStack = async () => {
+    const stackAlarmDocRef = getRef.alarmStackDocRef(kakaoUid)
+    onSnapshot(stackAlarmDocRef, doc=>{
+      if(doc.exists()){
+        setAlarmStack(doc.data().stack)
+      }
+    })
+  }
+
   return isLoading ? (
     <Loader>
       <ActivityIndicator />
@@ -41,11 +57,19 @@ const Home = ({navigation: {navigate, push}}) => {
   ) : (
     <>
       <Container>
-        <TopNavBar
-          iconName="alert-circle-outline"
-          onPress={() => navigate('Stack', {screen: 'Notice'})}
-        />
-
+        <TopBar>
+          <Logo source={logo} />
+          <AlarmWrapper>
+            <AlarmButton onPress={() => navigate('Stack', {screen: 'Notice'})}>
+              <Ionicons name="notifications-outline" size={30} color="#b7b4df" />
+            </AlarmButton>
+            {alarmStack !== 0 ? (
+              <AlarmStackWrapper>
+                <AlarmStack>{alarmStack ? alarmStack : null}</AlarmStack>
+              </AlarmStackWrapper>
+            ) : null}
+          </AlarmWrapper>
+        </TopBar>
         <MyzoneContainer>
           <Btn onPress={() => push('Stack', {screen: 'Myzone'})}>
             <Text>MY ZONE </Text>
@@ -91,6 +115,45 @@ const Loader = styled.View`
 
 const Container = styled.ScrollView`
   background-color: white;
+`;
+const TopBar = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`;
+const Logo = styled.Image`
+  background-color: white;
+  width: 100;
+  height: 50;
+`;
+
+const AlarmWrapper = styled.View`
+  align-items: center;
+  justify-content: center;
+`
+
+const AlarmButton = styled.TouchableOpacity`
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+`;
+
+const AlarmStackWrapper = styled.View`
+  position:absolute;
+  right:8px;
+  top:5px;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  background-color: #b7b4df;
+  border-radius: 7.5;
+`
+
+const AlarmStack = styled.Text`
+  font-size: 8px;
+  color: white;
+  font-family: 'Lato-Regular';
+  text-align: center;
 `;
 const MyzoneContainer = styled.View``;
 const Btn = styled.TouchableOpacity`
