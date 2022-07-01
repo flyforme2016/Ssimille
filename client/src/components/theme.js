@@ -15,7 +15,3 @@ export const SIZES = {
   width,
   height,
 };
-
-const theme = {COLORS, SIZES};
-
-export default theme;

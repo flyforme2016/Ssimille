@@ -11,6 +11,7 @@ import Config from 'react-native-config';
 import {useQuery} from 'react-query';
 import getRef from '../../functions/getRef'
 import {onSnapshot} from 'firebase/firestore';
+import TopNavBar from '../../components/TopNavBar';
 
 const Home = ({navigation: {navigate, push}}) => {
   const BASE_URL = Config.BASE_URL;
@@ -30,14 +31,13 @@ const Home = ({navigation: {navigate, push}}) => {
       });
       return data;
     },
-    { 
+    {
       onSuccess: res => {
-        console.log('myProfileData save by redux')
         dispatch(actions.saveUserProfileAction(res));
       },
     },
   );
-  
+
   useLayoutEffect(() => {
     getAlarmStack()
   }, [])
@@ -57,6 +57,11 @@ const Home = ({navigation: {navigate, push}}) => {
   ) : (
     <>
       <Container>
+        <TopNavBar
+          iconName="alert-circle-outline"
+          onPress={() => navigate('Stack', {screen: 'Notice'})}
+        />
+
         <TopBar>
           <Logo source={logo} />
           <AlarmWrapper>
@@ -155,9 +160,7 @@ const AlarmStack = styled.Text`
   font-family: 'Lato-Regular';
   text-align: center;
 `;
-
 const MyzoneContainer = styled.View``;
-
 const Btn = styled.TouchableOpacity`
   padding: 10px;
   background-color: white;

@@ -5,7 +5,7 @@ import {View, LogBox, PermissionsAndroid} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {useDispatch} from 'react-redux';
 import actions from '../actions/index';
-import SpotifyAuthentication from '../components/SpotifyAuthentication';
+import SpotifyAuthentication from '../functions/SpotifyAuthentication';
 import Config from 'react-native-config';
 import Geolocation from '@react-native-community/geolocation';
 
@@ -39,11 +39,9 @@ const KakaoLogin = ({navigation: {replace}}) => {
   };
 
   const parseAuthCode = async url => {
-    console.log('url: ', url);
     const exp = 'code='; //url에 붙어 날라오는 인가코드는 code=뒤부터 parse하여 get
     if (url) {
       const startIndex = url.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
-      console.log('startIndex: ', startIndex);
       if (startIndex !== -1) {
         const authCode = url.substring(startIndex + exp.length);
         try {
@@ -54,14 +52,8 @@ const KakaoLogin = ({navigation: {replace}}) => {
             .then(async res => {
               // 스포티파이 연동
               const spotifyToken = await SpotifyAuthentication();
-              console.log(
-                'Do you receive spotifyToken correctly? : ',
-                spotifyToken,
-              );
               dispatch(actions.saveSpotifyTokenAction(spotifyToken));
               await getCurrentLocation();
-
-              console.log('return kakaoUid: ', res.data);
 
               if (res.data.userId) {
                 // 최초로그인 시 진입
@@ -74,9 +66,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
                 replace('Stack', {screen: 'Onboarding'});
               } else {
                 //최초 로그인이 아닐 시
-                console.log('Already Login');
                 const myUid = await AsyncStorage.getItem('userNumber');
-                console.log('is there myUid in AsyncStorage? : ', myUid);
                 dispatch(actions.saveKakaoUidAction(myUid));
                 replace('TabBar', {screen: 'Home'});
               }

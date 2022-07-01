@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import ProfileTabBar from './ProfileTapBar';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import {remote} from 'react-native-spotify-remote';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
+import TopNavBar from '../../components/TopNavBar';
+import {DeviceEventEmitter} from 'react-native';
 
 const Profile = ({navigation}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
@@ -16,28 +17,30 @@ const Profile = ({navigation}) => {
     myProfileData.tag4_cd,
     myProfileData.tag5_cd,
   ].filter(tag => tag !== null);
-
-  const refetch = () => {};
+  console.log(myProfileData);
 
   return (
     myProfileData && (
       <>
         <Container>
-          <NavBar>
-            <NavText>PROFILE</NavText>
-            <Btn
-              onPress={() =>
-                navigation.push('Stack', {
-                  screen: 'ProfileEdit',
-                  params: {
-                    data: myProfileData,
-                    hashTag: HashTag,
-                  },
-                })
-              }>
-              <Ionicons name="settings-outline" size={35} />
-            </Btn>
-          </NavBar>
+          <TopNavBar
+            navText="프로필"
+            iconName="settings-outline"
+            onPress={() =>
+              navigation.push('Stack', {
+                screen: 'ProfileEdit',
+                params: {
+                  hashTag: HashTag,
+                  profileImg: myProfileData.profile_image,
+                  nickname: myProfileData.nickname,
+                  profileMusic: myProfileData.profile_music_uri,
+                  albumImg: myProfileData.album_image,
+                  albumTitle: myProfileData.album_title,
+                  albumArtistName: myProfileData.album_artist_name,
+                },
+              })
+            }
+          />
           <Divider />
 
           <ProfileContainer>
@@ -85,7 +88,7 @@ const Profile = ({navigation}) => {
               <MusicInfoContainer
                 onPress={() => {
                   remote.playUri(myProfileData.profile_music_uri);
-                  console.log('uri로 노래 재생하기 테스트 ');
+                  DeviceEventEmitter.emit('refetchMusic');
                 }}>
                 <MusicWrapper>
                   <CoverImg source={{uri: myProfileData.album_image}} />
@@ -100,7 +103,7 @@ const Profile = ({navigation}) => {
           ) : null}
           <ProfileTabBar userId={myProfileData.kakao_user_number} />
         </Container>
-        {/* <SpotifyTab refetch={refetch} /> */}
+        <SpotifyTab />
       </>
     )
   );
@@ -119,21 +122,7 @@ const Divider = styled.View`
   align-self: center;
   elevation: 3;
 `;
-const NavBar = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-const NavText = styled.Text`
-  color: #9b59b6;
-  font-size: 24;
-  padding: 5px;
-`;
-const Btn = styled.TouchableOpacity`
-  width: 60px;
-  position: absolute;
-  right: -1px;
-`;
+
 const ProfileContainer = styled.View`
   justify-content: center;
   align-items: center;

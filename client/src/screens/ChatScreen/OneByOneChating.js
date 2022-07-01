@@ -14,7 +14,6 @@ import getRef from '../../functions/getRef'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {View, Text} from 'react-native';
 import styled from 'styled-components/native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default function Chat({route}) {
   const otherUid = route.params.otherUid;
@@ -24,26 +23,26 @@ export default function Chat({route}) {
   const [messages, setMessages] = useState([]);
   const myData = useSelector(state => state.myProfile);
   const myUid = myData.myProfileData.kakao_user_number.toString();
-  const myChatsRef = getRef.chatsRef(myUid, stringOtherUid) //my chats update
+  const myChatsRef = getRef.chatsRef(myUid, stringOtherUid); //my chats update
   const otherChatsRef = getRef.chatsRef(stringOtherUid, myUid); //other chats update
-  const myChatListRef = getRef.chatListRef(myUid, stringOtherUid) //my chatList update
-  const otherChatListRef = getRef.chatListRef(stringOtherUid, myUid) //other chatList update
+  const myChatListRef = getRef.chatListRef(myUid, stringOtherUid); //my chatList update
+  const otherChatListRef = getRef.chatListRef(stringOtherUid, myUid); //other chatList update
   const myChatListCollectionRef = getRef.myChatListCollectionRef(myUid);
 
   useLayoutEffect(() => {
     const getChattingLog = async () => {
       console.log('start getChattingLog');
 
-      const myChatListDocSnap = await getDoc(myChatListRef)     //채팅방 입장 시 stack = 0 으로 초기화
-      if(myChatListDocSnap.exists() && myChatListDocSnap.data().stack !== 0){
+      const myChatListDocSnap = await getDoc(myChatListRef); //채팅방 입장 시 stack = 0 으로 초기화
+      if (myChatListDocSnap.exists() && myChatListDocSnap.data().stack !== 0) {
         updateDoc(myChatListRef, {
-          stack: 0
-        })
+          stack: 0,
+        });
       }
 
       const q2 = query(myChatsRef, orderBy('createdAt', 'desc'));
       const unsubscribe = onSnapshot(q2, querySnapshot => {
-        console.log('Second onSnapshot')
+        console.log('Second onSnapshot');
         setMessages(
           querySnapshot.docs.map(doc => ({
             _id: doc.data()._id,
@@ -52,7 +51,7 @@ export default function Chat({route}) {
             user: doc.data().user,
           })),
         );
-      })
+      });
 
       return unsubscribe;
     };
@@ -76,11 +75,10 @@ export default function Chat({route}) {
             })
           }
         }
-      })
+      });
     });
-    return unsubscribe
-  })
-
+    return unsubscribe;
+  });
 
   //메세지 전송 firestore에 저장
   const onSend = useCallback((messages = []) => {
@@ -91,35 +89,36 @@ export default function Chat({route}) {
 
       const {_id, createdAt, text, user} = messages[0];
 
-      const otherChatListDocSnap = await getDoc(otherChatListRef)
-      if(otherChatListDocSnap.exists()){
+      const otherChatListDocSnap = await getDoc(otherChatListRef);
+      if (otherChatListDocSnap.exists()) {
         setDoc(otherChatListRef, {
           _id,
           createdAt,
           text,
           setDocUserObj: user,
-          stack : otherChatListDocSnap.data().stack + 1
-        })
-      }else{
+          stack: otherChatListDocSnap.data().stack + 1,
+        });
+      } else {
         setDoc(otherChatListRef, {
           _id,
           createdAt,
           text,
           setDocUserObj: user,
-          stack : 1
-        })
+          stack: 1,
+        });
       }
-      setDoc(myChatListRef, { //my chatList update
+      setDoc(myChatListRef, {
+        //my chatList update
         _id,
         createdAt,
         text,
-        setDocUserObj : {
+        setDocUserObj: {
           _id: stringOtherUid,
           name: otherNickname,
           avatar: otherProfleImg,
         },
-        stack : 0
-      })
+        stack: 0,
+      });
 
       addDoc(myChatsRef, {
         _id,

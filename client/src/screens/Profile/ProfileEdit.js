@@ -16,8 +16,7 @@ const ProfileEdit = ({navigation, route}) => {
   const reduxDispatch = useDispatch();
   const [idx, setIdx] = useState(route.params.hashTag);
   const [changeName, setChangeName] = useState();
-  const routeDatas = route.params.data;
-  console.log(routeDatas);
+  const routeDatas = route.params;
   const BASE_URL = Config.BASE_URL;
   const [profileImg, setProfileImg] = useState();
 
@@ -68,7 +67,7 @@ const ProfileEdit = ({navigation, route}) => {
           albumImage: routeDatas.albumImg
             ? routeDatas.albumImg
             : routeDatas.albumImg,
-          hashTag: idx ? idx : route.params.hashTag,
+          hashTag: idx ? idx : routeDatas.hashTag,
         })
         .then(
           res => {
@@ -99,7 +98,7 @@ const ProfileEdit = ({navigation, route}) => {
             source={{
               uri: profileImg
                 ? 'file://' + (profileImg?.crop?.cropPath ?? profileImg.path)
-                : route.params.data.profile_image,
+                : route.params.profileImg,
             }}>
             <Ionicons name="camera-outline" size={35} />
           </ImgBackground>
@@ -107,7 +106,7 @@ const ProfileEdit = ({navigation, route}) => {
 
         <SelectContainer>
           <NameInput
-            placeholder={route.params.data.nickname}
+            placeholder={route.params.nickname}
             value={changeName}
             text-center={true}
             onChangeText={text => {
@@ -119,13 +118,12 @@ const ProfileEdit = ({navigation, route}) => {
           </ControlBtn>
         </SelectContainer>
 
-        {route.params.data.album_title ? (
+        {route.params.albumTitle ? (
           <SelectContainer>
             <SelectedWrapper>
-              <SelectedImg source={{uri: route.params.data.album_image}} />
+              <SelectedImg source={{uri: route.params.albumImg}} />
               <SelectedMusic>
-                {route.params.data.album_title} -
-                {route.params.data.album_artist_name}
+                {route.params.albumTitle} - {route.params.albumArtistName}
               </SelectedMusic>
             </SelectedWrapper>
 

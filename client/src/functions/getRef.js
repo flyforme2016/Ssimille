@@ -17,7 +17,7 @@ exports.chatListRef = (uid1, uid2) => {
 }
 
 exports.myChatListCollectionRef = (uid1) => {
-    const chatListColRef = collection(database, 'chatList');        
+    const chatListColRef = collection(database, 'chatList');
     const chatListDocRef = doc(chatListColRef, uid1);
     const chatListFinalColRef = collection(chatListDocRef, 'chatList');
     return chatListFinalColRef
@@ -45,7 +45,7 @@ exports.currentMusicColRef = (regionCode) => {
     return currentMusicFinalColRef
 }
 
-exports.currentMusicDocRef = (regionCode, uid) => { 
+exports.currentMusicDocRef = (regionCode, uid) => {
     const currentMusicColRef = collection(database, 'currentMusic')
     const currentMusicDocRef = doc(currentMusicColRef, regionCode)
     const currentMusicColRef2 = collection(currentMusicDocRef, 'userList')

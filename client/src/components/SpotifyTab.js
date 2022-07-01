@@ -1,20 +1,20 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {remote} from 'react-native-spotify-remote';
 import MarqueeView from 'react-native-marquee-view';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
-import {useQuery} from 'react-query';
-import getRef from '../functions/getRef'
+import {useMutation, useQuery} from 'react-query';
+import getRef from '../functions/getRef';
 import updateCurrentMusic from '../functions/updateCurrentMusic';
+import {DeviceEventEmitter} from 'react-native';
 
 const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
 const BASE_URL = Config.BASE_URL;
 
 const SpotifyTab = () => {
-  console.log('Enter spotifyTab')
   const {spotifyToken} = useSelector(state => state.spotifyToken);
   const {myProfileData} = useSelector(state => state.myProfile);
   const SpotifyWebApi = require('spotify-web-api-node');
@@ -23,29 +23,20 @@ const SpotifyTab = () => {
     clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
     redirectURL: `${BASE_URL}/spotify/oauth/callback`,
   });
-  // useEffect(() => {
-  //   remote.addListener('playerStateChanged', ()=>{})
-  //   console.log('listenerCount', remote.listenerCount('playerStateChanged'))
-  // }, [])
-  useEffect(async () => {
-    //useEffect는 한번만 호출됨
-    //why addListener involked so many?
-    await remote.connect(spotifyToken);
 
-    const result = remote.addListener('playerStateChanged', ({event}) => {
-      console.log('check addListener')
-      console.log('event: ', event)
-      console.log('remote.eventNames()', remote.eventNames())
-      if(CurrentMusic){
-        const regionCode = myProfileData.region_code.toString()
-        const myUid = myProfileData.kakao_user_number.toString()
-        const currentMusicDocRef = getRef.currentMusicDocRef(regionCode, myUid)
-        updateCurrentMusic(currentMusicDocRef, myProfileData, CurrentMusic)
+  useEffect(() => {
+    DeviceEventEmitter.addListener('refetchMusic', async () => {
+      console.log('music refetch');
+      await refetch();
+      if (!isLoading) {
+        const regionCode = myProfileData.region_code.toString();
+        const myUid = myProfileData.kakao_user_number.toString();
+        const currentMusicDocRef = getRef.currentMusicDocRef(regionCode, myUid);
+        updateCurrentMusic(currentMusicDocRef, myProfileData, CurrentMusic);
       }
-      refetch();
     });
-    console.log('result: ', result);
-  }, [])
+  }, []);
+
   const {
     isLoading,
     data: CurrentMusic,
@@ -53,12 +44,13 @@ const SpotifyTab = () => {
   } = useQuery(
     'CurrentMusic',
     async () => {
+      await remote.connect(spotifyToken);
       const data = await remote.getPlayerState();
+      console.log('useQuery refetch');
       return data;
     },
     {
       onSuccess: async data => {
-        console.log('Success useQuery')
         const uri = data.track.album.uri;
         const exp = 'spotify:album:';
         const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
@@ -98,6 +90,7 @@ const SpotifyTab = () => {
             <MusicControlBtn //이전 곡으로
               onPress={async () => {
                 await remote.skipToPrevious();
+                DeviceEventEmitter.emit('refetchMusic');
               }}
               type="play-back"
             />
@@ -120,6 +113,7 @@ const SpotifyTab = () => {
             <MusicControlBtn //다음 곡으로
               onPress={async () => {
                 await remote.skipToNext();
+                DeviceEventEmitter.emit('refetchMusic');
               }}
               type="play-forward"
             />

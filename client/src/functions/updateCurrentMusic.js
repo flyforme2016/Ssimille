@@ -16,4 +16,3 @@ const updateCurrentMusic = (currentMusicDocRef, myProfileData, musicData) => {
 
 export default updateCurrentMusic
 
-  

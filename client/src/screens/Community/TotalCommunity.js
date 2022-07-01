@@ -9,7 +9,7 @@ import {remote} from 'react-native-spotify-remote';
 import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import checkIsFriend from '../../api/checkIsFriend';
-import {useQuery, useMutation} from 'react-query';
+import {useQuery} from 'react-query';
 import {DeviceEventEmitter} from 'react-native';
 import {deletePost} from '../../api/community/deletePost';
 import {handleLike} from '../../api/community/handleLike';
@@ -26,31 +26,19 @@ const TotalCommunity = ({navigation}) => {
     });
   }, []);
 
-  // 값 변경시 refecth하는 함수 (게시글 삭제, 좋아요)
-  const postMutation = useMutation(async () => {
-    refetch();
-  });
   // 전체 게시글 가져오기
   const {
     isLoading: totalPostDataLoading,
     data: totalPostDatas,
     refetch,
-  } = useQuery(
-    'totalPostDatas',
-    async () => {
-      const {data} = await axios(`${BASE_URL}/post/getPostList`, {
-        params: {
-          key: kakaoUid,
-        },
-      });
-      return data;
-    },
-    {
-      onSuccess: res => {
-        console.log(res);
+  } = useQuery('totalPostDatas', async () => {
+    const {data} = await axios(`${BASE_URL}/post/getPostList`, {
+      params: {
+        key: kakaoUid,
       },
-    },
-  );
+    });
+    return data;
+  });
 
   return (
     <Container>
@@ -95,7 +83,7 @@ const TotalCommunity = ({navigation}) => {
                           text: 'OK',
                           onPress: () => {
                             deletePost(kakaoUid, item.post_seq);
-                            postMutation.mutate();
+                            refetch();
                           },
                         },
                       ]);
@@ -113,36 +101,57 @@ const TotalCommunity = ({navigation}) => {
                       <AlbumImgBtn
                         onPress={async () => {
                           await remote.playUri(item.music_uri);
+                          DeviceEventEmitter.emit('refetchMusic');
                         }}>
                         <SelectedMusic>
                           {item.album_title} - {item.album_artist_name}
                         </SelectedMusic>
                         <PostImg
-                          resizeMode="cover"
+                          resizeMode="contain"
                           source={{uri: item.album_image}}
                         />
                       </AlbumImgBtn>
                     ) : null}
-                    {item.image1
-                      ? [
-                          item.image1,
-                          item.image2,
-                          item.image3,
-                          item.image4,
-                          item.image5,
-                        ]
-                          .filter(imgs => imgs !== null)
-                          .map(img => {
-                            return (
-                              <ImageContainer>
-                                <PostImg
-                                  resizeMode="cover"
-                                  source={{uri: img}}
-                                />
-                              </ImageContainer>
-                            );
-                          })
-                      : null}
+                    {item.image1 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image1}}
+                        />
+                      </ImageContainer>
+                    ) : null}
+                    {item.image2 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image2}}
+                        />
+                      </ImageContainer>
+                    ) : null}
+                    {item.image3 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image3}}
+                        />
+                      </ImageContainer>
+                    ) : null}
+                    {item.image4 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image4}}
+                        />
+                      </ImageContainer>
+                    ) : null}
+                    {item.image5 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image5}}
+                        />
+                      </ImageContainer>
+                    ) : null}
                   </Swiper>
                 </>
               ) : null}
@@ -161,7 +170,7 @@ const TotalCommunity = ({navigation}) => {
                       sendAlarm(myData, item, '회원님의 게시물을 좋아합니다', 0)
                     }
                     handleLike(kakaoUid, item.post_seq, item.likeNy);
-                    postMutation.mutate();
+                    refetch();
                   }}>
                   {item.likeNy ? (
                     <Ionicons name="heart" color="red" size={25} />
@@ -172,7 +181,8 @@ const TotalCommunity = ({navigation}) => {
                 </Interaction>
                 <Interaction
                   onPress={() => {
-                    navigation.navigate('Stack', {
+                    console.log('data', item);
+                    navigation.push('Stack', {
                       screen: 'CommunityPost',
                       params: {
                         data: item,
@@ -286,7 +296,6 @@ const InteractionText = styled.Text`
   font-size: 12px;
   font-weight: bold;
   margin: 5px;
-  //color: ${props => (props.active ? '#2e64e5' : '#333')};
 `;
 
 export default TotalCommunity;

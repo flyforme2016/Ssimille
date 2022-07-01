@@ -1,180 +1,175 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import ProfileTabBar from './ProfileTapBar';
-import CustomButton from '../../components/CustomButtons';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
 import Config from 'react-native-config';
-import {View, Text, TouchableOpacity} from 'react-native';
 import sendAlarm from '../../functions/sendAlarm';
 import deleteFriend from '../../functions/deleteFriend';
 import {useSelector} from 'react-redux';
+import {useQuery} from 'react-query';
+import TopNavBar from '../../components/TopNavBar';
+import {remote} from 'react-native-spotify-remote';
+import {DeviceEventEmitter} from 'react-native';
 
 const Profile = ({navigation, route}) => {
   const [isFollow, setIsFollow] = useState(route.params.isFriend);
-  const [otherUserData, setOtherUserData] = useState({});
-  const {myProfileData} = useSelector(state => state.myProfile)
-  const myUid = useSelector(state => state.kakaoUid)
-  const otherUserUid = route.params.otherUid;
+  const {myProfileData} = useSelector(state => state.myProfile);
+  const {kakaoUid} = useSelector(state => state.kakaoUid);
   const BASE_URL = Config.BASE_URL;
-  const HashTag = [
-    otherUserData.tag1_cd,
-    otherUserData.tag2_cd,
-    otherUserData.tag3_cd,
-    otherUserData.tag4_cd,
-    otherUserData.tag5_cd,
-  ].filter(tag => tag !== null);
-
-  const getOtherUserProfile = async () => {
-    try {
-      if (otherUserUid !== null) {
-        await axios
-          .get(`${BASE_URL}/profile/getUserProfile`, {
-            params: {
-              key: otherUserUid,
-            },
-          })
-          .then(res => {
-            setOtherUserData(res.data); //서버에게 받아온 otherUserProfileData
-          });
-      }
-    } catch (error) {
-      console.log('error: ', error);
-    }
-  };
-  useLayoutEffect(() => {
-    getOtherUserProfile();
-  }, []);
+  const {data: otherUserData} = useQuery('otherUserData', async () => {
+    const {data} = await axios(`${BASE_URL}/profile/getUserProfile`, {
+      params: {
+        key: route.params.otherUid,
+      },
+    });
+    return data;
+  });
 
   const addFriendListener = () => {
-    if(!isFollow){
+    if (!isFollow) {
       setIsFollow(!isFollow);
       const myData = {
         uid: myProfileData.kakao_user_number.toString(),
         nickname: myProfileData.nickname,
-        profile_image: myProfileData.profile_image
-      }
-      sendAlarm(myData, otherUserData, "회원님을 팔로우 하였습니다.", 1)
-      myProfileData.friend_count += 1
-    }else{
+        profile_image: myProfileData.profile_image,
+      };
+      sendAlarm(myData, otherUserData, '회원님을 팔로우 하였습니다.', 1);
+      myProfileData.friend_count += 1;
+    } else {
       setIsFollow(!isFollow);
-      deleteFriend(myUid.kakaoUid, otherUserUid)
-      myProfileData.friend_count -= 1
+      deleteFriend(kakaoUid, route.params.otherUid);
+      myProfileData.friend_count -= 1;
     }
-  }
+  };
 
   return (
     <Container>
-      <NavBar>
-        <NavText>PROFILE</NavText>
-      </NavBar>
+      <TopNavBar navText="프로필" />
       <Divider />
+      {otherUserData && (
+        <>
+          <ProfileContainer>
+            <UserInfo>
+              <ProfileImage
+                onPress={() => {
+                  console.log('clicked');
+                  navigation.push('Stack', {
+                    screen: 'BigPicture',
+                    params: {
+                      userprofile: otherUserData.profile_image,
+                    },
+                  });
+                }}>
+                <ProfilePic source={{uri: otherUserData.profile_image}} />
+              </ProfileImage>
+              <UserName>{otherUserData.nickname}</UserName>
+            </UserInfo>
+            <ProfileInfo>
+              <CountContainer>
+                <CountBtn>
+                  <CountText>POST</CountText>
+                  <CountText>{otherUserData.post_count}</CountText>
+                </CountBtn>
+                <CountBtn>
+                  <CountText>FREIND</CountText>
+                  <CountText>{otherUserData.friend_count}</CountText>
+                </CountBtn>
+                <CountBtn
+                  onPress={() => {
+                    navigation.push('Stack', {
+                      screen: 'FavoriteSongs',
+                      params: {
+                        userId: route.params.otherUid,
+                      },
+                    });
+                  }}>
+                  <CountText>SONG</CountText>
+                  <CountText>{otherUserData.song_count}</CountText>
+                </CountBtn>
+              </CountContainer>
 
-      <ProfileContainer>
-        <UserInfo>
-          <ProfileImage
-            onPress={() => {
-              console.log('clicked');
-              navigation.push('Stack', {
-                screen: 'BigPicture',
-                params: {
-                  userprofile: otherUserData.profile_image,
-                },
-              });
-            }}>
-            <ProfilePic source={{uri: otherUserData.profile_image}} />
-          </ProfileImage>
-          <UserName>{otherUserData.nickname}</UserName>
-        </UserInfo>
-        <ProfileInfo>
-          <CountContainer>
-            <CountBtn>
-              <CountText>POST</CountText>
-              <CountText>{otherUserData.post_count}</CountText>
-            </CountBtn>
-            <CountBtn>
-              <CountText>FREIND</CountText>
-              <CountText>{otherUserData.friend_count}</CountText>
-            </CountBtn>
-            <CountBtn>
-              <CountText>SONG</CountText>
-              <CountText>{otherUserData.song_count}</CountText>
-            </CountBtn>
-          </CountContainer>
+              <TagContainer>
+                {otherUserData.tag1_cd
+                  ? [
+                      otherUserData.tag1_cd,
+                      otherUserData.tag2_cd,
+                      otherUserData.tag3_cd,
+                      otherUserData.tag4_cd,
+                      otherUserData.tag5_cd,
+                    ]
+                      .filter(tag => tag !== null)
+                      .map(data => {
+                        return (
+                          <TagBtn>
+                            <TagText># {data} </TagText>
+                          </TagBtn>
+                        );
+                      })
+                  : null}
+              </TagContainer>
+            </ProfileInfo>
+          </ProfileContainer>
+          <Card>
+            {otherUserData.album_image ? (
+              <MusicInfoContainer
+                onPress={() => {
+                  remote.playUri(myProfileData.profile_music_uri);
+                  DeviceEventEmitter.emit('refetchMusic');
+                }}>
+                <MusicWrapper>
+                  <CoverImg source={{uri: otherUserData.album_image}} />
+                  <MusicInfo>
+                    <MusicName> {otherUserData.album_title}</MusicName>
+                    <ArtistName>{otherUserData.album_artist_name}</ArtistName>
+                  </MusicInfo>
+                </MusicWrapper>
+                <MusicControlBtn type="play" />
+              </MusicInfoContainer>
+            ) : null}
+          </Card>
 
-          <TagContainer>
-            {HashTag.map(data => {
-              return (
-                <TagBtn>
-                  <TagText># {data} </TagText>
-                </TagBtn>
-              );
-            })}
-          </TagContainer>
-        </ProfileInfo>
-      </ProfileContainer>
-      {otherUserData.album_image ? (
-        <Card>
-          <MusicInfoContainer>
-            <MusicWrapper>
-              <CoverImg source={{uri: otherUserData.album_image}} />
-              <MusicInfo>
-                <MusicName> {otherUserData.album_title}</MusicName>
-                <ArtistName>{otherUserData.album_artist_name}</ArtistName>
-              </MusicInfo>
-            </MusicWrapper>
-            <MusicControlBtn type="play" />
-          </MusicInfoContainer>
-        </Card>
-      ) : (
-        <MusicName>프로필 뮤직이 없습니다.</MusicName>
-      )}
+          <BtnContainer>
+            <FollowBtn onPress={addFriendListener} isFollow={isFollow}>
+              <BtnText isFollow={isFollow}>
+                {isFollow ? '팔로잉' : '팔로우'}
+              </BtnText>
+            </FollowBtn>
 
-      <BtnContainer>
-        <TouchableOpacity onPress={addFriendListener}>
-          <View
-            style={{
-              width: 95,
-              height: 55,
-              borderRadius: 5,
-              backgroundColor: isFollow ? null : '#b7b4df',
-              borderWidth: isFollow ? 1 : 0,
-              borderColor: '#DEDEDE',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                color: isFollow ? 'black' : 'white',
-                fontSize: 14,
-                fontWeight: 'bold',
+            <FollowBtn
+              onPress={() => {
+                navigation.navigate('Stack', {
+                  screen: 'OneByOneChating',
+                  params: {
+                    otherUid: route.params.otherUid,
+                    otherProfleImg: otherUserData.profile_image,
+                    otherNickname: otherUserData.nickname,
+                  },
+                });
               }}>
-              {isFollow ? '팔로잉' : '팔로우'}
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        <Button>
-          <CustomButton
-            text=" 채팅하기"
-            onPress={() => {
-              navigation.navigate('Stack', {
-                screen: 'OneByOneChating',
-                params: {
-                  otherUid: route.params.otherUid,
-                  otherProfleImg: otherUserData.profile_image,
-                  otherNickname: otherUserData.nickname,
-                },
-              });
-            }}
-          />
-        </Button>
-      </BtnContainer>
-
-      <ProfileTabBar userId={otherUserUid} />
+              <BtnText>채팅하기</BtnText>
+            </FollowBtn>
+          </BtnContainer>
+        </>
+      )}
+      <ProfileTabBar userId={route.params.otherUid} />
     </Container>
   );
 };
+const FollowBtn = styled.TouchableOpacity`
+  width: 95;
+  height: 55;
+  border-radius: 5;
+  border-color: #dedede;
+  justify-content: center;
+  align-items: center;
+  background-color: ${props => (props.isFollow ? null : '#b7b4df')};
+`;
+const BtnText = styled.Text`
+  color: ${props => (props.isFollow ? 'black' : 'white')};
+  font-size: 14;
+  font-weight: bold;
+`;
 const Container = styled.View`
   flex: 1;
   background-color: #ffffff;
@@ -188,22 +183,12 @@ const Divider = styled.View`
   align-self: center;
   elevation: 3;
 `;
-const NavBar = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-const NavText = styled.Text`
-  color: #9b59b6;
-  font-size: 24;
-  padding: 5px;
-`;
+
 const BtnContainer = styled.TouchableOpacity`
   align-items: center;
   flex-direction: row;
   justify-content: center;
 `;
-const BtnContainer2 = styled.View``;
 const ProfileContainer = styled.View`
   justify-content: center;
   align-items: center;
@@ -275,12 +260,6 @@ const CountText = styled.Text`
   font-weight: bold;
   font-size: 14;
   margin: 8px;
-`;
-const Button = styled.Text`
-  margin: 10px;
-`;
-const Button2 = styled.Text`
-  margin: 10px;
 `;
 
 const ProfileInfo = styled.View`

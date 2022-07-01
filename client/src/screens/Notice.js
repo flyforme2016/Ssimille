@@ -131,7 +131,7 @@ const Container = styled.View`
 `;
 const NavText = styled.Text`
   color: #9b59b6;
-  font-size: 30;
+  font-size: 20;
   padding: 15px;
 `;
 const AlarmList = styled.FlatList``;
