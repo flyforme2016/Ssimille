@@ -11,11 +11,7 @@ const SpotifyAuthentication = async () => {
     redirectURL: `${BASE_URL}/spotify/oauth/callback`,
     tokenRefreshURL: `${BASE_URL}/spotify/oauth/callback`,
     tokenSwapURL: `${BASE_URL}/spotify/oauth/callback`,
-    scopes: [
-      ApiScope.AppRemoteControlScope,
-      ApiScope.UserFollowReadScope,
-      ApiScope.UserReadRecentlyPlayedScope,
-    ],
+    scopes: [ApiScope.AppRemoteControlScope, ApiScope.UserFollowReadScope],
   };
   const session = await SpotifyAuth.authorize(spotifyConfig);
 

@@ -52,9 +52,13 @@ const TabBar = () => {
         },
       })}>
       <Tab.Screen name="Community" component={Community} />
-      <Tab.Screen name="ChatingList" component={ChatingList} options={{
+      <Tab.Screen
+        name="ChatingList"
+        component={ChatingList}
+        options={{
           unmountOnBlur: true,
-        }} />
+        }}
+      />
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="FriendList" component={FriendList} />
       <Tab.Screen

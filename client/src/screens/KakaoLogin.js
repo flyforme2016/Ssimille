@@ -9,8 +9,6 @@ import SpotifyAuthentication from '../functions/SpotifyAuthentication';
 import Config from 'react-native-config';
 import Geolocation from '@react-native-community/geolocation';
 
-LogBox.ignoreLogs(['Remote debugger']);
-
 const runFirst = `window.ReactNativeWebView.postMessage("this is message from web");`;
 
 const KakaoLogin = ({navigation: {replace}}) => {

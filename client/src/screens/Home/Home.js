@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
@@ -9,7 +9,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';
-import getRef from '../../functions/getRef'
+import getRef from '../../functions/getRef';
 import {onSnapshot} from 'firebase/firestore';
 import TopNavBar from '../../components/TopNavBar';
 
@@ -18,7 +18,7 @@ const Home = ({navigation: {navigate, push}}) => {
   const dispatch = useDispatch();
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {locationName} = useSelector(state => state.locationName);
-  const [alarmStack, setAlarmStack] = useState(0)
+  const [alarmStack, setAlarmStack] = useState(0);
 
   //내 프로필 가져오기
   const {isLoading} = useQuery(
@@ -39,16 +39,16 @@ const Home = ({navigation: {navigate, push}}) => {
   );
 
   useLayoutEffect(() => {
-    getAlarmStack()
-  }, [])
+    getAlarmStack();
+  }, []);
   const getAlarmStack = async () => {
-    const stackAlarmDocRef = getRef.alarmStackDocRef(kakaoUid)
-    onSnapshot(stackAlarmDocRef, doc=>{
-      if(doc.exists()){
-        setAlarmStack(doc.data().stack)
+    const stackAlarmDocRef = getRef.alarmStackDocRef(kakaoUid);
+    onSnapshot(stackAlarmDocRef, doc => {
+      if (doc.exists()) {
+        setAlarmStack(doc.data().stack);
       }
-    })
-  }
+    });
+  };
 
   return isLoading ? (
     <Loader>
@@ -61,7 +61,11 @@ const Home = ({navigation: {navigate, push}}) => {
           <Logo source={logo} />
           <AlarmWrapper>
             <AlarmButton onPress={() => navigate('Stack', {screen: 'Notice'})}>
-              <Ionicons name="notifications-outline" size={30} color="#b7b4df" />
+              <Ionicons
+                name="notifications-outline"
+                size={30}
+                color="#b7b4df"
+              />
             </AlarmButton>
             {alarmStack !== 0 ? (
               <AlarmStackWrapper>
@@ -129,7 +133,7 @@ const Logo = styled.Image`
 const AlarmWrapper = styled.View`
   align-items: center;
   justify-content: center;
-`
+`;
 
 const AlarmButton = styled.TouchableOpacity`
   align-items: center;
@@ -138,16 +142,16 @@ const AlarmButton = styled.TouchableOpacity`
 `;
 
 const AlarmStackWrapper = styled.View`
-  position:absolute;
-  right:8px;
-  top:5px;
+  position: absolute;
+  right: 8px;
+  top: 5px;
   align-items: center;
   justify-content: center;
   width: 15px;
   height: 15px;
   background-color: #b7b4df;
   border-radius: 7.5;
-`
+`;
 
 const AlarmStack = styled.Text`
   font-size: 8px;

@@ -5,10 +5,9 @@ import MarqueeView from 'react-native-marquee-view';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
-import {useMutation, useQuery} from 'react-query';
+import {useQuery} from 'react-query';
 import getRef from '../functions/getRef';
 import updateCurrentMusic from '../functions/updateCurrentMusic';
-import {DeviceEventEmitter} from 'react-native';
 
 const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
@@ -23,57 +22,51 @@ const SpotifyTab = () => {
     clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
     redirectURL: `${BASE_URL}/spotify/oauth/callback`,
   });
-
   useEffect(() => {
-    DeviceEventEmitter.addListener('refetchMusic', async () => {
-      console.log('music refetch');
-      await refetch();
-      if (!isLoading) {
-        const regionCode = myProfileData.region_code.toString();
-        const myUid = myProfileData.kakao_user_number.toString();
-        const currentMusicDocRef = getRef.currentMusicDocRef(regionCode, myUid);
-        updateCurrentMusic(currentMusicDocRef, myProfileData, CurrentMusic);
-      }
+    remote.addListener('playerStateChanged', () => {
+      remote.removeAllListeners('playerStateChanged');
+      refetch();
     });
-  }, []);
+  });
 
-  const {
-    isLoading,
-    data: CurrentMusic,
-    refetch,
-  } = useQuery(
-    'CurrentMusic',
+  const {data: CurrentMusic, refetch} = useQuery(
+    ['CurrentMusic'],
     async () => {
       await remote.connect(spotifyToken);
       const data = await remote.getPlayerState();
-      console.log('useQuery refetch');
+      const uri = data.track.album.uri;
+      const exp = 'spotify:album:';
+      const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
+      const albumUri = uri.substring(startIndex + exp.length);
+      await spotifyWebApi.setAccessToken(spotifyToken);
+      await spotifyWebApi.getAlbum(albumUri).then(img => {
+        data.albumImg = img.body.images[0].url;
+      });
       return data;
     },
     {
       onSuccess: async data => {
-        const uri = data.track.album.uri;
-        const exp = 'spotify:album:';
-        const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
-        const albumUri = uri.substring(startIndex + exp.length);
-
-        await spotifyWebApi.setAccessToken(spotifyToken);
-        await spotifyWebApi.getAlbum(albumUri).then(img => {
-          const albumImg = img.body.images[0].url;
-          setCoverImg(albumImg);
-        });
+        if (!data.isPaused) {
+          const regionCode = myProfileData.region_code.toString();
+          const myUid = myProfileData.kakao_user_number.toString();
+          const currentMusicDocRef = getRef.currentMusicDocRef(
+            regionCode,
+            myUid,
+          );
+          updateCurrentMusic(currentMusicDocRef, myProfileData, data);
+        }
       },
+      staleTime: Infinity,
     },
   );
 
-  const [coverImg, setCoverImg] = useState();
-
   return (
     <SpotifyTabBar>
-      {!isLoading && (
+      {CurrentMusic && (
         <>
           <AlbumImg
             source={{
-              uri: coverImg ? coverImg : null,
+              uri: CurrentMusic.albumImg,
             }}
           />
           <MusicInfo>
@@ -86,11 +79,11 @@ const SpotifyTab = () => {
             )}
             <ArtistName>{CurrentMusic.track.artist.name}</ArtistName>
           </MusicInfo>
+
           <ContolContainer>
             <MusicControlBtn //이전 곡으로
               onPress={async () => {
                 await remote.skipToPrevious();
-                DeviceEventEmitter.emit('refetchMusic');
               }}
               type="play-back"
             />
@@ -113,7 +106,7 @@ const SpotifyTab = () => {
             <MusicControlBtn //다음 곡으로
               onPress={async () => {
                 await remote.skipToNext();
-                DeviceEventEmitter.emit('refetchMusic');
+                //remote.emit('playerStateChanged');
               }}
               type="play-forward"
             />

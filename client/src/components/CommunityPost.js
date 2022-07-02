@@ -245,9 +245,14 @@ const CommunityPost = ({navigation, route}) => {
             const myData = {
               uid: myProfileData.kakao_user_number.toString(),
               nickname: myProfileData.nickname,
-              profile_image: myProfileData.profile_image
-            }
-            sendAlarm(myData, route.params.data, '회원님의 게시물에 댓글을 남겼습니다.', 0)
+              profile_image: myProfileData.profile_image,
+            };
+            sendAlarm(
+              myData,
+              route.params.data,
+              '회원님의 게시물에 댓글을 남겼습니다.',
+              0,
+            );
             refetch();
           }}>
           <Ionicons name="send" size={25} />

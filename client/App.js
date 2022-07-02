@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView as SafeAreaProvider,
-  StatusBar,
-  StyleSheet,
-} from 'react-native';
+import {SafeAreaView as SafeAreaProvider, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {LogBox} from 'react-native';
 import Navigation from './src/navigation/Navigation';
