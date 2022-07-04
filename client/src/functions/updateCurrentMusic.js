@@ -1,6 +1,7 @@
 import {setDoc} from 'firebase/firestore';
 
 const updateCurrentMusic = (currentMusicDocRef, myProfileData, musicData) => {
+  console.log('Enter updateCurrentMusic');
   const finalObject = {
     uid: myProfileData.kakao_user_number,
     nickname: myProfileData.nickname,
@@ -8,13 +9,10 @@ const updateCurrentMusic = (currentMusicDocRef, myProfileData, musicData) => {
     musicUri: musicData.track.uri,
     albumTitle: musicData.track.name,
     albumArtistName: musicData.track.artist.name,
-    albumImg: musicData.track.album.uri,
+    albumImg: musicData.albumImg,
+    createdAt: Date.now(),
   };
-  try {
-    setDoc(currentMusicDocRef, finalObject);
-  } catch {
-    err => console.log(err);
-  }
+  setDoc(currentMusicDocRef, finalObject);
 };
 
 export default updateCurrentMusic;

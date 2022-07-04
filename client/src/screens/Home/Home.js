@@ -10,37 +10,36 @@ import actions from '../../actions/index';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';
 import getRef from '../../functions/getRef';
-import {onSnapshot} from 'firebase/firestore';
+import {query, onSnapshot, where} from 'firebase/firestore';
+import LinearGradient from 'react-native-linear-gradient';
 import TopNavBar from '../../components/TopNavBar';
+import {remote} from 'react-native-spotify-remote';
+import checkIsFriend from '../../api/checkIsFriend';
+
+const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
+const BASE_URL = Config.BASE_URL;
+
+const SpotifyWebApi = require('spotify-web-api-node');
+const spotifyWebApi = new SpotifyWebApi({
+  clientID: `${SPOTIFY_CLIENT_ID}`,
+  clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
+  redirectURL: `${BASE_URL}/spotify/oauth/callback`,
+});
 
 const Home = ({navigation: {navigate, push}}) => {
-  const BASE_URL = Config.BASE_URL;
-  const dispatch = useDispatch();
+  const {myProfileData} = useSelector(state => state.myProfile);
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {locationName} = useSelector(state => state.locationName);
+  const {spotifyToken} = useSelector(state => state.spotifyToken);
   const [alarmStack, setAlarmStack] = useState(0);
-
-  //내 프로필 가져오기
-  const {isLoading} = useQuery(
-    'getMyProfile',
-    async () => {
-      const {data} = await axios.get(`${BASE_URL}/profile/getUserProfile`, {
-        params: {
-          key: kakaoUid,
-        },
-      });
-      return data;
-    },
-    {
-      onSuccess: res => {
-        dispatch(actions.saveUserProfileAction(res));
-      },
-    },
-  );
+  const [locationPlaylist, setLocationPlaylist] = useState([]);
 
   useLayoutEffect(() => {
+    getLocationPlaylist();
     getAlarmStack();
   }, []);
+
   const getAlarmStack = async () => {
     const stackAlarmDocRef = getRef.alarmStackDocRef(kakaoUid);
     onSnapshot(stackAlarmDocRef, doc => {
@@ -50,6 +49,42 @@ const Home = ({navigation: {navigate, push}}) => {
     });
   };
 
+  const getLocationPlaylist = async () => {
+    const currentMusicListRef = getRef.currentMusicColRef(locationName.code); //my alarmList
+    const q = query(
+      currentMusicListRef,
+      //orderBy('createdAt', 'desc'),
+      //where('uid', 'not-in', [kakaoUid / 1]),
+    );
+    const subscribe = onSnapshot(q, querySnapshot => {
+      setLocationPlaylist(
+        querySnapshot.docs.map(doc => ({
+          uid: doc.data().uid,
+          nickname: doc.data().nickname,
+          profileImg: doc.data().profileImg,
+          musicUri: doc.data().musicUri,
+          albumTitle: doc.data().albumTitle,
+          albumArtistName: doc.data().albumArtistName,
+          albumImg: doc.data().albumImg,
+        })),
+      );
+      return subscribe;
+    });
+  };
+  const {isLoading, data: RecommendMusic} = useQuery(
+    ['RecommendMusic'],
+    async () => {
+      await spotifyWebApi.setAccessToken(spotifyToken);
+      const {body} = await spotifyWebApi.getRecommendations({
+        min_energy: 0.4,
+        seed_artists: [myProfileData.artist_uri],
+        min_popularity: 50,
+      });
+      console.log('recommendDatas', body);
+      return body;
+    },
+  );
+
   return isLoading ? (
     <Loader>
       <ActivityIndicator />
@@ -57,53 +92,99 @@ const Home = ({navigation: {navigate, push}}) => {
   ) : (
     <>
       <Container>
-        <TopBar>
-          <Logo source={logo} />
-          <AlarmWrapper>
-            <AlarmButton onPress={() => navigate('Stack', {screen: 'Notice'})}>
-              <Ionicons
-                name="notifications-outline"
-                size={30}
-                color="#b7b4df"
-              />
-            </AlarmButton>
-            {alarmStack !== 0 ? (
-              <AlarmStackWrapper>
-                <AlarmStack>{alarmStack ? alarmStack : null}</AlarmStack>
-              </AlarmStackWrapper>
-            ) : null}
-          </AlarmWrapper>
-        </TopBar>
+        <TopNavBar
+          navText="홈"
+          iconName="notifications-outline"
+          onPress={() => navigate('Stack', {screen: 'Notice'})}
+        />
+        {alarmStack !== 0 ? (
+          <AlarmStackWrapper>
+            <AlarmStack>{alarmStack ? alarmStack : null}</AlarmStack>
+          </AlarmStackWrapper>
+        ) : null}
         <MyzoneContainer>
           <Btn onPress={() => push('Stack', {screen: 'Myzone'})}>
             <Text>MY ZONE </Text>
             <Text> {locationName ? locationName.address_name : null}</Text>
           </Btn>
         </MyzoneContainer>
-        <MyzoneContainer>
-          <Btn onPress={() => push('TabBar', {screen: 'MyProfile'})}>
-            <Text>MY Profile</Text>
-          </Btn>
-        </MyzoneContainer>
-        <MyzoneContainer>
-          <Btn onPress={() => push('TabBar', {screen: 'Community'})}>
-            <Text>Community</Text>
-          </Btn>
-        </MyzoneContainer>
-        <MyzoneContainer>
-          <Btn onPress={() => push('TabBar', {screen: 'ChatingList'})}>
-            <Text>ChatList</Text>
-          </Btn>
-        </MyzoneContainer>
-
         <RecommendText>음악 추천</RecommendText>
-        <AlbumRecommendContainer>
-          <AlbumContainer>
-            <AlbumImg source={require('../../assets/sample/background.jpg')} />
-            <AlBumInfo>name</AlBumInfo>
-            <AlBumInfo>artist</AlBumInfo>
-          </AlbumContainer>
-        </AlbumRecommendContainer>
+        <RecommendPlaylist
+          nestedScrollEnabled={true}
+          horizontal={true}
+          data={locationPlaylist}
+          keyExtractor={item => item.uid + ''}
+          renderItem={({item}) => (
+            <>
+              <AlbumRecommendContainer>
+                <LinearGradient
+                  //style={{opacity: 0.2}}
+                  colors={['#4c669f', '#3b5998', '#192f6a']}>
+                  <ImgBackground
+                    resizeMode="stretch"
+                    source={{
+                      uri: item.albumImg,
+                    }}>
+                    <ProfileContainer
+                      onPress={async () => {
+                        const flag = await checkIsFriend(kakaoUid, item.uid);
+                        navigate('Stack', {
+                          screen: 'OtherUserProfile',
+                          params: {
+                            otherUid: item.uid,
+                            isFriend: flag,
+                          },
+                        });
+                      }}>
+                      <ProfileImg source={{uri: item.profileImg}} />
+                      {/* <InfoText>{item.nickname}</InfoText> */}
+                    </ProfileContainer>
+                    <AlbumContainer
+                      onPress={async () => {
+                        await remote.playUri(item.musicUri);
+                      }}>
+                      <InfoText>{item.albumTitle}</InfoText>
+                      <InfoText>{item.albumArtistName}</InfoText>
+                    </AlbumContainer>
+                  </ImgBackground>
+                </LinearGradient>
+              </AlbumRecommendContainer>
+            </>
+          )}
+        />
+        <RecommendText>음악 추천</RecommendText>
+        {RecommendMusic && (
+          <RecommendPlaylist
+            nestedScrollEnabled={true}
+            horizontal={true}
+            data={RecommendMusic.tracks}
+            keyExtractor={item => item.id + ''}
+            renderItem={({item}) => (
+              <>
+                <AlbumRecommendContainer>
+                  <LinearGradient
+                    //style={{opacity: 0.2}}
+                    colors={['#ffffff', '#192f6a']}>
+                    <ImgBackground
+                      resizeMode="stretch"
+                      source={{
+                        uri: item.album.images[0].url,
+                      }}>
+                      <AlbumContainer
+                        onPress={async () => {
+                          console.log('clicked', item.uri);
+                          await remote.playUri(item.uri);
+                        }}>
+                        <InfoText>{item.album.name}</InfoText>
+                        <InfoText>{item.artists[0].name}</InfoText>
+                      </AlbumContainer>
+                    </ImgBackground>
+                  </LinearGradient>
+                </AlbumRecommendContainer>
+              </>
+            )}
+          />
+        )}
       </Container>
       <SpotifyTab />
     </>
@@ -118,45 +199,26 @@ const Loader = styled.View`
 `;
 
 const Container = styled.ScrollView`
+  flex: 1;
+  height: 100%;
   background-color: white;
-`;
-const TopBar = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-`;
-const Logo = styled.Image`
-  background-color: white;
-  width: 100;
-  height: 50;
-`;
-
-const AlarmWrapper = styled.View`
-  align-items: center;
-  justify-content: center;
-`;
-
-const AlarmButton = styled.TouchableOpacity`
-  align-items: center;
-  justify-content: center;
-  margin-right: 5px;
 `;
 
 const AlarmStackWrapper = styled.View`
   position: absolute;
-  right: 8px;
+  width: 14px;
+  height: 14px;
+  right: 10px;
   top: 5px;
   align-items: center;
   justify-content: center;
-  width: 15px;
-  height: 15px;
+  border-radius: 7;
   background-color: #b7b4df;
-  border-radius: 7.5;
 `;
 
 const AlarmStack = styled.Text`
   font-size: 8px;
   color: white;
-  font-family: 'Lato-Regular';
   text-align: center;
 `;
 const MyzoneContainer = styled.View``;
@@ -165,33 +227,50 @@ const Btn = styled.TouchableOpacity`
   background-color: white;
   align-items: center;
   justify-content: center;
-  border: 2px solid grey;
+  border: 1px solid grey;
 `;
 const Text = styled.Text`
-  font-size: 18;
+  font-size: 12px;
 `;
 
-// 여기까지 기능 테스트용 코드
+const RecommendPlaylist = styled.FlatList``;
+
 const RecommendText = styled.Text`
   margin: 5px;
   font-size: 16px;
 `;
-const AlbumRecommendContainer = styled.View`
-  margin: 12px;
-  padding: 8px;
+const ProfileImg = styled.Image`
+  width: 30;
+  height: 30;
+  border-radius: 20px;
+`;
+
+const ImgBackground = styled.ImageBackground`
+  width: 130;
+  height: 130;
+`;
+const ProfileContainer = styled.TouchableOpacity`
+  margin: 5px;
+  align-items: center;
   flex-direction: row;
 `;
-const AlbumContainer = styled.View`
-  padding: 12px;
-  border: 2px gray;
+
+const AlbumRecommendContainer = styled.View`
+  width: 130;
+  height: 130;
+  margin: 0 8px;
 `;
-const AlbumImg = styled.Image`
-  width: 100;
-  height: 100;
+const AlbumContainer = styled.TouchableOpacity`
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
 `;
-const AlBumInfo = styled.Text`
-  padding-top: 3px;
-  font-size: 12px;
+
+const InfoText = styled.Text`
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: bold;
+  /* background-color: black; */
 `;
 
 export default Home;

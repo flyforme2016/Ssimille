@@ -66,7 +66,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
                 //최초 로그인이 아닐 시
                 const myUid = await AsyncStorage.getItem('userNumber');
                 dispatch(actions.saveKakaoUidAction(myUid));
-                replace('TabBar', {screen: 'Home'});
+                replace('Stack', {screen: 'MyZone'});
               }
             });
         } catch (err) {

@@ -37,6 +37,7 @@ const Profile = ({navigation}) => {
                   albumImg: myProfileData.album_image,
                   albumTitle: myProfileData.album_title,
                   albumArtistName: myProfileData.album_artist_name,
+                  artist_uri: myProfileData.artist_uri,
                 },
               })
             }
@@ -88,7 +89,6 @@ const Profile = ({navigation}) => {
               <MusicInfoContainer
                 onPress={() => {
                   remote.playUri(myProfileData.profile_music_uri);
-                  DeviceEventEmitter.emit('refetchMusic');
                 }}>
                 <MusicWrapper>
                   <CoverImg source={{uri: myProfileData.album_image}} />

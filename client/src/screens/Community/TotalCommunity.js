@@ -18,7 +18,7 @@ import sendAlarm from '../../functions/sendAlarm';
 const TotalCommunity = ({navigation}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
-  const {myProfileData} = useSelector(state => state.myProfile)
+  const {myProfileData} = useSelector(state => state.myProfile);
 
   useEffect(() => {
     DeviceEventEmitter.addListener('refetch community', () => {
@@ -101,7 +101,6 @@ const TotalCommunity = ({navigation}) => {
                       <AlbumImgBtn
                         onPress={async () => {
                           await remote.playUri(item.music_uri);
-                          DeviceEventEmitter.emit('refetchMusic');
                         }}>
                         <SelectedMusic>
                           {item.album_title} - {item.album_artist_name}
@@ -161,13 +160,18 @@ const TotalCommunity = ({navigation}) => {
               <InterContainer>
                 <Interaction
                   onPress={() => {
-                    if(!item.likeNy){
+                    if (!item.likeNy) {
                       const myData = {
                         uid: myProfileData.kakao_user_number.toString(),
                         nickname: myProfileData.nickname,
-                        profile_image: myProfileData.profile_image
-                      }
-                      sendAlarm(myData, item, '회원님의 게시물을 좋아합니다', 0)
+                        profile_image: myProfileData.profile_image,
+                      };
+                      sendAlarm(
+                        myData,
+                        item,
+                        '회원님의 게시물을 좋아합니다',
+                        0,
+                      );
                     }
                     handleLike(kakaoUid, item.post_seq, item.likeNy);
                     refetch();

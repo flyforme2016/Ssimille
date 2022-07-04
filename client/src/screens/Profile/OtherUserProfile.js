@@ -13,6 +13,7 @@ import {remote} from 'react-native-spotify-remote';
 import {DeviceEventEmitter} from 'react-native';
 
 const Profile = ({navigation, route}) => {
+  console.log(route.params.otherUid);
   const [isFollow, setIsFollow] = useState(route.params.isFriend);
   const {myProfileData} = useSelector(state => state.myProfile);
   const {kakaoUid} = useSelector(state => state.kakaoUid);

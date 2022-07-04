@@ -8,8 +8,8 @@ import getPostTime from '../functions/getPostTime';
 import checkIsFriend from '../api/checkIsFriend';
 import updateAlarmStack from '../functions/updateAlarmStack';
 import updateAlarmReadState from '../functions/updateAlarmReadState';
-import Modal from "react-native-modal";
-import delteAlarm from '../functions/deleteAlarm'
+import Modal from 'react-native-modal';
+import delteAlarm from '../functions/deleteAlarm';
 const {width} = Dimensions.get('window');
 
 const Notice = ({navigation}) => {
@@ -49,7 +49,12 @@ const Notice = ({navigation}) => {
         keyExtractor={item => item.id + ''}
         horizontal={false}
         renderItem={({item}) => (
-          <Card style={item.readState ? {backgroundColor:'white'} : {backgroundColor: '#b7b4df'}}
+          <Card
+            style={
+              item.readState
+                ? {backgroundColor: 'white'}
+                : {backgroundColor: '#b7b4df'}
+            }
             width={width}
             delayLongPress={200}
             onPress={async () => {
@@ -74,9 +79,8 @@ const Notice = ({navigation}) => {
               }
             }}
             onLongPress={async () => {
-              setModalVisible(true)
-            }}
-            >
+              setModalVisible(true);
+            }}>
             <Contents>
               <UserImg>
                 <Avatar source={{uri: item.profileImg}} />
@@ -88,33 +92,34 @@ const Notice = ({navigation}) => {
               <Time>{getPostTime(item.createdAt)}</Time>
             </TimeView>
             <Modal
-              onBackButtonPress={ () => setModalVisible(false)}
+              onBackButtonPress={() => setModalVisible(false)}
               //isVisible Props에 State 값을 물려주어 On/off control
               isVisible={modalVisible}
               //아이폰에서 모달창 동작시 깜박임이 있었는데, useNativeDriver Props를 True로 주니 해결되었다.
               useNativeDriver={true}
               hideModalContentWhileAnimating={true}
-              style={{ flex: 1,justifyContent: "flex-end"}}
-            >
+              style={{flex: 1, justifyContent: 'flex-end'}}>
               <ModalContentsWrapper>
-                  <ModalButton
-                    onPress={() => {
-                      delteAlarm(kakaoUid)
-                      setModalVisible(false)
-                    }}
-                  >
-                    <TrashImage source={require('../assets/sample/trashCan.png')}/>
-                    <ModalText>전체 삭제</ModalText>
-                  </ModalButton>
-                  <ModalButton
-                    onPress={() => {
-                      delteAlarm(kakaoUid, item.deleteKey)
-                      setModalVisible(false)
-                    }}
-                  >
-                    <TrashImage source={require('../assets/sample/trashCan.png')}/>
-                    <ModalText>삭제</ModalText>
-                  </ModalButton>
+                <ModalButton
+                  onPress={() => {
+                    delteAlarm(kakaoUid);
+                    setModalVisible(false);
+                  }}>
+                  <TrashImage
+                    source={require('../assets/sample/trashCan.png')}
+                  />
+                  <ModalText>전체 삭제</ModalText>
+                </ModalButton>
+                <ModalButton
+                  onPress={() => {
+                    delteAlarm(kakaoUid, item.deleteKey);
+                    setModalVisible(false);
+                  }}>
+                  <TrashImage
+                    source={require('../assets/sample/trashCan.png')}
+                  />
+                  <ModalText>삭제</ModalText>
+                </ModalButton>
               </ModalContentsWrapper>
             </Modal>
           </Card>
@@ -166,8 +171,8 @@ const Avatar = styled.Image`
 const Nickname = styled.Text`
   font-size: 12px;
   color: black;
-  font-weight: bold
-`
+  font-weight: bold;
+`;
 
 const Text = styled.Text`
   font-size: 12px;
@@ -185,7 +190,7 @@ const Time = styled.Text`
 
 const ModalContentsWrapper = styled.View`
   flex-direction: row;
-`
+`;
 
 const ModalButton = styled.TouchableOpacity`
   /* Modal Button들의 모달창 내의 높이를 균일하게 하기 위하여 flex를 줌 */

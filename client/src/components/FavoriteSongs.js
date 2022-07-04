@@ -6,7 +6,6 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';
 import TopNavBar from './TopNavBar';
-import {DeviceEventEmitter} from 'react-native';
 
 const FavoriteSongs = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
@@ -48,9 +47,8 @@ const FavoriteSongs = ({navigation, route}) => {
           horizontal={false}
           renderItem={({item}) => (
             <Card
-              onPress={async () => {
-                await remote.playUri(item.music_uri);
-                DeviceEventEmitter.emit('refetchMusic');
+              onPress={() => {
+                remote.playUri(item.music_uri);
               }}>
               <MusicInfoContainer>
                 <MusicWrapper>

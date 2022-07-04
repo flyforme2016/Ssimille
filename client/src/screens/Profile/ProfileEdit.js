@@ -13,18 +13,25 @@ const {width} = Dimensions.get('window');
 
 const ProfileEdit = ({navigation, route}) => {
   const myUid = useSelector(state => state.kakaoUid);
+  const {myProfileData} = useSelector(state => state.myProfile);
+
   const reduxDispatch = useDispatch();
   const [idx, setIdx] = useState(route.params.hashTag);
   const [changeName, setChangeName] = useState();
   const routeDatas = route.params;
   const BASE_URL = Config.BASE_URL;
   const [profileImg, setProfileImg] = useState();
+  const [visible, setVisible] = useState(route.params.albumTitle);
+  let artistUri;
 
-  useEffect(() => {
-    return () => {
-      DeviceEventEmitter.emit('newProfile');
-    };
-  }, []);
+  if (route.params.artistUri) {
+    const uri = route.params.artistUri;
+    const exp = 'spotify:artist:';
+    const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
+    artistUri = uri.substring(startIndex + exp.length);
+  } else {
+    artistUri = route.params.artist_uri;
+  }
 
   //프로필 사진 변경 함수(=사진가져오기)
   const getProfileImage = async () => {
@@ -68,6 +75,7 @@ const ProfileEdit = ({navigation, route}) => {
             ? routeDatas.albumImg
             : routeDatas.albumImg,
           hashTag: idx ? idx : routeDatas.hashTag,
+          artistUri: visible ? artistUri : null,
         })
         .then(
           res => {
@@ -118,7 +126,7 @@ const ProfileEdit = ({navigation, route}) => {
           </ControlBtn>
         </SelectContainer>
 
-        {route.params.albumTitle ? (
+        {visible && route.params.albumTitle ? (
           <SelectContainer>
             <SelectedWrapper>
               <SelectedImg source={{uri: route.params.albumImg}} />
@@ -139,6 +147,20 @@ const ProfileEdit = ({navigation, route}) => {
               }}>
               <BtnText>변경하기</BtnText>
             </ProfileMusicBtn>
+            <ProfileMusicBtn
+              onPress={() => {
+                setVisible(false);
+                route.params.albumArtistName = null;
+                route.params.artistName = null;
+                route.params.albumImg = null;
+                route.params.albumTitle = null;
+                route.params.artistUri = null;
+                route.params.musicUri = null;
+                route.params.profileMusic = null;
+                artistUri = null;
+              }}>
+              <BtnText>초기화</BtnText>
+            </ProfileMusicBtn>
           </SelectContainer>
         ) : (
           <SelectContainer>
@@ -146,6 +168,7 @@ const ProfileEdit = ({navigation, route}) => {
             <ProfileMusicBtn
               onPress={async () => {
                 console.log('clicked');
+                setVisible(true);
                 navigation.navigate('Stack', {
                   screen: 'SearchMusic',
                   params: {
@@ -244,7 +267,7 @@ const SelectContainer = styled.View`
   border: 1px solid gray;
   border-radius: 10px;
   margin: 4px 0;
-  padding-bottom: 8px;
+  padding: 4px;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
@@ -283,6 +306,7 @@ const ProfileMusicBtn = styled.TouchableOpacity`
   padding: 8px;
   background-color: #b7b4df;
   border-radius: 10px;
+  margin-right: 5px;
 `;
 const HashTagContainer = styled.View`
   flex-direction: row;

@@ -7,7 +7,7 @@ const TopNavBar = ({navText, iconName, onPress}) => {
     <NavBar>
       <NavText>{navText}</NavText>
       <Btn onPress={onPress}>
-        <Ionicons name={iconName} size={30} />
+        <Ionicons name={iconName} size={30} color="#b7b4df" />
       </Btn>
     </NavBar>
   );
@@ -15,6 +15,7 @@ const TopNavBar = ({navText, iconName, onPress}) => {
 
 const NavBar = styled.View`
   flex-direction: row;
+  justify-content: space-between;
   justify-content: center;
   align-items: center;
   margin: 7px 0;
@@ -24,7 +25,7 @@ const NavText = styled.Text`
   font-size: 20;
 `;
 const Btn = styled.TouchableOpacity`
-  width: 60px;
+  margin-right: 10px;
   position: absolute;
   right: -1px;
 `;

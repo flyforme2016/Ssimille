@@ -14,6 +14,7 @@ const EditFavoriteSongs = ({navigation, route}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
   const [modalVisible, setModalVisible] = useState(false);
   const [addMusic, setAddMusic] = useState(false);
+  console.log(myProfileData.song_count);
   const {
     isLoading,
     data: favSongDatas,
@@ -26,10 +27,13 @@ const EditFavoriteSongs = ({navigation, route}) => {
     });
     return data;
   });
-  console.log('refetch');
   const postFavoriteSongs = async () => {
+    const uri = route.params.artistUri;
+    const exp = 'spotify:artist:';
+    const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
+    const artistUri = uri.substring(startIndex + exp.length);
+
     try {
-      console.log('myUid: ', kakaoUid);
       await axios
         .post(`${BASE_URL}/profile/addFavoriteSong`, {
           key: kakaoUid,
@@ -37,12 +41,13 @@ const EditFavoriteSongs = ({navigation, route}) => {
           albumTitle: route.params.albumTitle,
           albumImg: route.params.albumImg,
           albumArtistName: route.params.albumArtistName,
+          artistUri: artistUri,
         })
         .then(res => {
+          console.log('업로드 완료');
           if (res.data === 'error') {
             alert('이미 등록된 노래입니다!');
           }
-          console.log(res);
         });
     } catch (error) {
       console.log('error: ', error);
@@ -52,7 +57,6 @@ const EditFavoriteSongs = ({navigation, route}) => {
     <Container>
       <MusicUploadBtn
         onPress={async () => {
-          console.log('clicked');
           setAddMusic(true);
           navigation.navigate('Stack', {
             screen: 'SearchMusic',
@@ -65,7 +69,7 @@ const EditFavoriteSongs = ({navigation, route}) => {
       </MusicUploadBtn>
 
       {/* 새로 추가할 애청곡 */}
-      {addMusic && route.params ? (
+      {addMusic && route?.params ? (
         <MusicInfoContainer>
           <MusicWrapper>
             <CoverImg source={{uri: route.params.albumImg}} />
@@ -75,11 +79,12 @@ const EditFavoriteSongs = ({navigation, route}) => {
             </MusicInfo>
           </MusicWrapper>
           <SubmitBtn
-            onPress={async () => {
-              await postFavoriteSongs();
-              myProfileData.song += 1;
+            onPress={() => {
+              postFavoriteSongs();
               setAddMusic(false);
               refetch();
+
+              myProfileData.song_count += 1;
             }}>
             <BtnText>추가하기</BtnText>
           </SubmitBtn>
@@ -97,7 +102,6 @@ const EditFavoriteSongs = ({navigation, route}) => {
             <>
               <Card
                 onLongPress={() => {
-                  console.log('clicked');
                   setModalVisible(true);
                 }}>
                 <MusicInfoContainer>
@@ -118,11 +122,12 @@ const EditFavoriteSongs = ({navigation, route}) => {
                 style={{flex: 1, justifyContent: 'flex-end'}}>
                 <ModalContentsWrapper>
                   <ModalButton
-                    onPress={async () => {
-                      await deleteMusic(item.favorite_song_seq, kakaoUid);
-                      setModalVisible(false);
-                      myProfileData.song -= 1;
+                    onPress={() => {
+                      deleteMusic(item.favorite_song_seq, kakaoUid);
                       refetch();
+                      setModalVisible(false);
+
+                      myProfileData.song_count -= 1;
                     }}>
                     <TrashImage
                       source={require('../../assets/sample/trashCan.png')}

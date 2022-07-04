@@ -8,7 +8,7 @@ const FriendList = () => {
       <Container>
         <FriendListTabBar />
       </Container>
-      {/* <SpotifyTab /> */}
+      <SpotifyTab />
     </>
   );
 };

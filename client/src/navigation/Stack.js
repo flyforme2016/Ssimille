@@ -23,8 +23,8 @@ const Stack = () => {
         presentation: 'modal',
         headerShown: false,
       }}>
-      <NativeStack.Screen name="Notice" component={Notice} />
       <NativeStack.Screen name="Myzone" component={Myzone} />
+      <NativeStack.Screen name="Notice" component={Notice} />
       <NativeStack.Screen name="OneByOneChating" component={OneByOneChating} />
       <NativeStack.Screen name="ProfileEdit" component={ProfileEdit} />
       <NativeStack.Screen name="SearchMusic" component={SearchMusic} />

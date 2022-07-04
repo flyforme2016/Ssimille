@@ -63,6 +63,7 @@ const SearchMusic = ({navigation, route}) => {
                     albumArtistName: item.artists[0].name,
                     albumImg: item.album.images[0].url,
                     musicUri: item.uri,
+                    artistUri: item.artists[0].uri,
                   },
                   merge: true,
                 });

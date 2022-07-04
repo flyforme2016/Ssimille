@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import Styled from 'styled-components/native';
-import Geolocation from '@react-native-community/geolocation';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {Alert} from 'react-native';
 import axios from 'axios';
@@ -13,26 +12,26 @@ const KAKAOMAP_API_KEY = Config.KAKAOMAP_API_KEY;
 const BASE_URL = Config.BASE_URL;
 
 const Myzone = ({navigation}) => {
-  const [coords, setCoords] = useState({});
   const {kakaoUid} = useSelector(state => state.kakaoUid);
+  const {userLocation} = useSelector(state => state.userLocation);
   const dispatch = useDispatch();
 
-  const {isLoading, data: locationData} = useQuery(
+  //내 프로필 가져오기
+  const {isLoading: profile} = useQuery('getMyProfile', async () => {
+    const {data} = await axios.get(`${BASE_URL}/profile/getUserProfile`, {
+      params: {
+        key: kakaoUid,
+      },
+    });
+    dispatch(actions.saveUserProfileAction(data));
+    return data;
+  });
+
+  const {isLoading: location, data: locationData} = useQuery(
     'locationData',
     async () => {
-      await Geolocation.getCurrentPosition(
-        position => {
-          setCoords(position.coords);
-        },
-        error => {
-          console.log(error.message);
-        },
-        {enableHighAccuracy: true, timeout: 15000},
-      );
-      console.log('2: 위도 경도 설정완료');
-
       const {data} = await axios.get(
-        `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${coords['longitude']}&y=${coords['latitude']}`,
+        `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${userLocation.longitude}&y=${userLocation.latitude}`,
         {
           headers: {
             Host: 'dapi.kakao.com',
@@ -43,12 +42,6 @@ const Myzone = ({navigation}) => {
       return data;
     },
     {
-      onSuccess: res => {
-        console.log('3: 행정동 받기 성공', res.documents[0]);
-      },
-      onError: e => {
-        console.log(e.message);
-      },
       refetchInterval: 30000,
       refetchIntervalInBackground: true,
     },
@@ -82,20 +75,20 @@ const Myzone = ({navigation}) => {
 
   return (
     <Container>
-      {!isLoading && (
+      {!location && (
         <MapView
           style={{flex: 1}}
           provider={PROVIDER_GOOGLE}
           initialRegion={{
-            latitude: coords['latitude'],
-            longitude: coords['longitude'],
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}>
           <Marker
             coordinate={{
-              latitude: coords['latitude'],
-              longitude: coords['longitude'],
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
             }}
             onPress={postLocation}>
             <MarkerView>
