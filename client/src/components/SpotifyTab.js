@@ -77,7 +77,11 @@ const SpotifyTab = () => {
             }}
           />
           <MusicInfo>
-            <MusicName>{CurrentMusic.track.name.slice(0, 25)}...</MusicName>
+            {CurrentMusic.track.name.length > 25 ? (
+              <MusicName>{CurrentMusic.track.name.slice(0, 25)}...</MusicName>
+            ) : (
+              <MusicName>{CurrentMusic.track.name}</MusicName>
+            )}
             <ArtistName>{CurrentMusic.track.artist.name}</ArtistName>
           </MusicInfo>
 

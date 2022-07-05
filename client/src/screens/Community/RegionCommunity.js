@@ -3,24 +3,22 @@ import styled from 'styled-components/native';
 import axios from 'axios';
 import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
-import {useMutation, useQuery} from 'react-query';
+import {useQuery} from 'react-query';
 import checkIsFriend from '../../api/checkIsFriend';
 import getPostTime from '../../functions/getPostTime';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Alert, DeviceEventEmitter} from 'react-native';
+import {Alert} from 'react-native';
 import {deletePost} from '../../api/community/deletePost';
 import Swiper from 'react-native-swiper';
 import {remote} from 'react-native-spotify-remote';
 import {handleLike} from '../../api/community/handleLike';
+import sendAlarm from '../../functions/sendAlarm';
 
 const RegionCommunity = ({navigation}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {locationName} = useSelector(state => state.locationName);
-
-  const postMutation = useMutation(async () => {
-    refetch();
-  });
+  const {myProfileData} = useSelector(state => state.myProfile);
 
   const {
     isLoading: locationPostLoading,
@@ -52,9 +50,9 @@ const RegionCommunity = ({navigation}) => {
                       item.kakao_user_number,
                     );
                     if (flag === -1) {
-                      navigation.navigate('TabBar', {screen: 'MyProfile'});
+                      navigation.push('TabBar', {screen: 'MyProfile'});
                     } else {
-                      navigation.navigate('Stack', {
+                      navigation.push('Stack', {
                         screen: 'OtherUserProfile',
                         params: {
                           otherUid: item.kakao_user_number,
@@ -78,7 +76,7 @@ const RegionCommunity = ({navigation}) => {
                           text: 'OK',
                           onPress: () => {
                             deletePost(kakaoUid, item.post_seq);
-                            postMutation.mutate();
+                            refetch();
                           },
                         },
                       ]);
@@ -96,37 +94,56 @@ const RegionCommunity = ({navigation}) => {
                       <AlbumImgBtn
                         onPress={async () => {
                           await remote.playUri(item.music_uri);
-                          DeviceEventEmitter.emit('refetchMusic');
                         }}>
                         <SelectedMusic>
                           {item.album_title} - {item.album_artist_name}
                         </SelectedMusic>
                         <PostImg
-                          resizeMode="cover"
+                          resizeMode="contain"
                           source={{uri: item.album_image}}
                         />
                       </AlbumImgBtn>
                     ) : null}
-                    {item.image1
-                      ? [
-                          item.image1,
-                          item.image2,
-                          item.image3,
-                          item.image4,
-                          item.image5,
-                        ]
-                          .filter(imgs => imgs !== null)
-                          .map(img => {
-                            return (
-                              <ImageContainer>
-                                <PostImg
-                                  resizeMode="cover"
-                                  source={{uri: img}}
-                                />
-                              </ImageContainer>
-                            );
-                          })
-                      : null}
+                    {item.image1 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image1}}
+                        />
+                      </ImageContainer>
+                    ) : null}
+                    {item.image2 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image2}}
+                        />
+                      </ImageContainer>
+                    ) : null}
+                    {item.image3 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image3}}
+                        />
+                      </ImageContainer>
+                    ) : null}
+                    {item.image4 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image4}}
+                        />
+                      </ImageContainer>
+                    ) : null}
+                    {item.image5 ? (
+                      <ImageContainer>
+                        <PostImg
+                          resizeMode="cover"
+                          source={{uri: item.image5}}
+                        />
+                      </ImageContainer>
+                    ) : null}
                   </Swiper>
                 </>
               ) : null}
@@ -136,8 +153,21 @@ const RegionCommunity = ({navigation}) => {
               <InterContainer>
                 <Interaction
                   onPress={() => {
+                    if (!item.likeNy) {
+                      const myData = {
+                        uid: myProfileData.kakao_user_number.toString(),
+                        nickname: myProfileData.nickname,
+                        profile_image: myProfileData.profile_image,
+                      };
+                      sendAlarm(
+                        myData,
+                        item,
+                        '회원님의 게시물을 좋아합니다',
+                        0,
+                      );
+                    }
                     handleLike(kakaoUid, item.post_seq, item.likeNy);
-                    postMutation.mutate();
+                    refetch();
                   }}>
                   {item.likeNy ? (
                     <Ionicons name="heart" color="red" size={25} />
@@ -148,7 +178,7 @@ const RegionCommunity = ({navigation}) => {
                 </Interaction>
                 <Interaction
                   onPress={() => {
-                    navigation.navigate('Stack', {
+                    navigation.push('Stack', {
                       screen: 'CommunityPost',
                       params: {
                         data: item,

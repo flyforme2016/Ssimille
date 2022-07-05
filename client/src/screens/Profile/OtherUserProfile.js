@@ -10,7 +10,6 @@ import {useSelector} from 'react-redux';
 import {useQuery} from 'react-query';
 import TopNavBar from '../../components/TopNavBar';
 import {remote} from 'react-native-spotify-remote';
-import {DeviceEventEmitter} from 'react-native';
 
 const Profile = ({navigation, route}) => {
   console.log(route.params.otherUid);
@@ -116,7 +115,6 @@ const Profile = ({navigation, route}) => {
               <MusicInfoContainer
                 onPress={() => {
                   remote.playUri(myProfileData.profile_music_uri);
-                  DeviceEventEmitter.emit('refetchMusic');
                 }}>
                 <MusicWrapper>
                   <CoverImg source={{uri: otherUserData.album_image}} />

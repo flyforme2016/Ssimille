@@ -9,7 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Config from 'react-native-config';
 import {Dimensions} from 'react-native';
 import postProfileImgToS3 from '../../api/postProfileImgToS3.js';
-import {getArtistUri} from './getArtistUri';
+import {getArtistUri} from '../../functions/getArtistUri';
 const {width} = Dimensions.get('window');
 
 const ProfileEdit = ({navigation, route}) => {

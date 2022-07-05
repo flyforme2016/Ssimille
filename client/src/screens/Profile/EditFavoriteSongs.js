@@ -7,7 +7,7 @@ import Config from 'react-native-config';
 import {useQuery} from 'react-query';
 import {deleteMusic} from '../../api/Music/deleteMusic';
 import Modal from 'react-native-modal';
-import {getArtistUri} from './getArtistUri';
+import {getArtistUri} from '../../functions/getArtistUri';
 
 const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
