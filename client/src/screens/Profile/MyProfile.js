@@ -6,7 +6,6 @@ import {useSelector} from 'react-redux';
 import {remote} from 'react-native-spotify-remote';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
 import TopNavBar from '../../components/TopNavBar';
-import {DeviceEventEmitter} from 'react-native';
 
 const Profile = ({navigation}) => {
   const {myProfileData} = useSelector(state => state.myProfile);

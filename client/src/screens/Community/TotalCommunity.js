@@ -57,9 +57,9 @@ const TotalCommunity = ({navigation}) => {
                       item.kakao_user_number,
                     );
                     if (flag === -1) {
-                      navigation.navigate('TabBar', {screen: 'MyProfile'});
+                      navigation.push('TabBar', {screen: 'MyProfile'});
                     } else {
-                      navigation.navigate('Stack', {
+                      navigation.push('Stack', {
                         screen: 'OtherUserProfile',
                         params: {
                           otherUid: item.kakao_user_number,

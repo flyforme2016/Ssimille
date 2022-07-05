@@ -3,16 +3,16 @@ import kakaoUidReducer from './kakaoUidReducer';
 import spotifyTokenReducer from './spotifyTokenReducer';
 import myProfileReducer from './myProfileReducer';
 import userLocationReducer from './userLocationReducer';
-import myPostReducer from './myPostReducer';
 import locationNameReducer from './locationNameReducer';
+import myGenresReducer from './myGenresReducer';
 
 const rootReducer = combineReducers({
   kakaoUid: kakaoUidReducer,
   spotifyToken: spotifyTokenReducer,
   myProfile: myProfileReducer,
   userLocation: userLocationReducer,
-  myPosts: myPostReducer,
   locationName: locationNameReducer,
+  myGenres: myGenresReducer,
 });
 
 export default rootReducer;

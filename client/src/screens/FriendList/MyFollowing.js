@@ -4,7 +4,6 @@ import styled from 'styled-components/native';
 import {useIsFocused} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
-import MarqueeView from 'react-native-marquee-view';
 import {remote} from 'react-native-spotify-remote';
 import {Dimensions} from 'react-native';
 
@@ -71,11 +70,9 @@ const MyFollwing = ({navigation: {navigate}}) => {
               }}>
               {item.profileMusicUri !== null ? (
                 <BtnContainer>
-                  <MarqueeView speed={0.08}>
-                    <UserMusic>
-                      {item.albumTitle} - {item.albumArtistName}
-                    </UserMusic>
-                  </MarqueeView>
+                  <UserMusic>
+                    {item.albumTitle} - {item.albumArtistName}
+                  </UserMusic>
                   <Playbutton> ▶︎</Playbutton>
                 </BtnContainer>
               ) : null}

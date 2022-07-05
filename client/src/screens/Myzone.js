@@ -16,6 +16,9 @@ const Myzone = ({navigation}) => {
   const {userLocation} = useSelector(state => state.userLocation);
   const dispatch = useDispatch();
 
+  const {myGenres} = useSelector(state => state.myGenres);
+
+  console.log(myGenres);
   //내 프로필 가져오기
   const {isLoading: profile} = useQuery('getMyProfile', async () => {
     const {data} = await axios.get(`${BASE_URL}/profile/getUserProfile`, {
@@ -26,7 +29,17 @@ const Myzone = ({navigation}) => {
     dispatch(actions.saveUserProfileAction(data));
     return data;
   });
-
+  // 친구추천용 장르 데이터 가져오기
+  const {isLoading: genre} = useQuery('getMyGenres', async () => {
+    const {data} = await axios.get(`${BASE_URL}/profile/getGenreMatrix`, {
+      params: {
+        key: kakaoUid,
+      },
+    });
+    dispatch(actions.saveMyGenres(data));
+    return data;
+  });
+  // 위도 경도 법정동 이름으로 변환
   const {isLoading: location, data: locationData} = useQuery(
     'locationData',
     async () => {
@@ -67,7 +80,7 @@ const Myzone = ({navigation}) => {
             regionCode: locationData.documents[0].code / 1,
           });
           dispatch(actions.saveUserLocationName(locationData.documents[0]));
-          navigation.navigate('TabBar', {screen: 'Home'});
+          navigation.replace('TabBar', {screen: 'Home'});
         },
       },
     ]);
