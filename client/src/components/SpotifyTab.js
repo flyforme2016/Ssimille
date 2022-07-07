@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import styled from 'styled-components/native';
 import {remote} from 'react-native-spotify-remote';
-import {MusicControlBtn} from './MusicControlBtn';
+import {MusicControlBtn} from './CustomButtons';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';

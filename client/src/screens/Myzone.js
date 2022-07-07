@@ -15,11 +15,7 @@ const Myzone = ({navigation}) => {
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {userLocation} = useSelector(state => state.userLocation);
   const dispatch = useDispatch();
-  console.log('kaka', kakaoUid);
 
-  const {myGenres} = useSelector(state => state.myGenres);
-
-  console.log(myGenres);
   //내 프로필 가져오기
   const {isLoading: profile} = useQuery('getMyProfile', async () => {
     const {data} = await axios.get(`${BASE_URL}/profile/getUserProfile`, {

@@ -1,10 +1,34 @@
 import React from 'react';
+import axios from 'axios';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import MyFollower from './MyFollower';
-import MyFollwing from './MyFollowing';
+import {useQuery} from 'react-query';
+import Config from 'react-native-config';
+import FriendLists from '../../components/FriendLists';
 
-const FriendListTabBar = () => {
-  const Tab = createMaterialTopTabNavigator();
+const BASE_URL = Config.BASE_URL;
+const Tab = createMaterialTopTabNavigator();
+
+const FriendListTabBar = ({listType, paramsKey}) => {
+  const {data: getMyFollwerList} = useQuery('getMyFollwerList', async () => {
+    const {data} = await axios(`${BASE_URL}/friend/getMyFollwerList`, {
+      params: {
+        key: paramsKey,
+      },
+    });
+    return data;
+  });
+
+  const {data: getMyFollowingList} = useQuery(
+    'getMyFollowingList',
+    async () => {
+      const {data} = await axios(`${BASE_URL}/friend/getMyFollowingList`, {
+        params: {
+          key: paramsKey,
+        },
+      });
+      return data;
+    },
+  );
 
   return (
     <Tab.Navigator
@@ -18,8 +42,27 @@ const FriendListTabBar = () => {
           backgroundColor: '#ffffff',
         },
       })}>
-      <Tab.Screen name="팔로잉" component={MyFollwing} />
-      <Tab.Screen name="팔로워" component={MyFollower} />
+      <Tab.Screen
+        name="팔로잉"
+        children={() => (
+          <FriendLists
+            data={getMyFollwerList}
+            listType={listType}
+            screenName="following"
+          />
+        )}
+      />
+
+      <Tab.Screen
+        name="팔로워"
+        children={() => (
+          <FriendLists
+            data={getMyFollowingList}
+            listType={listType}
+            screenName="follower"
+          />
+        )}
+      />
     </Tab.Navigator>
   );
 };

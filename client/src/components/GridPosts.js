@@ -10,9 +10,8 @@ const {width} = Dimensions.get('window');
 
 const GridPosts = ({userId}) => {
   const navigation = useNavigation();
-
   const BASE_URL = Config.BASE_URL;
-  //내 게시글 가져오기
+
   const {isLoading: postDataLoading, data: postDatas} = useQuery(
     'myPostDatas',
     async () => {

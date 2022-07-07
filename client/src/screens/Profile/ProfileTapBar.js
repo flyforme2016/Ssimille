@@ -1,7 +1,7 @@
 import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import GridPosts from './GridPosts';
+import GridPosts from '../../components/GridPosts';
 
 const ProfileTabBar = ({userId}) => {
   const Tab = createMaterialTopTabNavigator();

@@ -12,7 +12,7 @@ const Login = ({navigation}) => {
       </ImageView>
       <ButtonView>
         <CustomButton
-          text={'카카오 로그인'}
+          text="카카오 로그인"
           onPress={() => navigation.navigate('KakaoLogin')}
         />
       </ButtonView>

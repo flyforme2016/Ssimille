@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components/native';
+
 const BigPicture = ({route}) => {
   const ProfleImg = route.params.userprofile;
-  console.log('route : ', route);
   return (
     <Container>
       <BGImageContainer

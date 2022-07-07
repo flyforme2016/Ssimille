@@ -3,9 +3,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/Home/Home';
 import Community from '../screens/Community/Comunity';
-import FriendList from '../screens/FriendList/FriendList';
 import ChatingList from '../screens/ChatScreen/ChatingList';
 import MyProfile from '../screens/Profile/MyProfile';
+import FriendListContainer from '../screens/FriendList/FriendListContainer';
 
 const Tab = createBottomTabNavigator();
 
@@ -42,7 +42,7 @@ const TabBar = () => {
             iconName = focused ? 'ios-list' : 'ios-list';
           } else if (rn === 'ChatingList') {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-          } else if (rn === 'FriendList') {
+          } else if (rn === 'FriendListContainer') {
             iconName = focused ? 'people' : 'people-outline';
           } else if (rn === 'MyProfile') {
             iconName = focused ? 'person' : 'person-outline';
@@ -60,7 +60,7 @@ const TabBar = () => {
         }}
       />
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="FriendList" component={FriendList} />
+      <Tab.Screen name="FriendListContainer" component={FriendListContainer} />
       <Tab.Screen
         name="MyProfile"
         component={MyProfile}

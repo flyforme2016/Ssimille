@@ -4,7 +4,6 @@ import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
 import axios from 'axios';
-import {HashTagIds} from '../../const/datas';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Config from 'react-native-config';
 import {Dimensions} from 'react-native';
@@ -13,16 +12,16 @@ import {getArtistUri} from '../../functions/getArtistUri';
 const {width} = Dimensions.get('window');
 
 const ProfileEdit = ({navigation, route}) => {
-  const myUid = useSelector(state => state.kakaoUid);
-  const {myProfileData} = useSelector(state => state.myProfile);
-  console.log(myProfileData);
   const reduxDispatch = useDispatch();
-  const [idx, setIdx] = useState(route.params.hashTag);
-  const [changeName, setChangeName] = useState();
   const routeDatas = route.params;
   const BASE_URL = Config.BASE_URL;
+  const myUid = useSelector(state => state.kakaoUid);
+  const {myProfileData} = useSelector(state => state.myProfile);
+  const [idx, setIdx] = useState(route.params.hashTag);
+  const [changeName, setChangeName] = useState();
   const [profileImg, setProfileImg] = useState();
   const [visible, setVisible] = useState(route.params.albumTitle);
+  const {myGenres} = useSelector(state => state.myGenres);
   let artistUri;
 
   if (route.params.artistUri) {
@@ -182,28 +181,30 @@ const ProfileEdit = ({navigation, route}) => {
 
         <InfoText>HashTag 설정</InfoText>
         <HashTagContainer width={width}>
-          {HashTagIds.map(data => {
-            return (
-              <HashTagBtn
-                isSelected={idx.includes(data.name)}
-                onPress={() => {
-                  setIdx(([...prev]) => {
-                    if (idx.includes(data.name)) {
-                      prev.splice(prev.indexOf(data.name), 1);
-                    } else if (idx.length > 4) {
-                      alert('다섯개만 선택하세요');
-                    } else {
-                      prev.push(data.name);
-                    }
-                    return prev;
-                  });
-                }}>
-                <SelectedTags isSelected={idx.includes(data.name)}>
-                  {data.name}
-                </SelectedTags>
-              </HashTagBtn>
-            );
-          })}
+          {Object.keys(myGenres)
+            .filter(a => a !== ('matrix_seq', 'kakao_user_number'))
+            .map(tags => {
+              return (
+                <HashTagBtn
+                  isSelected={idx.includes(tags)}
+                  onPress={() => {
+                    setIdx(([...prev]) => {
+                      if (idx.includes(tags)) {
+                        prev.splice(prev.indexOf(tags), 1);
+                      } else if (idx.length > 4) {
+                        alert('다섯개만 선택하세요');
+                      } else {
+                        prev.push(tags);
+                      }
+                      return prev;
+                    });
+                  }}>
+                  <SelectedTags isSelected={idx.includes(tags)}>
+                    {tags}
+                  </SelectedTags>
+                </HashTagBtn>
+              );
+            })}
         </HashTagContainer>
       </Container>
     </>
@@ -248,7 +249,7 @@ const ControlBtn = styled.TouchableOpacity`
 
 const InfoText = styled.Text`
   color: black;
-  margin-top: 6px;
+  margin: 6px 0;
   font-size: 14px;
 `;
 const BtnText = styled.Text`
@@ -307,15 +308,17 @@ const ProfileMusicBtn = styled.TouchableOpacity`
   border-radius: 10px;
   margin-right: 5px;
 `;
-const HashTagContainer = styled.View`
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  width: ${({width}) => width - 40};
-  margin: 8px;
-  padding: 8px;
-`;
+const HashTagContainer = styled.ScrollView.attrs(() => ({
+  contentContainerStyle: {
+    padding: 5,
+    marginHorizontal: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+}))``;
+
 const SelectedTags = styled.Text`
   font-weight: bold;
   color: ${props => (props.isSelected ? '#ffffff' : 'black')};

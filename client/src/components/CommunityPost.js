@@ -44,7 +44,6 @@ const CommunityPost = ({navigation, route}) => {
                     kakaoUid,
                     route.params.data.kakao_user_number,
                   );
-                  console.log('flag: ', flag);
                   if (flag === -1) {
                     navigation.push('TabBar', {screen: 'MyProfile'});
                   } else {
@@ -89,7 +88,6 @@ const CommunityPost = ({navigation, route}) => {
                   {route.params.data.album_title ? (
                     <AlbumImgBtn
                       onPress={async () => {
-                        console.log('clicked');
                         await remote.playUri(route.params.data.music_uri);
                       }}>
                       <SelectedMusic>

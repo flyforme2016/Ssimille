@@ -2,11 +2,8 @@ import React, {useLayoutEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 import styled from 'styled-components/native';
 import logo from '../../logo.png';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import SpotifyTab from '../../components/SpotifyTab';
-import axios from 'axios';
-import {useSelector, useDispatch} from 'react-redux';
-import actions from '../../actions/index';
+import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';
 import getRef from '../../functions/getRef';
@@ -29,7 +26,6 @@ const spotifyWebApi = new SpotifyWebApi({
 const Home = ({navigation: {navigate, push}}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
   const {kakaoUid} = useSelector(state => state.kakaoUid);
-  console.log('kakaouid : ', kakaoUid);
   const {locationName} = useSelector(state => state.locationName);
   const {spotifyToken} = useSelector(state => state.spotifyToken);
   const [alarmStack, setAlarmStack] = useState(0);
@@ -53,7 +49,6 @@ const Home = ({navigation: {navigate, push}}) => {
     const currentMusicListRef = getRef.currentMusicColRef(locationName.code); //my alarmList
     const q = query(
       currentMusicListRef,
-      //orderBy('createdAt', 'desc'),
       where('uid', 'not-in', [kakaoUid / 1]),
     );
     const subscribe = onSnapshot(q, querySnapshot => {
@@ -95,7 +90,7 @@ const Home = ({navigation: {navigate, push}}) => {
         <TopNavBar
           navText="HOME"
           iconName="notifications-outline"
-          onPress={() => navigate('Stack', {screen: 'Notice'})}
+          onPress={() => push('Stack', {screen: 'Notice'})}
         />
         {alarmStack !== 0 ? (
           <AlarmStackWrapper>
@@ -108,100 +103,114 @@ const Home = ({navigation: {navigate, push}}) => {
             <Text> {locationName ? locationName.address_name : null}</Text>
           </Btn>
         </MyzoneContainer>
-        <RecommendText>음악 추천</RecommendText>
-        <RecommendPlaylist
-          nestedScrollEnabled={true}
-          horizontal={true}
-          data={locationPlaylist}
-          keyExtractor={item => item.uid + ''}
-          renderItem={({item}) => (
-            <>
-              <AlbumRecommendContainer>
-                <ImgBackground
-                  resizeMode="stretch"
-                  source={{
-                    uri: item.albumImg,
-                  }}>
-                  <ProfileContainer
-                    onPress={async () => {
-                      const flag = await checkIsFriend(kakaoUid, item.uid);
-                      navigate('Stack', {
-                        screen: 'OtherUserProfile',
-                        params: {
-                          otherUid: item.uid,
-                          isFriend: flag,
-                        },
-                      });
-                    }}>
-                    <ProfileImg source={{uri: item.profileImg}} />
-                    {/* <InfoText>{item.nickname}</InfoText> */}
-                  </ProfileContainer>
-                  <AlbumContainer
-                    onPress={async () => {
-                      await remote.playUri(item.musicUri);
-                    }}>
-                    <InfoText>{item.albumTitle}</InfoText>
-                    <InfoText>{item.albumArtistName}</InfoText>
-                  </AlbumContainer>
-                </ImgBackground>
-              </AlbumRecommendContainer>
-            </>
-          )}
-        />
-        <RecommendText>음악 추천</RecommendText>
-        {RecommendMusic && (
-          <RecommendPlaylist
-            nestedScrollEnabled={true}
-            horizontal={true}
-            data={RecommendMusic.tracks}
-            keyExtractor={item => item.id + ''}
-            renderItem={({item}) => (
-              <>
-                <AlbumRecommendContainer>
-                  <ImgBackground
-                    resizeMode="stretch"
-                    source={{
-                      uri: item.album.images[0].url,
-                    }}>
-                    <AlbumContainer
-                      onPress={async () => {
-                        console.log('clicked', item.uri);
-                        await remote.playUri(item.uri);
+        <MyzoneContainer>
+          <Btn onPress={() => push('TabBar', {screen: 'MyProfile'})}>
+            <Text>MyProfile </Text>
+          </Btn>
+        </MyzoneContainer>
+
+        {locationPlaylist && (
+          <>
+            <RecommendText>음악 추천</RecommendText>
+            <RecommendPlaylist
+              nestedScrollEnabled={true}
+              horizontal={true}
+              data={locationPlaylist}
+              keyExtractor={item => item.uid + ''}
+              renderItem={({item}) => (
+                <>
+                  <AlbumRecommendContainer>
+                    <ImgBackground
+                      resizeMode="stretch"
+                      source={{
+                        uri: item.albumImg,
                       }}>
-                      <InfoText>{item.album.name}</InfoText>
-                      <InfoText>{item.artists[0].name}</InfoText>
-                    </AlbumContainer>
-                  </ImgBackground>
-                </AlbumRecommendContainer>
-              </>
-            )}
-          />
+                      <ProfileContainer
+                        onPress={async () => {
+                          const flag = await checkIsFriend(kakaoUid, item.uid);
+                          navigate('Stack', {
+                            screen: 'OtherUserProfile',
+                            params: {
+                              otherUid: item.uid,
+                              isFriend: flag,
+                            },
+                          });
+                        }}>
+                        <ProfileImg source={{uri: item.profileImg}} />
+                        {/* <InfoText>{item.nickname}</InfoText> */}
+                      </ProfileContainer>
+                      <AlbumContainer
+                        onPress={async () => {
+                          await remote.playUri(item.musicUri);
+                        }}>
+                        <InfoText>{item.albumTitle}</InfoText>
+                        <InfoText>{item.albumArtistName}</InfoText>
+                      </AlbumContainer>
+                    </ImgBackground>
+                  </AlbumRecommendContainer>
+                </>
+              )}
+            />
+          </>
         )}
-        <RecommendText>친구 추천</RecommendText>
         {RecommendMusic && (
-          <RecommendPlaylist
-            nestedScrollEnabled={true}
-            horizontal={true}
-            data={RecommendMusic.tracks}
-            keyExtractor={item => item.id + ''}
-            renderItem={({item}) => (
-              <>
-                <Card>
-                  <UserInfo>
-                    <UserImg>
-                      <Avatar source={{uri: item.album.images[0].url}} />
-                    </UserImg>
-                    <InfoBox>
-                      <UserName>{item.album.name}</UserName>
-                    </InfoBox>
-                  </UserInfo>
-                  <MusicPlay>
-                    <UserMusic>{item.artists[0].name}</UserMusic>
-                  </MusicPlay>
-                </Card>
-              </>
-            )}
-          />
+          <>
+            <RecommendText>음악 추천</RecommendText>
+            <RecommendPlaylist
+              nestedScrollEnabled={true}
+              horizontal={true}
+              data={RecommendMusic.tracks}
+              keyExtractor={item => item.id + ''}
+              renderItem={({item}) => (
+                <>
+                  <AlbumRecommendContainer>
+                    <ImgBackground
+                      resizeMode="stretch"
+                      source={{
+                        uri: item.album.images[0].url,
+                      }}>
+                      <AlbumContainer
+                        onPress={async () => {
+                          console.log('clicked', item.uri);
+                          await remote.playUri(item.uri);
+                        }}>
+                        <InfoText>{item.album.name}</InfoText>
+                        <InfoText>{item.artists[0].name}</InfoText>
+                      </AlbumContainer>
+                    </ImgBackground>
+                  </AlbumRecommendContainer>
+                </>
+              )}
+            />
+          </>
+        )}
+        {RecommendMusic && (
+          <>
+            <RecommendText>친구 추천</RecommendText>
+            <RecommendPlaylist
+              nestedScrollEnabled={true}
+              horizontal={true}
+              data={RecommendMusic.tracks}
+              keyExtractor={item => item.id + ''}
+              renderItem={({item}) => (
+                <>
+                  <Card>
+                    <UserInfo>
+                      <UserImg>
+                        <Avatar source={{uri: item.album.images[0].url}} />
+                      </UserImg>
+                      <InfoBox>
+                        <UserName>{item.album.name}</UserName>
+                      </InfoBox>
+                    </UserInfo>
+                    <MusicPlay>
+                      <UserMusic>{item.artists[0].name}</UserMusic>
+                    </MusicPlay>
+                  </Card>
+                </>
+              )}
+            />
+          </>
         )}
       </Container>
       <SpotifyTab />

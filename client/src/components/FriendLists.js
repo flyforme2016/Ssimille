@@ -1,76 +1,65 @@
-import axios from 'axios';
-import React, {useState, useLayoutEffect} from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import Config from 'react-native-config';
 import {remote} from 'react-native-spotify-remote';
 import {Dimensions} from 'react-native';
-import checkIsFriend from '../../api/checkIsFriend';
+import checkIsFriend from '../api/checkIsFriend';
+import {useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
-const OtherFollowing = ({OtherUid}) => {
-  const [friendList, setFriendData] = useState();
-  const isFocused = useIsFocused();
-  const myUid = useSelector(state => state.kakaoUid);
-  const BASE_URL = Config.BASE_URL;
+const FriendLists = ({data, listType, screenName}) => {
   const navigation = useNavigation();
-  console.log('OtherUidd :', friendList);
-  useLayoutEffect(() => {
-    getMyFollowingList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused]);
-
-  const getMyFollowingList = async () => {
-    try {
-      console.log('start getMyFriendList');
-      if (OtherUid !== null) {
-        await axios
-          .get(`${BASE_URL}/friend/getMyFollowingList`, {
-            params: {
-              key: OtherUid,
-            },
-          })
-          .then(res => {
-            console.log('res: ', res.data);
-
-            setFriendData(res.data); //서버에게 받은 친구목록 setUseState 변수 할당
-          });
-      }
-    } catch (error) {
-      console.log('error: ', error);
-    }
-  };
+  const {kakaoUid} = useSelector(state => state.kakaoUid);
 
   return (
     <Container>
-      {friendList ? (
+      {data && (
         <FriendList
-          data={friendList}
+          data={data}
           keyExtractor={item => item.id + ''}
           horizontal={false}
           renderItem={({item}) => (
             <Card
               width={width}
-              onPress={async () => {
-                const flag = await checkIsFriend(
-                  myUid.kakaoUid,
-                  item.friend_kakao_user_number,
-                );
-                if (flag === -1) {
-                  console.log('flag : ', flag);
-                  navigation.navigate('TabBar', {screen: 'MyProfile'});
-                } else {
-                  navigation.navigate('Stack', {
-                    screen: 'OtherUserProfile',
-                    params: {
-                      otherUid: item.friend_kakao_user_number,
-                      isFriend: flag,
-                    },
-                  });
-                }
-              }}>
+              onPress={
+                screenName === 'following'
+                  ? async () => {
+                      const flag = await checkIsFriend(
+                        kakaoUid,
+                        item.kakao_user_number,
+                      );
+                      if (flag === -1) {
+                        navigation.push('TabBar', {screen: 'MyProfile'});
+                      } else {
+                        navigation.push('Stack', {
+                          screen: 'OtherUserProfile',
+                          params: {
+                            otherUid: item.kakao_user_number,
+                            isFriend: flag,
+                          },
+                        });
+                      }
+                    }
+                  : async () => {
+                      console.log('item.', item, 'listType', listType);
+                      const flag = await checkIsFriend(
+                        kakaoUid,
+                        item.friend_kakao_user_number,
+                      );
+                      if (flag === -1) {
+                        navigation.push('TabBar', {screen: 'MyProfile'});
+                      } else {
+                        navigation.push('Stack', {
+                          screen: 'OtherUserProfile',
+                          params: {
+                            otherUid: item.friend_kakao_user_number,
+                            isFriend: listType === 'otherUserList' ? flag : 1,
+                          },
+                        });
+                      }
+                    }
+              }>
               <UserInfo>
                 <UserImg>
                   <Avatar source={{uri: item.profileImg}} />
@@ -80,8 +69,8 @@ const OtherFollowing = ({OtherUid}) => {
                 </InfoBox>
               </UserInfo>
               <MusicPlay
-                onPress={async () => {
-                  await remote.playUri(item.profileMusicUri);
+                onPress={() => {
+                  remote.playUri(item.profileMusicUri);
                 }}>
                 {item.profileMusicUri === null ? null : item.albumTitle.length <
                   20 ? (
@@ -89,21 +78,19 @@ const OtherFollowing = ({OtherUid}) => {
                     <UserMusic>
                       {item.albumTitle} - {item.albumArtistName}
                     </UserMusic>
-                    <Playbutton> ▶︎</Playbutton>
                   </BtnContainer2>
                 ) : (
                   <BtnContainer>
                     <UserMusic numberOfLines={1}>
                       {item.albumTitle} - {item.albumArtistName}
                     </UserMusic>
-                    <Playbutton> ▶︎</Playbutton>
                   </BtnContainer>
                 )}
               </MusicPlay>
             </Card>
           )}
         />
-      ) : null}
+      )}
     </Container>
   );
 };
@@ -117,7 +104,7 @@ const FriendList = styled.FlatList`
   margin: 12px 0;
 `;
 const Card = styled.TouchableOpacity`
-  width: ${({width}) => (width - 10) / 1.05};
+  width: ${({width}) => width - 20};
   padding: 15px 10px;
   border-radius: 20px;
   background-color: #ffffff;
@@ -140,8 +127,8 @@ const UserImg = styled.View`
 `;
 
 const Avatar = styled.Image`
-  width: 55;
-  height: 55;
+  width: 50;
+  height: 50;
   border-radius: 25px;
 `;
 const InfoBox = styled.View`
@@ -157,10 +144,7 @@ const UserMusic = styled.Text`
   color: #9b59b6;
   white-space: pre-wrap;
 `;
-const Playbutton = styled.Text`
-  font-size: 12px;
-  color: #9b59b6;
-`;
+
 const BtnContainer = styled.View`
   flex-direction: row;
   justify-content: flex-end;
@@ -177,4 +161,4 @@ const BtnContainer2 = styled.View`
   border: 1.5px #b7b4df;
 `;
 
-export default OtherFollowing;
+export default FriendLists;

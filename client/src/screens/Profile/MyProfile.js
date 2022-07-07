@@ -4,10 +4,10 @@ import ProfileTabBar from './ProfileTapBar';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import {remote} from 'react-native-spotify-remote';
-import {MusicControlBtn} from '../../components/MusicControlBtn';
+import {MusicControlBtn} from '../../components/CustomButtons';
 import TopNavBar from '../../components/TopNavBar';
 
-const Profile = ({navigation}) => {
+const MyProfile = ({navigation}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
   const HashTag = [
     myProfileData.tag1_cd,
@@ -65,7 +65,15 @@ const Profile = ({navigation}) => {
                   <CountText>POST</CountText>
                   <CountText>{myProfileData.post_count}</CountText>
                 </CountBtn>
-                <CountBtn>
+                <CountBtn
+                  onPress={() => {
+                    navigation.push('TabBar', {
+                      screen: 'FriendListContainer',
+                      params: {
+                        userId: myProfileData.kakao_user_number,
+                      },
+                    });
+                  }}>
                   <CountText>FREIND</CountText>
                   <CountText>{myProfileData.friend_count}</CountText>
                 </CountBtn>
@@ -218,4 +226,4 @@ const TagText = styled.Text`
   color: #b7b4df;
 `;
 
-export default Profile;
+export default MyProfile;
