@@ -11,7 +11,6 @@ import Config from 'react-native-config';
 import {useQuery} from 'react-query';
 import getRef from '../../functions/getRef';
 import {query, onSnapshot, where} from 'firebase/firestore';
-import LinearGradient from 'react-native-linear-gradient';
 import TopNavBar from '../../components/TopNavBar';
 import {remote} from 'react-native-spotify-remote';
 import checkIsFriend from '../../api/checkIsFriend';
@@ -30,6 +29,7 @@ const spotifyWebApi = new SpotifyWebApi({
 const Home = ({navigation: {navigate, push}}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
   const {kakaoUid} = useSelector(state => state.kakaoUid);
+  console.log('kakaouid : ', kakaoUid);
   const {locationName} = useSelector(state => state.locationName);
   const {spotifyToken} = useSelector(state => state.spotifyToken);
   const [alarmStack, setAlarmStack] = useState(0);
@@ -54,7 +54,7 @@ const Home = ({navigation: {navigate, push}}) => {
     const q = query(
       currentMusicListRef,
       //orderBy('createdAt', 'desc'),
-      //where('uid', 'not-in', [kakaoUid / 1]),
+      where('uid', 'not-in', [kakaoUid / 1]),
     );
     const subscribe = onSnapshot(q, querySnapshot => {
       setLocationPlaylist(
@@ -93,7 +93,7 @@ const Home = ({navigation: {navigate, push}}) => {
     <>
       <Container>
         <TopNavBar
-          navText="홈"
+          navText="HOME"
           iconName="notifications-outline"
           onPress={() => navigate('Stack', {screen: 'Notice'})}
         />
@@ -117,37 +117,33 @@ const Home = ({navigation: {navigate, push}}) => {
           renderItem={({item}) => (
             <>
               <AlbumRecommendContainer>
-                <LinearGradient
-                  //style={{opacity: 0.2}}
-                  colors={['#4c669f', '#3b5998', '#192f6a']}>
-                  <ImgBackground
-                    resizeMode="stretch"
-                    source={{
-                      uri: item.albumImg,
+                <ImgBackground
+                  resizeMode="stretch"
+                  source={{
+                    uri: item.albumImg,
+                  }}>
+                  <ProfileContainer
+                    onPress={async () => {
+                      const flag = await checkIsFriend(kakaoUid, item.uid);
+                      navigate('Stack', {
+                        screen: 'OtherUserProfile',
+                        params: {
+                          otherUid: item.uid,
+                          isFriend: flag,
+                        },
+                      });
                     }}>
-                    <ProfileContainer
-                      onPress={async () => {
-                        const flag = await checkIsFriend(kakaoUid, item.uid);
-                        navigate('Stack', {
-                          screen: 'OtherUserProfile',
-                          params: {
-                            otherUid: item.uid,
-                            isFriend: flag,
-                          },
-                        });
-                      }}>
-                      <ProfileImg source={{uri: item.profileImg}} />
-                      {/* <InfoText>{item.nickname}</InfoText> */}
-                    </ProfileContainer>
-                    <AlbumContainer
-                      onPress={async () => {
-                        await remote.playUri(item.musicUri);
-                      }}>
-                      <InfoText>{item.albumTitle}</InfoText>
-                      <InfoText>{item.albumArtistName}</InfoText>
-                    </AlbumContainer>
-                  </ImgBackground>
-                </LinearGradient>
+                    <ProfileImg source={{uri: item.profileImg}} />
+                    {/* <InfoText>{item.nickname}</InfoText> */}
+                  </ProfileContainer>
+                  <AlbumContainer
+                    onPress={async () => {
+                      await remote.playUri(item.musicUri);
+                    }}>
+                    <InfoText>{item.albumTitle}</InfoText>
+                    <InfoText>{item.albumArtistName}</InfoText>
+                  </AlbumContainer>
+                </ImgBackground>
               </AlbumRecommendContainer>
             </>
           )}
@@ -162,29 +158,50 @@ const Home = ({navigation: {navigate, push}}) => {
             renderItem={({item}) => (
               <>
                 <AlbumRecommendContainer>
-                  <LinearGradient
-                    //style={{opacity: 0.2}}
-                    colors={['#ffffff', '#192f6a']}>
-                    <ImgBackground
-                      resizeMode="stretch"
-                      source={{
-                        uri: item.album.images[0].url,
+                  <ImgBackground
+                    resizeMode="stretch"
+                    source={{
+                      uri: item.album.images[0].url,
+                    }}>
+                    <AlbumContainer
+                      onPress={async () => {
+                        console.log('clicked', item.uri);
+                        await remote.playUri(item.uri);
                       }}>
-                      <AlbumContainer
-                        onPress={async () => {
-                          console.log('clicked', item.uri);
-                          await remote.playUri(item.uri);
-                        }}>
-                        <InfoText>{item.album.name}</InfoText>
-                        <InfoText>{item.artists[0].name}</InfoText>
-                      </AlbumContainer>
-                    </ImgBackground>
-                  </LinearGradient>
+                      <InfoText>{item.album.name}</InfoText>
+                      <InfoText>{item.artists[0].name}</InfoText>
+                    </AlbumContainer>
+                  </ImgBackground>
                 </AlbumRecommendContainer>
               </>
             )}
           />
         )}
+        <RecommendText>친구 추천</RecommendText>
+
+        <RecommendPlaylist
+          nestedScrollEnabled={true}
+          horizontal={true}
+          data={RecommendMusic.tracks}
+          keyExtractor={item => item.id + ''}
+          renderItem={({item}) => (
+            <>
+              <Card>
+                <UserInfo>
+                  <UserImg>
+                    <Avatar source={{uri: item.album.images[0].url}} />
+                  </UserImg>
+                  <InfoBox>
+                    <UserName>{item.album.name}</UserName>
+                  </InfoBox>
+                </UserInfo>
+                <MusicPlay>
+                  <UserMusic>{item.artists[0].name}</UserMusic>
+                </MusicPlay>
+              </Card>
+            </>
+          )}
+        />
       </Container>
       <SpotifyTab />
     </>
@@ -231,6 +248,7 @@ const Btn = styled.TouchableOpacity`
 `;
 const Text = styled.Text`
   font-size: 12px;
+  font-family: 'Jua-Regular';
 `;
 
 const RecommendPlaylist = styled.FlatList``;
@@ -238,6 +256,7 @@ const RecommendPlaylist = styled.FlatList``;
 const RecommendText = styled.Text`
   margin: 5px;
   font-size: 16px;
+  font-family: 'Jua-Regular';
 `;
 const ProfileImg = styled.Image`
   width: 30;
@@ -271,6 +290,46 @@ const InfoText = styled.Text`
   font-size: 10px;
   font-weight: bold;
   /* background-color: black; */
+`;
+const Card = styled.TouchableOpacity`
+  width: 130;
+  height: 150;
+  padding: 15px 10px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #b7b4df;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 8px;
+  elevation: 3;
+`;
+
+const UserInfo = styled.View`
+  align-items: center;
+`;
+const MusicPlay = styled.TouchableOpacity``;
+
+const UserImg = styled.View`
+  margin-right: 5px;
+  padding: 5px;
+`;
+
+const Avatar = styled.Image`
+  width: 55;
+  height: 55;
+  border-radius: 25px;
+`;
+const InfoBox = styled.View`
+  margin: 5px;
+`;
+const UserName = styled.Text`
+  margin-bottom: 3px;
+  font-size: 10px;
+  color: black;
+`;
+const UserMusic = styled.Text`
+  font-size: 10px;
+  color: black;
 `;
 
 export default Home;

@@ -15,6 +15,7 @@ const Myzone = ({navigation}) => {
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {userLocation} = useSelector(state => state.userLocation);
   const dispatch = useDispatch();
+  console.log('kaka', kakaoUid);
 
   //내 프로필 가져오기
   const {isLoading: profile} = useQuery('getMyProfile', async () => {
@@ -42,6 +43,8 @@ const Myzone = ({navigation}) => {
       return data;
     },
     {
+      onSuccess: res => console.log(res),
+      onError: err => console.log(err),
       refetchInterval: 30000,
       refetchIntervalInBackground: true,
     },
@@ -67,7 +70,7 @@ const Myzone = ({navigation}) => {
             regionCode: locationData.documents[0].code / 1,
           });
           dispatch(actions.saveUserLocationName(locationData.documents[0]));
-          navigation.navigate('TabBar', {screen: 'Home'});
+          navigation.replace('TabBar', {screen: 'Home'});
         },
       },
     ]);

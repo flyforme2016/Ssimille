@@ -10,7 +10,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import {useSelector} from 'react-redux';
-import getRef from '../../functions/getRef'
+import getRef from '../../functions/getRef';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {View, Text} from 'react-native';
 import styled from 'styled-components/native';
@@ -66,13 +66,16 @@ export default function Chat({route}) {
     const q = query(myChatListCollectionRef, orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(q, querySnapshot => {
-      console.log('First onSnapshot')
-      querySnapshot.docChanges().map(change => {        //실시간으로 대화하는 중에 상대방에게 메세지를 받을 경우에도
-        if(change.type === 'modified'){                //상대방이 증가시키는 stack 0으로 초기화
-          if(change.doc.data().setDocUserObj._id === stringOtherUid){   //대화목록중 현재 실시간 채팅중인 유저와의 chatList를 찾으면
+      console.log('First onSnapshot');
+      querySnapshot.docChanges().map(change => {
+        //실시간으로 대화하는 중에 상대방에게 메세지를 받을 경우에도
+        if (change.type === 'modified') {
+          //상대방이 증가시키는 stack 0으로 초기화
+          if (change.doc.data().setDocUserObj._id === stringOtherUid) {
+            //대화목록중 현재 실시간 채팅중인 유저와의 chatList를 찾으면
             updateDoc(myChatListRef, {
-              stack:0
-            })
+              stack: 0,
+            });
           }
         }
       });

@@ -1,36 +1,34 @@
 import axios from 'axios';
 import React, {useState, useLayoutEffect} from 'react';
 import styled from 'styled-components/native';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import Config from 'react-native-config';
-import MarqueeView from 'react-native-marquee-view';
 import {remote} from 'react-native-spotify-remote';
 import {Dimensions} from 'react-native';
-
 const {width} = Dimensions.get('window');
+import checkIsFriend from '../../api/checkIsFriend';
 
-const MyFollwing = ({navigation: {navigate}}) => {
+const OtherFollower = ({OtherUid}) => {
   const [friendList, setFriendData] = useState({});
-  console.log('fred : ', friendList.albumArtistName);
   const isFocused = useIsFocused();
   const myUid = useSelector(state => state.kakaoUid);
   const BASE_URL = Config.BASE_URL;
+  const navigation = useNavigation();
 
   useLayoutEffect(() => {
-    getMyFollowingList();
+    getMyFollowerList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
-  const getMyFollowingList = async () => {
+  const getMyFollowerList = async () => {
     try {
-      console.log('start getMyFriendList');
-      if (myUid.kakaoUid !== null) {
+      console.log('start getMyFollowerList');
+      if (OtherUid !== null) {
         await axios
-          .get(`${BASE_URL}/friend/getMyFollowingList`, {
+          .get(`${BASE_URL}/friend/getMyFollwerList`, {
             params: {
-              key: myUid.kakaoUid,
+              key: OtherUid,
             },
           })
           .then(res => {
@@ -53,11 +51,22 @@ const MyFollwing = ({navigation: {navigate}}) => {
         renderItem={({item}) => (
           <Card
             width={width}
-            onPress={() => {
-              navigate('Stack', {
-                screen: 'OtherUserProfile',
-                params: {otherUid: item.friend_kakao_user_number, isFriend: 1},
-              });
+            onPress={async () => {
+              const flag = await checkIsFriend(
+                myUid.kakaoUid,
+                item.kakao_user_number,
+              );
+              if (flag === -1) {
+                navigation.navigate('TabBar', {screen: 'MyProfile'});
+              } else {
+                navigation.navigate('Stack', {
+                  screen: 'OtherUserProfile',
+                  params: {
+                    otherUid: item.kakao_user_number,
+                    isFriend: flag,
+                  },
+                });
+              }
             }}>
             <UserInfo>
               <UserImg>
@@ -67,12 +76,11 @@ const MyFollwing = ({navigation: {navigate}}) => {
                 <UserName>{item.nickname}</UserName>
               </InfoBox>
             </UserInfo>
-
             <MusicPlay
               onPress={async () => {
                 await remote.playUri(item.profileMusicUri);
               }}>
-              {item.albumTitle.length < 3 ? null : item.albumTitle.length <
+              {item.profileMusicUri === null ? null : item.albumTitle.length <
                 20 ? (
                 <BtnContainer2>
                   <UserMusic>
@@ -164,4 +172,5 @@ const BtnContainer2 = styled.View`
   border-radius: 10;
   border: 1.5px #b7b4df;
 `;
-export default MyFollwing;
+
+export default OtherFollower;

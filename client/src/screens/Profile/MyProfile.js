@@ -6,7 +6,6 @@ import {useSelector} from 'react-redux';
 import {remote} from 'react-native-spotify-remote';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
 import TopNavBar from '../../components/TopNavBar';
-import {DeviceEventEmitter} from 'react-native';
 
 const Profile = ({navigation}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
@@ -46,7 +45,18 @@ const Profile = ({navigation}) => {
 
           <ProfileContainer>
             <UserInfo>
-              <ProfilePic source={{uri: myProfileData.profile_image}} />
+              <ProfileImage
+                onPress={() => {
+                  console.log('clicked');
+                  navigation.push('Stack', {
+                    screen: 'BigPicture',
+                    params: {
+                      userprofile: myProfileData.profile_image,
+                    },
+                  });
+                }}>
+                <ProfilePic source={{uri: myProfileData.profile_image}} />
+              </ProfileImage>
               <UserName>{myProfileData.nickname}</UserName>
             </UserInfo>
             <ProfileInfo>
@@ -122,7 +132,7 @@ const Divider = styled.View`
   align-self: center;
   elevation: 3;
 `;
-
+const ProfileImage = styled.TouchableOpacity``;
 const ProfileContainer = styled.View`
   justify-content: center;
   align-items: center;

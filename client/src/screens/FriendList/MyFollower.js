@@ -7,8 +7,8 @@ import Config from 'react-native-config';
 import MarqueeView from 'react-native-marquee-view';
 import {remote} from 'react-native-spotify-remote';
 import {Dimensions} from 'react-native';
-import checkIsFriend from '../../api/checkIsFriend';
 const {width} = Dimensions.get('window');
+import checkIsFriend from '../../api/checkIsFriend';
 
 const MyFollower = ({navigation}) => {
   const [friendList, setFriendData] = useState({});
@@ -50,15 +50,15 @@ const MyFollower = ({navigation}) => {
         renderItem={({item}) => (
           <Card
             width={width}
-            nPress={async () => {
+            onPress={async () => {
               const flag = await checkIsFriend(
-                myUid,
-                item.friend_kakao_user_number,
+                myUid.kakaoUid,
+                item.kakao_user_number,
               );
               navigation.navigate('Stack', {
                 screen: 'OtherUserProfile',
                 params: {
-                  otherUid: item.friend_kakao_user_number,
+                  otherUid: item.kakao_user_number,
                   isFriend: flag,
                 },
               });
@@ -75,16 +75,22 @@ const MyFollower = ({navigation}) => {
               onPress={async () => {
                 await remote.playUri(item.profileMusicUri);
               }}>
-              {item.profileMusicUri !== null ? (
+              {item.profileMusicUri === null ? null : item.albumTitle.length <
+                20 ? (
+                <BtnContainer2>
+                  <UserMusic>
+                    {item.albumTitle} - {item.albumArtistName}
+                  </UserMusic>
+                  <Playbutton> ▶︎</Playbutton>
+                </BtnContainer2>
+              ) : (
                 <BtnContainer>
-                  <MarqueeView speed={0.08}>
-                    <UserMusic>
-                      {item.albumTitle} - {item.albumArtistName}
-                    </UserMusic>
-                  </MarqueeView>
+                  <UserMusic numberOfLines={1}>
+                    {item.albumTitle} - {item.albumArtistName}
+                  </UserMusic>
                   <Playbutton> ▶︎</Playbutton>
                 </BtnContainer>
-              ) : null}
+              )}
             </MusicPlay>
           </Card>
         )}
@@ -140,6 +146,7 @@ const UserName = styled.Text`
 const UserMusic = styled.Text`
   font-size: 12px;
   color: #9b59b6;
+  white-space: pre-wrap;
 `;
 const Playbutton = styled.Text`
   font-size: 12px;
@@ -147,10 +154,18 @@ const Playbutton = styled.Text`
 `;
 const BtnContainer = styled.View`
   flex-direction: row;
+  justify-content: flex-end;
+  padding: 5px;
+  width: 170;
+  border-radius: 10;
+  border: 1.5px #b7b4df;
+`;
+const BtnContainer2 = styled.View`
+  flex-direction: row;
+  justify-content: flex-end;
   padding: 5px;
   border-radius: 10;
   border: 1.5px #b7b4df;
-  width: 150;
 `;
 
 export default MyFollower;

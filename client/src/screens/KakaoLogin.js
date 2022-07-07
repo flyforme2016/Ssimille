@@ -25,11 +25,12 @@ const KakaoLogin = ({navigation: {replace}}) => {
       Geolocation.getCurrentPosition(
         position => {
           dispatch(actions.saveUserLocation(position.coords));
+          console.log('위도 경도 저장완료');
         },
         error => {
           console.log(error.message);
         },
-        {enableHighAccuracy: true, timeout: 15000},
+        // {enableHighAccuracy: true, timeout: 15000},
       );
     } else {
       console.log('권한얻기 실패 :', granted);

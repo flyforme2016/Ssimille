@@ -1,31 +1,53 @@
-import React, {useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import ProfileTabBar from './ProfileTapBar';
+import CustomButton from '../../components/CustomButtons';
 import {MusicControlBtn} from '../../components/MusicControlBtn';
 import Config from 'react-native-config';
+import {TouchableOpacity} from 'react-native';
 import sendAlarm from '../../functions/sendAlarm';
 import deleteFriend from '../../functions/deleteFriend';
 import {useSelector} from 'react-redux';
-import {useQuery} from 'react-query';
-import TopNavBar from '../../components/TopNavBar';
-import {remote} from 'react-native-spotify-remote';
+import {Alert} from 'react-native';
 import {DeviceEventEmitter} from 'react-native';
+import {remote} from 'react-native-spotify-remote';
 
 const Profile = ({navigation, route}) => {
-  console.log(route.params.otherUid);
   const [isFollow, setIsFollow] = useState(route.params.isFriend);
+  const [otherUserData, setOtherUserData] = useState({});
   const {myProfileData} = useSelector(state => state.myProfile);
-  const {kakaoUid} = useSelector(state => state.kakaoUid);
+  const myUid = useSelector(state => state.kakaoUid);
+  const otherUserUid = route.params.otherUid;
   const BASE_URL = Config.BASE_URL;
-  const {data: otherUserData} = useQuery('otherUserData', async () => {
-    const {data} = await axios(`${BASE_URL}/profile/getUserProfile`, {
-      params: {
-        key: route.params.otherUid,
-      },
-    });
-    return data;
-  });
+  const HashTag = [
+    otherUserData.tag1_cd,
+    otherUserData.tag2_cd,
+    otherUserData.tag3_cd,
+    otherUserData.tag4_cd,
+    otherUserData.tag5_cd,
+  ].filter(tag => tag !== null);
+
+  const getOtherUserProfile = async () => {
+    try {
+      if (otherUserUid !== null) {
+        await axios
+          .get(`${BASE_URL}/profile/getUserProfile`, {
+            params: {
+              key: otherUserUid,
+            },
+          })
+          .then(res => {
+            setOtherUserData(res.data); //서버에게 받아온 otherUserProfileData
+          });
+      }
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  };
+  useLayoutEffect(() => {
+    getOtherUserProfile();
+  }, []);
 
   const addFriendListener = () => {
     if (!isFollow) {
@@ -38,139 +60,145 @@ const Profile = ({navigation, route}) => {
       sendAlarm(myData, otherUserData, '회원님을 팔로우 하였습니다.', 1);
       myProfileData.friend_count += 1;
     } else {
-      setIsFollow(!isFollow);
-      deleteFriend(kakaoUid, route.params.otherUid);
-      myProfileData.friend_count -= 1;
+      Alert.alert('팔로잉 끊기', '팔로잉을 끊으시겠습니까?', [
+        {text: 'Cancel'},
+        {
+          text: 'OK',
+          onPress: () => {
+            setIsFollow(!isFollow);
+            deleteFriend(myUid.kakaoUid, otherUserUid);
+            myProfileData.friend_count -= 1;
+          },
+        },
+      ]);
     }
   };
 
   return (
     <Container>
-      <TopNavBar navText="프로필" />
+      <NavBar>
+        <NavText>PROFILE</NavText>
+      </NavBar>
       <Divider />
-      {otherUserData && (
-        <>
-          <ProfileContainer>
-            <UserInfo>
-              <ProfileImage
-                onPress={() => {
-                  console.log('clicked');
-                  navigation.push('Stack', {
-                    screen: 'BigPicture',
-                    params: {
-                      userprofile: otherUserData.profile_image,
-                    },
-                  });
-                }}>
-                <ProfilePic source={{uri: otherUserData.profile_image}} />
-              </ProfileImage>
-              <UserName>{otherUserData.nickname}</UserName>
-            </UserInfo>
-            <ProfileInfo>
-              <CountContainer>
-                <CountBtn>
-                  <CountText>POST</CountText>
-                  <CountText>{otherUserData.post_count}</CountText>
-                </CountBtn>
-                <CountBtn>
-                  <CountText>FREIND</CountText>
-                  <CountText>{otherUserData.friend_count}</CountText>
-                </CountBtn>
-                <CountBtn
-                  onPress={() => {
-                    navigation.push('Stack', {
-                      screen: 'FavoriteSongs',
-                      params: {
-                        userId: route.params.otherUid,
-                      },
-                    });
-                  }}>
-                  <CountText>SONG</CountText>
-                  <CountText>{otherUserData.song_count}</CountText>
-                </CountBtn>
-              </CountContainer>
 
-              <TagContainer>
-                {otherUserData.tag1_cd
-                  ? [
-                      otherUserData.tag1_cd,
-                      otherUserData.tag2_cd,
-                      otherUserData.tag3_cd,
-                      otherUserData.tag4_cd,
-                      otherUserData.tag5_cd,
-                    ]
-                      .filter(tag => tag !== null)
-                      .map(data => {
-                        return (
-                          <TagBtn>
-                            <TagText># {data} </TagText>
-                          </TagBtn>
-                        );
-                      })
-                  : null}
-              </TagContainer>
-            </ProfileInfo>
-          </ProfileContainer>
-          <Card>
-            {otherUserData.album_image ? (
-              <MusicInfoContainer
-                onPress={() => {
-                  remote.playUri(myProfileData.profile_music_uri);
-                  DeviceEventEmitter.emit('refetchMusic');
-                }}>
-                <MusicWrapper>
-                  <CoverImg source={{uri: otherUserData.album_image}} />
-                  <MusicInfo>
-                    <MusicName> {otherUserData.album_title}</MusicName>
-                    <ArtistName>{otherUserData.album_artist_name}</ArtistName>
-                  </MusicInfo>
-                </MusicWrapper>
-                <MusicControlBtn type="play" />
-              </MusicInfoContainer>
-            ) : null}
-          </Card>
-
-          <BtnContainer>
-            <FollowBtn onPress={addFriendListener} isFollow={isFollow}>
-              <BtnText isFollow={isFollow}>
-                {isFollow ? '팔로잉' : '팔로우'}
-              </BtnText>
-            </FollowBtn>
-
-            <FollowBtn
+      <ProfileContainer>
+        <UserInfo>
+          <ProfileImage
+            onPress={() => {
+              console.log('clicked');
+              navigation.push('Stack', {
+                screen: 'BigPicture',
+                params: {
+                  userprofile: otherUserData.profile_image,
+                },
+              });
+            }}>
+            <ProfilePic source={{uri: otherUserData.profile_image}} />
+          </ProfileImage>
+          <UserName>{otherUserData.nickname}</UserName>
+        </UserInfo>
+        <ProfileInfo>
+          <CountContainer>
+            <CountBtn>
+              <CountText>POST</CountText>
+              <CountText>{otherUserData.post_count}</CountText>
+            </CountBtn>
+            <CountBtn
               onPress={() => {
-                navigation.navigate('Stack', {
-                  screen: 'OneByOneChating',
+                navigation.push('Stack', {
+                  screen: 'OtherTabBar',
                   params: {
-                    otherUid: route.params.otherUid,
-                    otherProfleImg: otherUserData.profile_image,
-                    otherNickname: otherUserData.nickname,
+                    userId: otherUserUid,
                   },
                 });
               }}>
-              <BtnText>채팅하기</BtnText>
-            </FollowBtn>
-          </BtnContainer>
-        </>
-      )}
-      <ProfileTabBar userId={route.params.otherUid} />
+              <CountText>FREIND</CountText>
+              <CountText>{otherUserData.friend_count}</CountText>
+            </CountBtn>
+            <CountBtn
+              onPress={() => {
+                navigation.push('Stack', {
+                  screen: 'FavoriteSongs',
+                  params: {
+                    userId: route.params.otherUid,
+                  },
+                });
+              }}>
+              <CountText>SONG</CountText>
+              <CountText>{otherUserData.song_count}</CountText>
+            </CountBtn>
+          </CountContainer>
+
+          <TagContainer>
+            {otherUserData.tag1_cd
+              ? [
+                  otherUserData.tag1_cd,
+                  otherUserData.tag2_cd,
+                  otherUserData.tag3_cd,
+                  otherUserData.tag4_cd,
+                  otherUserData.tag5_cd,
+                ]
+                  .filter(tag => tag !== null)
+                  .map(data => {
+                    return (
+                      <TagBtn>
+                        <TagText># {data} </TagText>
+                      </TagBtn>
+                    );
+                  })
+              : null}
+          </TagContainer>
+        </ProfileInfo>
+      </ProfileContainer>
+      <Card>
+        {otherUserData.album_image ? (
+          <MusicInfoContainer
+            onPress={() => {
+              remote.playUri(myProfileData.profile_music_uri);
+              DeviceEventEmitter.emit('refetchMusic');
+            }}>
+            <MusicWrapper>
+              <CoverImg source={{uri: otherUserData.album_image}} />
+              <MusicInfo>
+                <MusicName> {otherUserData.album_title}</MusicName>
+                <ArtistName>{otherUserData.album_artist_name}</ArtistName>
+              </MusicInfo>
+            </MusicWrapper>
+            <MusicControlBtn type="play" />
+          </MusicInfoContainer>
+        ) : null}
+      </Card>
+
+      <BtnContainer>
+        <TouchableOpacity onPress={addFriendListener}>
+          <FriendView isFollow={isFollow}>
+            <FriendText isFollow={isFollow}>
+              {isFollow ? '팔로잉' : '팔로우'}
+            </FriendText>
+          </FriendView>
+        </TouchableOpacity>
+
+        <Button>
+          <CustomButton
+            text=" 채팅하기"
+            onPress={() => {
+              navigation.navigate('Stack', {
+                screen: 'OneByOneChating',
+                params: {
+                  otherUid: route.params.otherUid,
+                  otherProfleImg: otherUserData.profile_image,
+                  otherNickname: otherUserData.nickname,
+                },
+              });
+            }}
+          />
+        </Button>
+      </BtnContainer>
+
+      <ProfileTabBar userId={otherUserUid} />
     </Container>
   );
 };
-const FollowBtn = styled.TouchableOpacity`
-  width: 95;
-  height: 55;
-  border-radius: 5;
-  border-color: #dedede;
-  justify-content: center;
-  align-items: center;
-  background-color: ${props => (props.isFollow ? null : '#b7b4df')};
-`;
-const BtnText = styled.Text`
-  color: ${props => (props.isFollow ? 'black' : 'white')};
-  font-size: 14;
-  font-weight: bold;
-`;
 const Container = styled.View`
   flex: 1;
   background-color: #ffffff;
@@ -184,12 +212,38 @@ const Divider = styled.View`
   align-self: center;
   elevation: 3;
 `;
+const FriendView = styled.View`
+  width: 95;
+  height: 55;
+  border-radius: 5;
+  border-color: #000;
+  justify-content: center;
+  align-items: center;
+  background-color: ${props => (props.isFollow ? 'white' : '#b7b4df')};
+  border-width: ${props => (props.isFollow ? 1 : 0)};
+`;
+const FriendText = styled.Text`
+  color: ${props => (props.isFollow ? 'black' : 'white')};
+  font-size: 14;
+  font-weight: bold;
+`;
 
+const NavBar = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+const NavText = styled.Text`
+  color: #9b59b6;
+  font-size: 24;
+  padding: 5px;
+`;
 const BtnContainer = styled.TouchableOpacity`
   align-items: center;
   flex-direction: row;
   justify-content: center;
 `;
+const BtnContainer2 = styled.View``;
 const ProfileContainer = styled.View`
   justify-content: center;
   align-items: center;
@@ -261,6 +315,12 @@ const CountText = styled.Text`
   font-weight: bold;
   font-size: 14;
   margin: 8px;
+`;
+const Button = styled.Text`
+  margin: 10px;
+`;
+const Button2 = styled.Text`
+  margin: 10px;
 `;
 
 const ProfileInfo = styled.View`

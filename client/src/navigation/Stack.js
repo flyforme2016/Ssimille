@@ -15,7 +15,8 @@ import SpotifyAuthentication from '../functions/SpotifyAuthentication';
 import PostComments from '../components/PostComments';
 import EditFavoriteSongs from '../screens/Profile/EditFavoriteSongs';
 const NativeStack = createNativeStackNavigator();
-
+import OtherTabBar from '../screens/FriendList/OtherTabBar';
+import BigPicture from '../screens/Profile/BigPicture';
 const Stack = () => {
   return (
     <NativeStack.Navigator
@@ -31,7 +32,8 @@ const Stack = () => {
       <NativeStack.Screen name="CommunityUpload" component={CommunityUpload} />
       <NativeStack.Screen name="CommunityPost" component={CommunityPost} />
       <NativeStack.Screen name="PostComments" component={PostComments} />
-
+      <NativeStack.Screen name="OtherTabBar" component={OtherTabBar} />
+      <NativeStack.Screen name="BigPicture" component={BigPicture} />
       <NativeStack.Screen name="KakaoLogin" component={KakaoLogin} />
       <NativeStack.Screen
         name="SpotifyAuthentication"
