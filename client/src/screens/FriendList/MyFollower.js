@@ -84,11 +84,7 @@ const MyFollower = ({navigation}) => {
                 </BtnContainer2>
               ) : (
                 <BtnContainer>
-<<<<<<< HEAD
                   <UserMusic numberOfLines={1}>
-=======
-                  <UserMusic>
->>>>>>> fcb1b61aca7cd96b5814391f218325956de5a38a
                     {item.albumTitle} - {item.albumArtistName}
                   </UserMusic>
                   <Playbutton> ▶︎</Playbutton>
