@@ -15,6 +15,7 @@ import {deletePost} from '../../api/community/deletePost';
 import {handleLike} from '../../api/community/handleLike';
 import sendAlarm from '../../functions/sendAlarm';
 
+//
 const TotalCommunity = ({navigation}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
