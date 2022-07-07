@@ -9,8 +9,13 @@ import {TouchableOpacity} from 'react-native';
 import sendAlarm from '../../functions/sendAlarm';
 import deleteFriend from '../../functions/deleteFriend';
 import {useSelector} from 'react-redux';
+<<<<<<< HEAD
 import {Alert} from 'react-native';
 import {DeviceEventEmitter} from 'react-native';
+=======
+import {useQuery} from 'react-query';
+import TopNavBar from '../../components/TopNavBar';
+>>>>>>> fcb1b61aca7cd96b5814391f218325956de5a38a
 import {remote} from 'react-native-spotify-remote';
 
 const Profile = ({navigation, route}) => {
@@ -81,6 +86,7 @@ const Profile = ({navigation, route}) => {
       </NavBar>
       <Divider />
 
+<<<<<<< HEAD
       <ProfileContainer>
         <UserInfo>
           <ProfileImage
@@ -116,6 +122,55 @@ const Profile = ({navigation, route}) => {
               <CountText>{otherUserData.friend_count}</CountText>
             </CountBtn>
             <CountBtn
+=======
+              <TagContainer>
+                {otherUserData.tag1_cd
+                  ? [
+                      otherUserData.tag1_cd,
+                      otherUserData.tag2_cd,
+                      otherUserData.tag3_cd,
+                      otherUserData.tag4_cd,
+                      otherUserData.tag5_cd,
+                    ]
+                      .filter(tag => tag !== null)
+                      .map(data => {
+                        return (
+                          <TagBtn>
+                            <TagText># {data} </TagText>
+                          </TagBtn>
+                        );
+                      })
+                  : null}
+              </TagContainer>
+            </ProfileInfo>
+          </ProfileContainer>
+          <Card>
+            {otherUserData.album_image ? (
+              <MusicInfoContainer
+                onPress={() => {
+                  remote.playUri(myProfileData.profile_music_uri);
+                }}>
+                <MusicWrapper>
+                  <CoverImg source={{uri: otherUserData.album_image}} />
+                  <MusicInfo>
+                    <MusicName> {otherUserData.album_title}</MusicName>
+                    <ArtistName>{otherUserData.album_artist_name}</ArtistName>
+                  </MusicInfo>
+                </MusicWrapper>
+                <MusicControlBtn type="play" />
+              </MusicInfoContainer>
+            ) : null}
+          </Card>
+
+          <BtnContainer>
+            <FollowBtn onPress={addFriendListener} isFollow={isFollow}>
+              <BtnText isFollow={isFollow}>
+                {isFollow ? '팔로잉' : '팔로우'}
+              </BtnText>
+            </FollowBtn>
+
+            <FollowBtn
+>>>>>>> fcb1b61aca7cd96b5814391f218325956de5a38a
               onPress={() => {
                 navigation.push('Stack', {
                   screen: 'FavoriteSongs',

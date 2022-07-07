@@ -5,7 +5,6 @@ import {useIsFocused} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Config from 'react-native-config';
-import MarqueeView from 'react-native-marquee-view';
 import {remote} from 'react-native-spotify-remote';
 import {Dimensions} from 'react-native';
 
@@ -82,7 +81,11 @@ const MyFollwing = ({navigation: {navigate}}) => {
                 </BtnContainer2>
               ) : (
                 <BtnContainer>
+<<<<<<< HEAD
                   <UserMusic numberOfLines={1}>
+=======
+                  <UserMusic>
+>>>>>>> fcb1b61aca7cd96b5814391f218325956de5a38a
                     {item.albumTitle} - {item.albumArtistName}
                   </UserMusic>
                   <Playbutton> ▶︎</Playbutton>

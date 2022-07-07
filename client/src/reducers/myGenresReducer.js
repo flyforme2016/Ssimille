@@ -1,19 +1,19 @@
 import types from '../actions/ActionTypes';
 
 const initialState = {
-  myPosts: null,
+  myGenres: null,
 };
 
-const myPostReducer = (state = initialState, action) => {
+const myGenresReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.SAVE_MY_POST:
+    case types.SAVE_MY_GENRES:
       return {
         ...state,
-        myPosts: action.payload,
+        myGenres: action.payload,
       };
     default:
       return state;
   }
 };
 
-export default myPostReducer;
+export default myGenresReducer;

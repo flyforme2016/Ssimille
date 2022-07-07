@@ -21,7 +21,7 @@ const CommunityPost = ({navigation, route}) => {
   const {myProfileData} = useSelector(state => state.myProfile);
   const [comment, setComment] = useState();
   const BASE_URL = Config.BASE_URL;
-  console.log(route.params.data);
+
   const {data: postComments, refetch} = useQuery('postComments', async () => {
     const {data} = await axios(`${BASE_URL}/post/getPostComments`, {
       params: {
@@ -46,9 +46,9 @@ const CommunityPost = ({navigation, route}) => {
                   );
                   console.log('flag: ', flag);
                   if (flag === -1) {
-                    navigation.navigate('TabBar', {screen: 'MyProfile'});
+                    navigation.push('TabBar', {screen: 'MyProfile'});
                   } else {
-                    navigation.navigate('Stack', {
+                    navigation.push('Stack', {
                       screen: 'OtherUserProfile',
                       params: {
                         otherUid: route.params.data.kakao_user_number,
@@ -166,16 +166,7 @@ const CommunityPost = ({navigation, route}) => {
                   Like ({route.params.data.like_count})
                 </InteractionText>
               </Interaction>
-              <Interaction
-                onPress={() => {
-                  console.log('clicked');
-                  navigation.push('Stack', {
-                    screen: 'PostComments',
-                    params: {
-                      datas: route.params.data,
-                    },
-                  });
-                }}>
+              <Interaction>
                 <Ionicons name="md-chatbubble-outline" size={25} />
                 <InteractionText>
                   Comment (

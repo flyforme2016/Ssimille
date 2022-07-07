@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components/native';
 import {remote} from 'react-native-spotify-remote';
-import MarqueeView from 'react-native-marquee-view';
 import {MusicControlBtn} from './MusicControlBtn';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
@@ -78,10 +77,8 @@ const SpotifyTab = () => {
             }}
           />
           <MusicInfo>
-            {CurrentMusic.track.name.length > 20 ? (
-              <MarqueeView speed={0.2}>
-                <MusicName>{CurrentMusic.track.name}</MusicName>
-              </MarqueeView>
+            {CurrentMusic.track.name.length > 25 ? (
+              <MusicName>{CurrentMusic.track.name.slice(0, 25)}...</MusicName>
             ) : (
               <MusicName>{CurrentMusic.track.name}</MusicName>
             )}
@@ -96,15 +93,14 @@ const SpotifyTab = () => {
               type="play-back"
             />
             {CurrentMusic.isPaused ? (
-              <MusicControlBtn //if spotify is pausing should enter here
-                //and if spotify is pausing playIcon is true
+              <MusicControlBtn
                 onPress={async () => {
                   remote.resume();
                 }}
                 type="play"
               />
             ) : (
-              <MusicControlBtn //else if playIcon is true enter here
+              <MusicControlBtn
                 onPress={async () => {
                   remote.pause();
                 }}

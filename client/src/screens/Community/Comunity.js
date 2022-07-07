@@ -1,6 +1,5 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommunityTabBar from './CommunityTabBar';
 import SpotifyTab from '../../components/SpotifyTab';
 

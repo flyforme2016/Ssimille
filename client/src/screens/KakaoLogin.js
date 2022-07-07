@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import {View, LogBox, PermissionsAndroid} from 'react-native';
+import {View, PermissionsAndroid} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {useDispatch} from 'react-redux';
 import actions from '../actions/index';
@@ -22,6 +22,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       //위도 & 경도 불러오는 함수
+<<<<<<< HEAD
       Geolocation.getCurrentPosition(
         position => {
           dispatch(actions.saveUserLocation(position.coords));
@@ -32,6 +33,11 @@ const KakaoLogin = ({navigation: {replace}}) => {
         },
         // {enableHighAccuracy: true, timeout: 15000},
       );
+=======
+      Geolocation.getCurrentPosition(position => {
+        dispatch(actions.saveUserLocation(position.coords));
+      });
+>>>>>>> fcb1b61aca7cd96b5814391f218325956de5a38a
     } else {
       console.log('권한얻기 실패 :', granted);
     }

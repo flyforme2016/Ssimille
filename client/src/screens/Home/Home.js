@@ -178,6 +178,7 @@ const Home = ({navigation: {navigate, push}}) => {
           />
         )}
         <RecommendText>친구 추천</RecommendText>
+<<<<<<< HEAD
 
         <RecommendPlaylist
           nestedScrollEnabled={true}
@@ -202,6 +203,33 @@ const Home = ({navigation: {navigate, push}}) => {
             </>
           )}
         />
+=======
+        {RecommendMusic && (
+          <RecommendPlaylist
+            nestedScrollEnabled={true}
+            horizontal={true}
+            data={RecommendMusic.tracks}
+            keyExtractor={item => item.id + ''}
+            renderItem={({item}) => (
+              <>
+                <Card>
+                  <UserInfo>
+                    <UserImg>
+                      <Avatar source={{uri: item.album.images[0].url}} />
+                    </UserImg>
+                    <InfoBox>
+                      <UserName>{item.album.name}</UserName>
+                    </InfoBox>
+                  </UserInfo>
+                  <MusicPlay>
+                    <UserMusic>{item.artists[0].name}</UserMusic>
+                  </MusicPlay>
+                </Card>
+              </>
+            )}
+          />
+        )}
+>>>>>>> fcb1b61aca7cd96b5814391f218325956de5a38a
       </Container>
       <SpotifyTab />
     </>

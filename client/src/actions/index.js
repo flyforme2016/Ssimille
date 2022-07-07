@@ -31,9 +31,9 @@ exports.saveUserLocationName = parameter => {
     payload: parameter,
   };
 };
-exports.saveMyPosts = parameter => {
+exports.saveMyGenres = parameter => {
   return {
-    type: types.SAVE_MY_POST,
+    type: types.SAVE_MY_GENRES,
     payload: parameter,
   };
 };

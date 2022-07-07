@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import {useSelector, useDispatch} from 'react-redux';
@@ -7,14 +7,15 @@ import axios from 'axios';
 import {HashTagIds} from '../../const/datas';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Config from 'react-native-config';
-import {DeviceEventEmitter, Dimensions} from 'react-native';
+import {Dimensions} from 'react-native';
 import postProfileImgToS3 from '../../api/postProfileImgToS3.js';
+import {getArtistUri} from '../../functions/getArtistUri';
 const {width} = Dimensions.get('window');
 
 const ProfileEdit = ({navigation, route}) => {
   const myUid = useSelector(state => state.kakaoUid);
   const {myProfileData} = useSelector(state => state.myProfile);
-
+  console.log(myProfileData);
   const reduxDispatch = useDispatch();
   const [idx, setIdx] = useState(route.params.hashTag);
   const [changeName, setChangeName] = useState();
@@ -25,10 +26,7 @@ const ProfileEdit = ({navigation, route}) => {
   let artistUri;
 
   if (route.params.artistUri) {
-    const uri = route.params.artistUri;
-    const exp = 'spotify:artist:';
-    const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
-    artistUri = uri.substring(startIndex + exp.length);
+    artistUri = getArtistUri(route.params.artistUri);
   } else {
     artistUri = route.params.artist_uri;
   }
@@ -64,16 +62,16 @@ const ProfileEdit = ({navigation, route}) => {
           profileImg: result ? result.imgUrl : routeDatas.profileImg,
           profileMusicUri: routeDatas.musicUri
             ? routeDatas.musicUri
-            : routeDatas.profileMusic,
+            : myProfileData.profile_music_uri,
           albumArtistName: routeDatas.albumArtistName
             ? routeDatas.albumArtistName
-            : routeDatas.artistName,
+            : myProfileData.album_artist_name,
           albumTitle: routeDatas.albumTitle
             ? routeDatas.albumTitle
-            : routeDatas.albumTitle,
+            : myProfileData.album_title,
           albumImage: routeDatas.albumImg
             ? routeDatas.albumImg
-            : routeDatas.albumImg,
+            : myProfileData.album_image,
           hashTag: idx ? idx : routeDatas.hashTag,
           artistUri: visible ? artistUri : null,
         })
@@ -150,13 +148,14 @@ const ProfileEdit = ({navigation, route}) => {
             <ProfileMusicBtn
               onPress={() => {
                 setVisible(false);
-                route.params.albumArtistName = null;
-                route.params.artistName = null;
-                route.params.albumImg = null;
-                route.params.albumTitle = null;
-                route.params.artistUri = null;
+                myProfileData.profile_music_uri = null;
+                myProfileData.album_artist_name = null;
+                myProfileData.album_title;
+                myProfileData.album_image;
                 route.params.musicUri = null;
-                route.params.profileMusic = null;
+                route.params.albumArtistName = null;
+                route.params.albumTitle = null;
+                route.params.albumImg = null;
                 artistUri = null;
               }}>
               <BtnText>초기화</BtnText>

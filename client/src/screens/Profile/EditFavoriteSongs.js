@@ -7,14 +7,28 @@ import Config from 'react-native-config';
 import {useQuery} from 'react-query';
 import {deleteMusic} from '../../api/Music/deleteMusic';
 import Modal from 'react-native-modal';
+import {getArtistUri} from '../../functions/getArtistUri';
+
+const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
+const BASE_URL = Config.BASE_URL;
+
+const SpotifyWebApi = require('spotify-web-api-node');
+const spotifyWebApi = new SpotifyWebApi({
+  clientID: `${SPOTIFY_CLIENT_ID}`,
+  clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
+  redirectURL: `${BASE_URL}/spotify/oauth/callback`,
+});
 
 const EditFavoriteSongs = ({navigation, route}) => {
-  const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {myProfileData} = useSelector(state => state.myProfile);
   const [modalVisible, setModalVisible] = useState(false);
   const [addMusic, setAddMusic] = useState(false);
-  console.log(myProfileData.song_count);
+  const {myGenres} = useSelector(state => state.myGenres);
+  const {spotifyToken} = useSelector(state => state.spotifyToken);
+  const songGenres = {};
+
   const {
     isLoading,
     data: favSongDatas,
@@ -27,12 +41,9 @@ const EditFavoriteSongs = ({navigation, route}) => {
     });
     return data;
   });
-  const postFavoriteSongs = async () => {
-    const uri = route.params.artistUri;
-    const exp = 'spotify:artist:';
-    const startIndex = uri.indexOf(exp); //album id 값 parse , 실패하면 -1반환
-    const artistUri = uri.substring(startIndex + exp.length);
 
+  const postFavoriteSongs = async uri => {
+    const artistUri = getArtistUri(uri);
     try {
       await axios
         .post(`${BASE_URL}/profile/addFavoriteSong`, {
@@ -44,11 +55,33 @@ const EditFavoriteSongs = ({navigation, route}) => {
           artistUri: artistUri,
         })
         .then(res => {
-          console.log('업로드 완료');
           if (res.data === 'error') {
             alert('이미 등록된 노래입니다!');
           }
         });
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  };
+  const postSongGenres = async uri => {
+    const artistUri = getArtistUri(uri);
+
+    await spotifyWebApi.setAccessToken(spotifyToken);
+    await spotifyWebApi.getArtist(artistUri).then(data => {
+      data.body.genres.map(genre => {
+        if (genre in myGenres) {
+          songGenres[genre] = myGenres[genre] + 1;
+          myGenres[genre] += 1;
+        }
+      });
+    });
+    try {
+      await axios
+        .post(`${BASE_URL}/profile/updateGenreMatrix`, {
+          key: kakaoUid,
+          genreMatrixObj: songGenres,
+        })
+        .then(console.log('업로드 완료'));
     } catch (error) {
       console.log('error: ', error);
     }
@@ -79,8 +112,9 @@ const EditFavoriteSongs = ({navigation, route}) => {
             </MusicInfo>
           </MusicWrapper>
           <SubmitBtn
-            onPress={() => {
-              postFavoriteSongs();
+            onPress={async () => {
+              postFavoriteSongs(route.params.artistUri);
+              postSongGenres(route.params.artistUri);
               setAddMusic(false);
               refetch();
 

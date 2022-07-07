@@ -8,13 +8,14 @@ const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
 const BASE_URL = Config.BASE_URL;
 
+const SpotifyWebApi = require('spotify-web-api-node');
+const spotifyApi = new SpotifyWebApi({
+  clientID: `${SPOTIFY_CLIENT_ID}`,
+  clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
+  redirectURL: `${BASE_URL}/spotify/oauth/callback`,
+});
+
 const SearchMusic = ({navigation, route}) => {
-  const SpotifyWebApi = require('spotify-web-api-node');
-  const spotifyApi = new SpotifyWebApi({
-    clientID: `${SPOTIFY_CLIENT_ID}`,
-    clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
-    redirectURL: `${BASE_URL}/spotify/oauth/callback`,
-  });
   const [searchName, setSearchName] = useState();
   const [data, setData] = useState();
   const {spotifyToken} = useSelector(state => state.spotifyToken);
