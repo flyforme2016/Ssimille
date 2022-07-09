@@ -4,8 +4,8 @@ import React from 'react';
 import {View, PermissionsAndroid} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {useDispatch} from 'react-redux';
-import actions from '../actions/index';
-import SpotifyAuthentication from '../functions/SpotifyAuthentication';
+import actions from '../../actions/index';
+import SpotifyAuthentication from '../../functions/SpotifyAuthentication';
 import Config from 'react-native-config';
 import Geolocation from '@react-native-community/geolocation';
 
@@ -22,18 +22,9 @@ const KakaoLogin = ({navigation: {replace}}) => {
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       //위도 & 경도 불러오는 함수
-      Geolocation.getCurrentPosition(
-        position => {
-          dispatch(actions.saveUserLocation(position.coords));
-          console.log('위도 경도 저장완료');
-        },
-        error => {
-          console.log(error.message);
-        },
-        // {enableHighAccuracy: true, timeout: 15000},
-      );
-    } else {
-      console.log('권한얻기 실패 :', granted);
+      Geolocation.getCurrentPosition(position => {
+        dispatch(actions.saveUserLocation(position.coords));
+      });
     }
   };
 
@@ -53,7 +44,6 @@ const KakaoLogin = ({navigation: {replace}}) => {
               const spotifyToken = await SpotifyAuthentication();
               dispatch(actions.saveSpotifyTokenAction(spotifyToken));
               await getCurrentLocation();
-
               if (res.data.userId) {
                 // 최초로그인 시 진입
                 console.log('First Login');
@@ -62,7 +52,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
                   'userNumber',
                   JSON.stringify(res.data.userId),
                 );
-                replace('Stack', {screen: 'Onboarding'});
+                replace('Stack', {screen: 'Introduce'});
               } else {
                 //최초 로그인이 아닐 시
                 const myUid = await AsyncStorage.getItem('userNumber');
