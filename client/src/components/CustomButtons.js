@@ -2,19 +2,28 @@ import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
 
-export const CustomButton = ({onPress, text}) => {
+export const CustomButton = ({onPress, text, isFollow}) => {
   return (
-    <ControlBtn onPress={onPress}>
+    <ControlBtn onPress={onPress} isFollow={isFollow}>
       <BtnText>{text}</BtnText>
     </ControlBtn>
   );
 };
 
-export const MusicControlBtn = ({onPress, type, isFollow}) => {
+export const MusicControlBtn = ({onPress, type}) => {
   return (
-    <MusicBtn onPress={onPress} isFollow={isFollow}>
+    <MusicBtn onPress={onPress}>
       <Ionicons name={type} size={20} />
     </MusicBtn>
+  );
+};
+
+export const IconControlBtn = ({onPress, type, text, size}) => {
+  return (
+    <IconBtn onPress={onPress}>
+      <Ionicons name={type} size={size} />
+      <IconBtnText>{text}</IconBtnText>
+    </IconBtn>
   );
 };
 
@@ -32,4 +41,10 @@ const BtnText = styled.Text`
   font-weight: bold;
   color: ${props => (props.isFollow ? 'black' : 'white')};
 `;
-const MusicBtn = styled.TouchableOpacity``;
+const MusicBtn = styled.TouchableOpacity`
+  margin: 5px;
+`;
+const IconBtn = styled.TouchableOpacity``;
+const IconBtnText = styled.Text`
+  font-size: 14px;
+`;

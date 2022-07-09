@@ -1,41 +1,45 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import TabBar from './TabBar';
 import Stack from './Stack';
-import KakaoLogin from '../screens/KakaoLogin';
-import Login from '../screens/Start/Login';
+import Start from '../screens/Start/Start';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useQuery} from 'react-query';
+import KakaoLogin from '../screens/Start/KakaoLogin';
 
 const Nav = createNativeStackNavigator();
 
 const Navigation = () => {
-  const [token, setToken] = useState();
-  const loginState = async () => {
-    setToken(await AsyncStorage.getItem('userNumber'));
-    console.log('로그인확인', token);
-  };
-  loginState();
-  return typeof token === null ? (
-    <Nav.Navigator
-      screenOptions={{
-        presentation: 'modal',
-        headerShown: false,
-      }}>
-      <Nav.Screen name="Login" component={Login} />
-      <Nav.Screen name="KakaoLogin" component={KakaoLogin} />
-      <Nav.Screen name="TabBar" component={TabBar} />
-      <Nav.Screen name="Stack" component={Stack} />
-    </Nav.Navigator>
-  ) : (
-    <Nav.Navigator
-      screenOptions={{
-        presentation: 'modal',
-        headerShown: false,
-      }}>
-      <Nav.Screen name="KakaoLogin" component={KakaoLogin} />
-      <Nav.Screen name="TabBar" component={TabBar} />
-      <Nav.Screen name="Stack" component={Stack} />
-    </Nav.Navigator>
+  const {isLoading, data: checkUid} = useQuery('checkUid', async () => {
+    const myUid = await AsyncStorage.getItem('userNumber');
+    console.log(myUid);
+    return myUid;
+  });
+
+  return (
+    !isLoading &&
+    (checkUid ? (
+      <Nav.Navigator
+        screenOptions={{
+          presentation: 'modal',
+          headerShown: false,
+        }}>
+        <Nav.Screen name="KakaoLogin" component={KakaoLogin} />
+        <Nav.Screen name="TabBar" component={TabBar} />
+        <Nav.Screen name="Stack" component={Stack} />
+      </Nav.Navigator>
+    ) : (
+      <Nav.Navigator
+        screenOptions={{
+          presentation: 'modal',
+          headerShown: false,
+        }}>
+        <Nav.Screen name="Login" component={Start} />
+        <Nav.Screen name="KakaoLogin" component={KakaoLogin} />
+        <Nav.Screen name="TabBar" component={TabBar} />
+        <Nav.Screen name="Stack" component={Stack} />
+      </Nav.Navigator>
+    ))
   );
 };
 

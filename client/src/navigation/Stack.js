@@ -5,15 +5,15 @@ import Myzone from '../screens/Myzone';
 import CommunityUpload from '../screens/Community/CommunityUpload';
 import OneByOneChating from '../screens/ChatScreen/OneByOneChating';
 import ProfileEdit from '../screens/Profile/ProfileEdit';
-import KakaoLogin from '../screens/KakaoLogin';
 import SearchMusic from '../components/SearchMusic';
 import CommunityPost from '../components/CommunityPost';
 import OtherUserProfile from '../screens/Profile/OtherUserProfile';
-import Onboarding from '../screens/Start/Start';
 import FavoriteSongs from '../components/FavoriteSongs';
 import SpotifyAuthentication from '../functions/SpotifyAuthentication';
 import EditFavoriteSongs from '../screens/Profile/EditFavoriteSongs';
 import BigPicture from '../components/BigPicture';
+import Introduce from '../screens/Start/Introduce';
+import KakaoLogin from '../screens/Start/KakaoLogin';
 
 const NativeStack = createNativeStackNavigator();
 
@@ -41,7 +41,7 @@ const Stack = () => {
         name="OtherUserProfile"
         component={OtherUserProfile}
       />
-      <NativeStack.Screen name="Onboarding" component={Onboarding} />
+      <NativeStack.Screen name="Introduce" component={Introduce} />
       <NativeStack.Screen name="FavoriteSongs" component={FavoriteSongs} />
       <NativeStack.Screen
         name="EditFavoriteSongs"
