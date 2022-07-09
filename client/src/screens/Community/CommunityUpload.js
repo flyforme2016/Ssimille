@@ -6,6 +6,7 @@ import axios from 'axios';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
 import {DeviceEventEmitter} from 'react-native';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const CommunityUpload = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
@@ -36,23 +37,29 @@ const CommunityUpload = ({navigation, route}) => {
   };
   //사진 업로드
   const submitPhotos = async () => {
-    const formdata = new FormData();
     try {
-      await uploadImgs.map(MultipleImg => {
-        formdata.append('multipleImg', {
-          uri: 'file://' + MultipleImg.path,
-          type: MultipleImg.mime,
-          name: MultipleImg.fileName,
-        });
-      });
-      const requestOptions = {
-        method: 'POST',
-        body: formdata,
-        redirect: 'follow',
-      };
+      let fetchArray =[]
+      await uploadImgs.map(image => {
+        const obj = {
+          name: 'multipleImg',
+          filename: image.fileName,
+          data: RNFetchBlob.wrap(image.path)
+        }
+        fetchArray.push(obj)
+      })
+      console.log('fetchArray: ', fetchArray)
+
       const result = await (
-        await fetch(`${BASE_URL}/s3/uploadMultipleImg`, requestOptions)
+        await RNFetchBlob.fetch(
+          'POST',
+          `${BASE_URL}/s3/uploadMultipleImg`,
+          {
+            'Content-Type': 'multipart/form-data',
+          },
+          fetchArray,
+        ).then(console.log('result1: ', result))
       ).json();
+      console.log('result: ', result);
 
       result.map(data => {
         submitImgs.shift();
@@ -61,6 +68,7 @@ const CommunityUpload = ({navigation, route}) => {
     } catch {
       err => console.log(err);
     }
+    console.log('submitImgs: ', submitImgs)
     submitImgs.reverse();
   };
 
