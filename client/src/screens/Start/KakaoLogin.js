@@ -14,7 +14,6 @@ const runFirst = `window.ReactNativeWebView.postMessage("this is message from we
 const KakaoLogin = ({navigation: {replace}}) => {
   const BASE_URL = Config.BASE_URL;
   const dispatch = useDispatch();
-
   const getCurrentLocation = async () => {
     // 위치 권한 허용 확인
     const granted = await PermissionsAndroid.request(

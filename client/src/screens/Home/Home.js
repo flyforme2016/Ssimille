@@ -75,7 +75,6 @@ const Home = ({navigation: {navigate, push}}) => {
         seed_artists: [myProfileData.artist_uri],
         min_popularity: 50,
       });
-      console.log('recommendDatas', body);
       return body;
     },
   );
@@ -101,11 +100,6 @@ const Home = ({navigation: {navigate, push}}) => {
           <Btn onPress={() => push('Stack', {screen: 'Myzone'})}>
             <Text>MY ZONE </Text>
             <Text> {locationName ? locationName.address_name : null}</Text>
-          </Btn>
-        </MyzoneContainer>
-        <MyzoneContainer>
-          <Btn onPress={() => push('TabBar', {screen: 'MyProfile'})}>
-            <Text>MyProfile </Text>
           </Btn>
         </MyzoneContainer>
 
