@@ -88,7 +88,7 @@ const Home = ({navigation: {navigate, push}}) => {
     <>
       <Container>
         <TopNavBar
-          navText="HOME"
+          navText="홈"
           iconName="notifications-outline"
           onPress={() => push('Stack', {screen: 'Notice'})}
         />

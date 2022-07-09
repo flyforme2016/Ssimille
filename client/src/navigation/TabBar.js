@@ -39,7 +39,7 @@ const TabBar = () => {
           if (rn === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (rn === 'Community') {
-            iconName = focused ? 'ios-list' : 'ios-list';
+            iconName = focused ? 'earth' : 'earth-outline';
           } else if (rn === 'ChatingList') {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
           } else if (rn === 'FriendListContainer') {
@@ -51,7 +51,7 @@ const TabBar = () => {
           return <Ionicons name={iconName} size={35} color={color} />;
         },
       })}>
-      <Tab.Screen name="Community" component={Community} />
+      <Tab.Screen name="FriendListContainer" component={FriendListContainer} />
       <Tab.Screen
         name="ChatingList"
         component={ChatingList}
@@ -60,7 +60,7 @@ const TabBar = () => {
         }}
       />
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="FriendListContainer" component={FriendListContainer} />
+      <Tab.Screen name="Community" component={Community} />
       <Tab.Screen
         name="MyProfile"
         component={MyProfile}
