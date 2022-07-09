@@ -12,7 +12,6 @@ const Nav = createNativeStackNavigator();
 const Navigation = () => {
   const {isLoading, data: checkUid} = useQuery('checkUid', async () => {
     const myUid = await AsyncStorage.getItem('userNumber');
-    console.log(myUid);
     return myUid;
   });
 

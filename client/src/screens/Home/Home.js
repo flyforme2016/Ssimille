@@ -37,7 +37,7 @@ const Home = ({navigation: {navigate, push}}) => {
   }, []);
 
   const getAlarmStack = async () => {
-    const stackAlarmDocRef = getRef.alarmStackDocRef(kakaoUid);
+    const stackAlarmDocRef = getRef.alarmStackDocRef(String(kakaoUid));
     onSnapshot(stackAlarmDocRef, doc => {
       if (doc.exists()) {
         setAlarmStack(doc.data().stack);

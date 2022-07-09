@@ -45,7 +45,6 @@ const KakaoLogin = ({navigation: {replace}}) => {
               await getCurrentLocation();
               if (res.data.userId) {
                 // 최초로그인 시 진입
-                console.log('First Login');
                 dispatch(actions.saveKakaoUidAction(res.data.userId));
                 await AsyncStorage.setItem(
                   'userNumber',
