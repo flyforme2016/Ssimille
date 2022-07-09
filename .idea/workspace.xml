@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="07.01 CurrentMusic" />
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="07.09 CommunityUpload">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -176,7 +180,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656657772430</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="07.09 CommunityUpload">
+      <created>1657353019673</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1657353019673</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -206,6 +217,7 @@
     <MESSAGE value="06.28 Merge marster from gijeong" />
     <MESSAGE value="06.29 Complete deleteAlarm &amp; homeAlarm" />
     <MESSAGE value="07.01 CurrentMusic" />
-    <option name="LAST_COMMIT_MESSAGE" value="07.01 CurrentMusic" />
+    <MESSAGE value="07.09 CommunityUpload" />
+    <option name="LAST_COMMIT_MESSAGE" value="07.09 CommunityUpload" />
   </component>
 </project>
