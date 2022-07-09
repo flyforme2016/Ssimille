@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@baronha/react-native-multiple-image-picker": "^0.4.10",
@@ -20,6 +21,7 @@
     "@reduxjs/toolkit": "^1.8.2",
     "axios": "^0.26.1",
     "firebase": "^9.6.11",
+    "patch-package": "^6.4.7",
     "react": "17.0.2",
     "react-native": "0.67.4",
     "react-native-config": "^1.4.6",
