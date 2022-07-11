@@ -35,7 +35,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
         const authCode = url.substring(startIndex + exp.length);
         try {
           await axios
-            .post(`${BASE_URL}/kakao/oauth/callback`, {
+            .post(`${BASE_URL}/kakao/oauth`, {
               code: authCode,
             })
             .then(async res => {
@@ -71,7 +71,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
         originWhitelist={['*']}
         scalesPageToFit={false}
         source={{
-          uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=${BASE_URL}/kakao/oauth/callback`,
+          uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=${BASE_URL}/kakao/oauth`,
         }}
         injectedJavaScript={runFirst}
         javaScriptEnabled={true}

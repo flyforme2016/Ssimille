@@ -15,7 +15,7 @@ const GridPosts = ({userId}) => {
   const {isLoading: postDataLoading, data: postDatas} = useQuery(
     'myPostDatas',
     async () => {
-      const {data} = await axios(`${BASE_URL}/post/getMyPost`, {
+      const {data} = await axios(`${BASE_URL}/post/my-posts`, {
         params: {
           key: userId,
         },

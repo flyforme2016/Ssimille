@@ -55,7 +55,7 @@ const ProfileEdit = ({navigation, route}) => {
       }
 
       await axios
-        .post(`${BASE_URL}/profile/editProfile`, {
+        .put(`${BASE_URL}/users/profile`, {
           key: myUid.kakaoUid,
           nickname: changeName ? changeName : routeDatas.nickname,
           profileImg: result ? result.imgUrl : routeDatas.profileImg,

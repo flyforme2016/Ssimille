@@ -18,7 +18,7 @@ const checkIsFriend = async (myUid, otherUid) => {
 
   const result = await (
     await fetch(
-      `${BASE_URL}/friend/checkIsFriend?myUid=${myUid}&otherUid=${otherUid}`,
+      `${BASE_URL}/friend/flag?myUid=${myUid}&otherUid=${otherUid}`,
       requestOptions,
     )
   ).json();

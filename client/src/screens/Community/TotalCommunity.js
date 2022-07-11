@@ -11,7 +11,7 @@ import {useSelector} from 'react-redux';
 import checkIsFriend from '../../api/checkIsFriend';
 import {useQuery} from 'react-query';
 import {DeviceEventEmitter} from 'react-native';
-import {deletePost} from '../../api/community/deletePost';
+import {deletePost} from '../../api/community/Posts';
 import {handleLike} from '../../api/community/handleLike';
 import sendAlarm from '../../functions/sendAlarm';
 
@@ -33,7 +33,7 @@ const TotalCommunity = ({navigation}) => {
     data: totalPostDatas,
     refetch,
   } = useQuery('totalPostDatas', async () => {
-    const {data} = await axios(`${BASE_URL}/post/getPostList`, {
+    const {data} = await axios(`${BASE_URL}/post/total-posts`, {
       params: {
         key: kakaoUid,
       },

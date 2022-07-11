@@ -6,13 +6,12 @@ import {remote} from 'react-native-spotify-remote';
 import checkIsFriend from '../api/checkIsFriend';
 import {useSelector} from 'react-redux';
 import getPostTime from '../functions/getPostTime';
-import {Alert, View} from 'react-native';
-import {deletePost} from '../api/community/deletePost';
+import {Alert, View, KeyboardAvoidingView} from 'react-native';
+import {deletePost} from '../api/community/Posts';
 import {handleLike} from '../api/community/handleLike';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';
-import {deleteComment} from '../api/community/deleteComment';
-import {uploadComment} from '../api/community/uploadComment';
+import {uploadComment, deleteComment} from '../api/community/Comments';
 import axios from 'axios';
 import sendAlarm from '../functions/sendAlarm';
 
@@ -23,7 +22,7 @@ const CommunityPost = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
 
   const {data: postComments, refetch} = useQuery('postComments', async () => {
-    const {data} = await axios(`${BASE_URL}/post/getPostComments`, {
+    const {data} = await axios(`${BASE_URL}/post/post-comments`, {
       params: {
         postSeq: route.params.data.post_seq,
       },
@@ -34,8 +33,8 @@ const CommunityPost = ({navigation, route}) => {
 
   return (
     <>
-      <Container>
-        <FlexView>
+      <KeyboardAvoidingView style={{flex: 1}} behavior={'height'}>
+        <Container>
           <Card>
             <UserWrapper>
               <UserInfo
@@ -217,36 +216,36 @@ const CommunityPost = ({navigation, route}) => {
               )}
             />
           )}
-        </FlexView>
-      </Container>
-      <CommentInputContainer>
-        <CommentInput
-          multiline={true}
-          autofocus={true}
-          placeholder="댓글을 입력해주세요"
-          value={comment}
-          onChangeText={text => setComment(text)}
-        />
-        <PostBtn
-          onPress={() => {
-            uploadComment(kakaoUid, route.params.data.post_seq, comment);
-            setComment('');
-            const myData = {
-              uid: myProfileData.kakao_user_number.toString(),
-              nickname: myProfileData.nickname,
-              profile_image: myProfileData.profile_image,
-            };
-            sendAlarm(
-              myData,
-              route.params.data,
-              '회원님의 게시물에 댓글을 남겼습니다.',
-              0,
-            );
-            refetch();
-          }}>
-          <Ionicons name="send" size={25} />
-        </PostBtn>
-      </CommentInputContainer>
+        </Container>
+        <CommentInputContainer>
+          <CommentInput
+            multiline={true}
+            autofocus={true}
+            placeholder="댓글을 입력해주세요"
+            value={comment}
+            onChangeText={text => setComment(text)}
+          />
+          <PostBtn
+            onPress={() => {
+              uploadComment(kakaoUid, route.params.data.post_seq, comment);
+              setComment('');
+              const myData = {
+                uid: myProfileData.kakao_user_number.toString(),
+                nickname: myProfileData.nickname,
+                profile_image: myProfileData.profile_image,
+              };
+              sendAlarm(
+                myData,
+                route.params.data,
+                '회원님의 게시물에 댓글을 남겼습니다.',
+                0,
+              );
+              refetch();
+            }}>
+            <Ionicons name="send" size={25} />
+          </PostBtn>
+        </CommentInputContainer>
+      </KeyboardAvoidingView>
     </>
   );
 };
@@ -257,20 +256,16 @@ const TimeText = styled.Text`
   font-size: 10px;
 `;
 const Container = styled.ScrollView`
-  flex: 1;
+  flex: 9;
   height: 100%;
 `;
-const FlexView = styled.View`
-  margin-bottom: 50px;
-`;
 const CommentList = styled.FlatList`
-  margin: 12px;
+  margin: 3px 6px;
 `;
 const CommentsContainer = styled.View`
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  margin: 4px 0;
   padding: 4px;
 `;
 const CommentUser = styled.Image`
@@ -285,25 +280,21 @@ const CommentText = styled.Text`
   font-size: 12px;
 `;
 const CommentInputContainer = styled.View`
-  background-color: #ffffff;
-  position: absolute;
-  bottom: 0;
+  flex: 1;
   z-index: 100;
   align-items: center;
   flex-direction: row;
-  padding-right: 10px;
 `;
 const CommentInput = styled.TextInput`
   width: 90%;
   border: 1px solid #dddddd;
-  padding: 10px;
-  margin-right: 10px;
+  margin-right: 5px;
 `;
 const PostBtn = styled.TouchableOpacity``;
 
 const Card = styled.View`
   justify-content: center;
-  margin-top: 25px;
+  margin-top: 10px;
 `;
 
 const UserWrapper = styled.View`

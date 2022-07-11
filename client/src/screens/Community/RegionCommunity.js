@@ -8,7 +8,7 @@ import checkIsFriend from '../../api/checkIsFriend';
 import getPostTime from '../../functions/getPostTime';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Alert} from 'react-native';
-import {deletePost} from '../../api/community/deletePost';
+import {deletePost} from '../../api/community/Posts';
 import Swiper from 'react-native-swiper';
 import {remote} from 'react-native-spotify-remote';
 import {handleLike} from '../../api/community/handleLike';
@@ -25,7 +25,7 @@ const RegionCommunity = ({navigation}) => {
     data: locationPostDatas,
     refetch,
   } = useQuery('regionPostDatas', async () => {
-    const {data} = await axios(`${BASE_URL}/post/getLocationPostList`, {
+    const {data} = await axios(`${BASE_URL}/post/region-posts`, {
       params: {
         key: kakaoUid,
         regionDepth1: locationName.region_1depth_name,

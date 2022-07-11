@@ -5,7 +5,7 @@ const BASE_URL = Config.BASE_URL;
 
 export const handleLike = async (kakaoUid, seq, like) => {
   try {
-    await axios.post(`${BASE_URL}/post/postLike`, {
+    await axios.post(`${BASE_URL}/post/like`, {
       key: kakaoUid,
       postSeq: seq,
       check: !like,

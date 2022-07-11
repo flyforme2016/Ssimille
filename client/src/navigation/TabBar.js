@@ -51,7 +51,13 @@ const TabBar = () => {
           return <Ionicons name={iconName} size={35} color={color} />;
         },
       })}>
-      <Tab.Screen name="FriendListContainer" component={FriendListContainer} />
+      <Tab.Screen
+        name="FriendListContainer"
+        component={FriendListContainer}
+        options={{
+          unmountOnBlur: true,
+        }}
+      />
       <Tab.Screen
         name="ChatingList"
         component={ChatingList}
@@ -59,8 +65,20 @@ const TabBar = () => {
           unmountOnBlur: true,
         }}
       />
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Community" component={Community} />
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          unmountOnBlur: true,
+        }}
+      />
+      <Tab.Screen
+        name="Community"
+        component={Community}
+        options={{
+          unmountOnBlur: true,
+        }}
+      />
       <Tab.Screen
         name="MyProfile"
         component={MyProfile}

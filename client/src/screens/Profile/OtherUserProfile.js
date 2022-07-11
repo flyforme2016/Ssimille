@@ -2,7 +2,12 @@ import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import ProfileTabBar from './ProfileTapBar';
-import {MusicControlBtn, CustomButton} from '../../components/CustomButtons';
+import {
+  MusicControlBtn,
+  CustomButton,
+  FollowBtn,
+  FollowButton,
+} from '../../components/CustomButtons';
 import Config from 'react-native-config';
 import sendAlarm from '../../functions/sendAlarm';
 import deleteFriend from '../../functions/deleteFriend';
@@ -20,7 +25,7 @@ const OtherUserProfile = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
 
   const {data: getUserProfile} = useQuery('getUserProfile', async () => {
-    const {data} = await axios(`${BASE_URL}/profile/getUserProfile`, {
+    const {data} = await axios(`${BASE_URL}/users/profile`, {
       params: {
         key: otherUserUid,
       },
@@ -147,7 +152,7 @@ const OtherUserProfile = ({navigation, route}) => {
             ) : null}
           </Card>
           <BtnContainer>
-            <CustomButton
+            <FollowButton
               isFollow={isFollow}
               onPress={addFriendListener}
               text={isFollow ? '팔로잉' : '팔로우'}

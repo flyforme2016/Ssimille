@@ -18,7 +18,7 @@ const Myzone = ({navigation}) => {
 
   //내 프로필 가져오기
   const {isLoading: profile} = useQuery('getMyProfile', async () => {
-    const {data} = await axios.get(`${BASE_URL}/profile/getUserProfile`, {
+    const {data} = await axios.get(`${BASE_URL}/users/profile`, {
       params: {
         key: kakaoUid,
       },
@@ -28,7 +28,7 @@ const Myzone = ({navigation}) => {
   });
   // 친구추천용 장르 데이터 가져오기
   const {isLoading: genre} = useQuery('getMyGenres', async () => {
-    const {data} = await axios.get(`${BASE_URL}/profile/getGenreMatrix`, {
+    const {data} = await axios.get(`${BASE_URL}/users/genre-matrix`, {
       params: {
         key: kakaoUid,
       },
@@ -74,7 +74,7 @@ const Myzone = ({navigation}) => {
         text: 'OK',
         onPress: async () => {
           console.log('OK Pressed');
-          await axios.post(`${BASE_URL}/profile/updateUserRegion`, {
+          await axios.put(`${BASE_URL}/users/region`, {
             key: kakaoUid,
             regionCode: locationData.documents[0].code / 1,
           });

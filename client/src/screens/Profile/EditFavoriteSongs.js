@@ -34,7 +34,7 @@ const EditFavoriteSongs = ({navigation, route}) => {
     data: favSongDatas,
     refetch,
   } = useQuery('favSongDatas', async () => {
-    const {data} = await axios(`${BASE_URL}/profile/getUserSongList`, {
+    const {data} = await axios(`${BASE_URL}/users/favorite-songs`, {
       params: {
         key: kakaoUid,
       },
@@ -46,7 +46,7 @@ const EditFavoriteSongs = ({navigation, route}) => {
     const artistUri = getArtistUri(uri);
     try {
       await axios
-        .post(`${BASE_URL}/profile/addFavoriteSong`, {
+        .post(`${BASE_URL}/users/favorite-songs`, {
           key: kakaoUid,
           musicUri: route.params.musicUri,
           albumTitle: route.params.albumTitle,
@@ -77,7 +77,7 @@ const EditFavoriteSongs = ({navigation, route}) => {
     });
     try {
       await axios
-        .post(`${BASE_URL}/profile/updateGenreMatrix`, {
+        .put(`${BASE_URL}/users/genre-matrix`, {
           key: kakaoUid,
           genreMatrixObj: songGenres,
         })

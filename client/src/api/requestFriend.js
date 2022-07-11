@@ -15,7 +15,7 @@ const requestFriend = (myUid, otherUid) => {
         'Content-Type': 'application/json',
       },
     };
-    await fetch(`${BASE_URL}/friend/addFriend`, requestOptions)
+    await fetch(`${BASE_URL}/friend`, requestOptions)
       .then(res => console.log('res: ', res))
       .catch(err => console.log('err:', err));
   }

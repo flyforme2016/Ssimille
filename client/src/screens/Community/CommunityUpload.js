@@ -7,6 +7,7 @@ import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
 import {DeviceEventEmitter} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
+import {uploadPost} from '../../api/community/Posts';
 
 const CommunityUpload = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
@@ -38,26 +39,26 @@ const CommunityUpload = ({navigation, route}) => {
   //사진 업로드
   const submitPhotos = async () => {
     try {
-      let fetchArray =[]
+      let fetchArray = [];
       await uploadImgs.map(image => {
         const obj = {
           name: 'multipleImg',
           filename: image.fileName,
-          data: RNFetchBlob.wrap(image.path)
-        }
-        fetchArray.push(obj)
-      })
-      console.log('fetchArray: ', fetchArray)
+          data: RNFetchBlob.wrap(image.path),
+        };
+        fetchArray.push(obj);
+      });
+      console.log('fetchArray: ', fetchArray);
 
       const result = await (
         await RNFetchBlob.fetch(
           'POST',
-          `${BASE_URL}/s3/uploadMultipleImg`,
+          `${BASE_URL}/s3/post-images`,
           {
             'Content-Type': 'multipart/form-data',
           },
           fetchArray,
-        ).then(console.log('result1: ', result))
+        )
       ).json();
       console.log('result: ', result);
 
@@ -68,39 +69,21 @@ const CommunityUpload = ({navigation, route}) => {
     } catch {
       err => console.log(err);
     }
-    console.log('submitImgs: ', submitImgs)
     submitImgs.reverse();
   };
 
   //upload post to server process
   const onSubmitPost = async () => {
     await submitPhotos();
-    try {
-      await axios
-        .post(`${BASE_URL}/post/uploadPost`, {
-          key: myProfileData.kakao_user_number,
-          regionDepth1: locationName.region_1depth_name
-            ? locationName.region_1depth_name
-            : null,
-          addressName: locationName.address_name
-            ? locationName.address_name
-            : null,
-          musicUri: route.params ? route.params.musicUri : null,
-          albumTitle: route.params ? route.params.albumTitle : null,
-          albumImg: route.params ? route.params.albumImg : null,
-          albumArtistName: route.params ? route.params.albumArtistName : null,
-          inputText: postContent ? postContent : null,
-          images: submitImgs,
-        })
-        .then(
-          result => console.log(result, '업로드 완료'),
-          err => {
-            console.log('게시글 전송실패', err);
-          },
-        );
-    } catch (e) {
-      console.log(e.code, e.message);
-    }
+
+    await uploadPost(
+      myProfileData,
+      locationName,
+      route,
+      postContent,
+      submitImgs,
+    ).then(() => console.log('finish submit post'));
+
     navigation.goBack('TabBar', {screen: 'Community'});
   };
 

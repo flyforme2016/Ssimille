@@ -11,7 +11,7 @@ const FavoriteSongs = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {data: favSongDatas} = useQuery('favSongDatas', async () => {
-    const {data} = await axios(`${BASE_URL}/profile/getUserSongList`, {
+    const {data} = await axios(`${BASE_URL}/users/favorite-songs`, {
       params: {
         key: route.params.userId,
       },

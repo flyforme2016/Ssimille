@@ -6,13 +6,29 @@ const BASE_URL = Config.BASE_URL;
 export const uploadComment = async (kakaoUid, postSeq, comment) => {
   try {
     await axios
-      .post(`${BASE_URL}/post/inputPostComment`, {
+      .post(`${BASE_URL}/post/post-comments`, {
         key: kakaoUid,
         postSeq: postSeq,
         comment: comment,
       })
       .then(result => {
         console.log(result, '업로드 완료');
+      });
+  } catch {
+    err => console.log(err);
+  }
+};
+
+export const deleteComment = async commentSeq => {
+  try {
+    await axios
+      .delete(`${BASE_URL}/post/post-comments`, {
+        data: {
+          commentSeq: commentSeq,
+        },
+      })
+      .then(result => {
+        console.log(result, '삭제 완료');
       });
   } catch {
     err => console.log(err);

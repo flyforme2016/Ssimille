@@ -13,7 +13,7 @@ const deleteFriend = (myUid, otherUid) => {
     },
   };
   fetch(
-    `${BASE_URL}/friend/removeFriend?myUid=${myUid}&otherUid=${otherUid}`,
+    `${BASE_URL}/friend?myUid=${myUid}&otherUid=${otherUid}`,
     requestOptions,
   )
     .then(res => console.log('res: ', res))

@@ -6,7 +6,7 @@ const BASE_URL = Config.BASE_URL;
 export const deleteMusic = async (favoriteSongSeq, kakaoUid) => {
   try {
     await axios
-      .delete(`${BASE_URL}/profile/removeFavoriteSong`, {
+      .delete(`${BASE_URL}/users/favorite-songs`, {
         data: {
           favoriteSongSeq: favoriteSongSeq,
           key: kakaoUid,
