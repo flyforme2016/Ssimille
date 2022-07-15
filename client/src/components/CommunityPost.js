@@ -3,15 +3,14 @@ import styled from 'styled-components/native';
 import Swiper from 'react-native-swiper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {remote} from 'react-native-spotify-remote';
-import checkIsFriend from '../api/checkIsFriend';
+import {checkIsFriend} from '../api/Friend';
 import {useSelector} from 'react-redux';
 import getPostTime from '../functions/getPostTime';
 import {Alert, View, KeyboardAvoidingView} from 'react-native';
-import {deletePost} from '../api/community/Posts';
-import {handleLike} from '../api/community/handleLike';
+import {deletePost, postLike} from '../api/Posts';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';
-import {uploadComment, deleteComment} from '../api/community/Comments';
+import {uploadComment, deleteComment} from '../api/Comments';
 import axios from 'axios';
 import sendAlarm from '../functions/sendAlarm';
 
@@ -147,7 +146,7 @@ const CommunityPost = ({navigation, route}) => {
             <InterContainer>
               <Interaction
                 onPress={() => {
-                  handleLike(
+                  postLike(
                     kakaoUid,
                     route.params.data.post_seq,
                     route.params.data.likeNy,

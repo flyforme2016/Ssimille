@@ -1,7 +1,6 @@
 import React, {useLayoutEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 import styled from 'styled-components/native';
-import logo from '../../logo.png';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
@@ -10,7 +9,7 @@ import getRef from '../../functions/getRef';
 import {query, onSnapshot, where} from 'firebase/firestore';
 import TopNavBar from '../../components/TopNavBar';
 import {remote} from 'react-native-spotify-remote';
-import checkIsFriend from '../../api/checkIsFriend';
+import {checkIsFriend} from '../../api/Friend';
 
 const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import {remote} from 'react-native-spotify-remote';
 import {Dimensions} from 'react-native';
-import checkIsFriend from '../api/checkIsFriend';
+import {checkIsFriend} from '../api/Friend';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 

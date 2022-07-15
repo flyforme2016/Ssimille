@@ -8,11 +8,10 @@ import Swiper from 'react-native-swiper';
 import {remote} from 'react-native-spotify-remote';
 import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
-import checkIsFriend from '../../api/checkIsFriend';
+import {checkIsFriend} from '../../api/Friend';
 import {useQuery} from 'react-query';
 import {DeviceEventEmitter} from 'react-native';
-import {deletePost} from '../../api/community/Posts';
-import {handleLike} from '../../api/community/handleLike';
+import {deletePost, postLike} from '../../api/Posts';
 import sendAlarm from '../../functions/sendAlarm';
 
 //
@@ -174,7 +173,7 @@ const TotalCommunity = ({navigation}) => {
                         0,
                       );
                     }
-                    handleLike(kakaoUid, item.post_seq, item.likeNy);
+                    postLike(kakaoUid, item.post_seq, item.likeNy);
                     refetch();
                   }}>
                   {item.likeNy ? (

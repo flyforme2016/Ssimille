@@ -71,7 +71,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
         originWhitelist={['*']}
         scalesPageToFit={false}
         source={{
-          uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=${BASE_URL}/kakao/oauth`,
+          uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=1c1252b4d425329642c458690fe99854&redirect_uri=${BASE_URL}/kakao/oauth/callback`,
         }}
         injectedJavaScript={runFirst}
         javaScriptEnabled={true}

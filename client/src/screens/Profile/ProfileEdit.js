@@ -3,19 +3,16 @@ import styled from 'styled-components/native';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import {useSelector, useDispatch} from 'react-redux';
 import actions from '../../actions/index';
-import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Config from 'react-native-config';
 import {Dimensions} from 'react-native';
-import postProfileImgToS3 from '../../api/postProfileImgToS3.js';
 import {getArtistUri} from '../../functions/getArtistUri';
+import {postProfileImgToS3, updateProfile} from '../../api/Profile';
 const {width} = Dimensions.get('window');
 
 const ProfileEdit = ({navigation, route}) => {
   const reduxDispatch = useDispatch();
   const routeDatas = route.params;
-  const BASE_URL = Config.BASE_URL;
-  const myUid = useSelector(state => state.kakaoUid);
+  const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {myProfileData} = useSelector(state => state.myProfile);
   const [idx, setIdx] = useState(route.params.hashTag);
   const [changeName, setChangeName] = useState();
@@ -54,34 +51,18 @@ const ProfileEdit = ({navigation, route}) => {
         result = await postProfileImgToS3(profileImg);
       }
 
-      await axios
-        .put(`${BASE_URL}/users/profile`, {
-          key: myUid.kakaoUid,
-          nickname: changeName ? changeName : routeDatas.nickname,
-          profileImg: result ? result.imgUrl : routeDatas.profileImg,
-          profileMusicUri: routeDatas.musicUri
-            ? routeDatas.musicUri
-            : myProfileData.profile_music_uri,
-          albumArtistName: routeDatas.albumArtistName
-            ? routeDatas.albumArtistName
-            : myProfileData.album_artist_name,
-          albumTitle: routeDatas.albumTitle
-            ? routeDatas.albumTitle
-            : myProfileData.album_title,
-          albumImage: routeDatas.albumImg
-            ? routeDatas.albumImg
-            : myProfileData.album_image,
-          hashTag: idx ? idx : routeDatas.hashTag,
-          artistUri: visible ? artistUri : null,
-        })
-        .then(
-          res => {
-            reduxDispatch(actions.saveUserProfileAction(res.data));
-          },
-          err => {
-            console.log('서버 전송실패', err);
-          },
-        );
+      await updateProfile(
+        kakaoUid,
+        changeName,
+        routeDatas,
+        result,
+        myProfileData,
+        idx,
+        visible,
+        artistUri,
+      ).then(res => {
+        reduxDispatch(actions.saveUserProfileAction(res.data));
+      });
       navigation.navigate('TabBar', {screen: 'Profile'});
     } catch (e) {
       console.log(e, e.message);

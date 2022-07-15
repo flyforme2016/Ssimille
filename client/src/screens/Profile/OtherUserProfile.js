@@ -5,17 +5,16 @@ import ProfileTabBar from './ProfileTapBar';
 import {
   MusicControlBtn,
   CustomButton,
-  FollowBtn,
   FollowButton,
 } from '../../components/CustomButtons';
 import Config from 'react-native-config';
 import sendAlarm from '../../functions/sendAlarm';
-import deleteFriend from '../../functions/deleteFriend';
 import {useSelector} from 'react-redux';
 import {Alert} from 'react-native';
 import {remote} from 'react-native-spotify-remote';
 import {useQuery} from 'react-query';
 import TopNavBar from '../../components/TopNavBar';
+import {deleteFriend} from '../../api/Friend';
 
 const OtherUserProfile = ({navigation, route}) => {
   const [isFollow, setIsFollow] = useState(route.params.isFriend);

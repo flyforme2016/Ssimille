@@ -5,9 +5,9 @@ import {useSelector} from 'react-redux';
 import axios from 'axios';
 import Config from 'react-native-config';
 import {useQuery} from 'react-query';
-import {deleteMusic} from '../../api/Music/deleteMusic';
 import Modal from 'react-native-modal';
 import {getArtistUri} from '../../functions/getArtistUri';
+import {addMusic, deleteMusic} from '../../api/Music';
 
 const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
@@ -24,7 +24,7 @@ const EditFavoriteSongs = ({navigation, route}) => {
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {myProfileData} = useSelector(state => state.myProfile);
   const [modalVisible, setModalVisible] = useState(false);
-  const [addMusic, setAddMusic] = useState(false);
+  const [visible, setVisible] = useState(false);
   const {myGenres} = useSelector(state => state.myGenres);
   const {spotifyToken} = useSelector(state => state.spotifyToken);
   const songGenres = {};
@@ -44,25 +44,9 @@ const EditFavoriteSongs = ({navigation, route}) => {
 
   const postFavoriteSongs = async uri => {
     const artistUri = getArtistUri(uri);
-    try {
-      await axios
-        .post(`${BASE_URL}/users/favorite-songs`, {
-          key: kakaoUid,
-          musicUri: route.params.musicUri,
-          albumTitle: route.params.albumTitle,
-          albumImg: route.params.albumImg,
-          albumArtistName: route.params.albumArtistName,
-          artistUri: artistUri,
-        })
-        .then(res => {
-          if (res.data === 'error') {
-            alert('이미 등록된 노래입니다!');
-          }
-        });
-    } catch (error) {
-      console.log('error: ', error);
-    }
+    await addMusic(kakaoUid, route, artistUri);
   };
+
   const postSongGenres = async uri => {
     const artistUri = getArtistUri(uri);
 
@@ -90,7 +74,7 @@ const EditFavoriteSongs = ({navigation, route}) => {
     <Container>
       <MusicUploadBtn
         onPress={async () => {
-          setAddMusic(true);
+          setVisible(true);
           navigation.navigate('Stack', {
             screen: 'SearchMusic',
             params: {
@@ -102,7 +86,7 @@ const EditFavoriteSongs = ({navigation, route}) => {
       </MusicUploadBtn>
 
       {/* 새로 추가할 애청곡 */}
-      {addMusic && route?.params ? (
+      {visible && route?.params ? (
         <MusicInfoContainer>
           <MusicWrapper>
             <CoverImg source={{uri: route.params.albumImg}} />
@@ -115,7 +99,7 @@ const EditFavoriteSongs = ({navigation, route}) => {
             onPress={async () => {
               postFavoriteSongs(route.params.artistUri);
               postSongGenres(route.params.artistUri);
-              setAddMusic(false);
+              setVisible(false);
               refetch();
 
               myProfileData.song_count += 1;

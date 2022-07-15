@@ -5,7 +5,7 @@ import {Dimensions} from 'react-native';
 import {orderBy, query, onSnapshot} from 'firebase/firestore';
 import getRef from '../functions/getRef';
 import getPostTime from '../functions/getPostTime';
-import checkIsFriend from '../api/checkIsFriend';
+import {checkIsFriend} from '../api/Friend';
 import updateAlarmStack from '../functions/updateAlarmStack';
 import updateAlarmReadState from '../functions/updateAlarmReadState';
 import Modal from 'react-native-modal';

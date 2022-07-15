@@ -4,14 +4,13 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import {useQuery} from 'react-query';
-import checkIsFriend from '../../api/checkIsFriend';
+import {checkIsFriend} from '../../api/Friend';
 import getPostTime from '../../functions/getPostTime';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Alert} from 'react-native';
-import {deletePost} from '../../api/community/Posts';
+import {deletePost, postLike} from '../../api/Posts';
 import Swiper from 'react-native-swiper';
 import {remote} from 'react-native-spotify-remote';
-import {handleLike} from '../../api/community/handleLike';
 import sendAlarm from '../../functions/sendAlarm';
 
 const RegionCommunity = ({navigation}) => {
@@ -166,7 +165,7 @@ const RegionCommunity = ({navigation}) => {
                         0,
                       );
                     }
-                    handleLike(kakaoUid, item.post_seq, item.likeNy);
+                    postLike(kakaoUid, item.post_seq, item.likeNy);
                     refetch();
                   }}>
                   {item.likeNy ? (

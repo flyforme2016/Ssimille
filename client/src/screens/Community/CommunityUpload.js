@@ -2,12 +2,11 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
-import axios from 'axios';
 import {useSelector} from 'react-redux';
 import Config from 'react-native-config';
 import {DeviceEventEmitter} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
-import {uploadPost} from '../../api/community/Posts';
+import {uploadPost} from '../../api/Posts';
 
 const CommunityUpload = ({navigation, route}) => {
   const BASE_URL = Config.BASE_URL;
@@ -75,14 +74,13 @@ const CommunityUpload = ({navigation, route}) => {
   //upload post to server process
   const onSubmitPost = async () => {
     await submitPhotos();
-
     await uploadPost(
       myProfileData,
       locationName,
       route,
       postContent,
       submitImgs,
-    ).then(() => console.log('finish submit post'));
+    );
 
     navigation.goBack('TabBar', {screen: 'Community'});
   };
