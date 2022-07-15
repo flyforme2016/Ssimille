@@ -1,26 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import {useSelector} from 'react-redux';
-import Config from 'react-native-config';
-import {DeviceEventEmitter} from 'react-native';
-import RNFetchBlob from 'rn-fetch-blob';
-import {uploadPost} from '../../api/Posts';
+import {uploadImages, uploadPost} from '../../api/Posts';
 
 const CommunityUpload = ({navigation, route}) => {
-  const BASE_URL = Config.BASE_URL;
   const {myProfileData} = useSelector(state => state.myProfile);
   const {locationName} = useSelector(state => state.locationName);
   const [uploadImgs, setUploadImgs] = useState([]);
   const [postContent, setPostContent] = useState();
   let submitImgs = Array(5).fill(null);
 
-  useEffect(() => {
-    return () => {
-      DeviceEventEmitter.emit('refetch community');
-    };
-  }, []);
   const handleImgUpload = async () => {
     try {
       const response = await MultipleImagePicker.openPicker({
@@ -37,30 +28,9 @@ const CommunityUpload = ({navigation, route}) => {
   };
   //사진 업로드
   const submitPhotos = async () => {
+    let result;
     try {
-      let fetchArray = [];
-      await uploadImgs.map(image => {
-        const obj = {
-          name: 'multipleImg',
-          filename: image.fileName,
-          data: RNFetchBlob.wrap(image.path),
-        };
-        fetchArray.push(obj);
-      });
-      console.log('fetchArray: ', fetchArray);
-
-      const result = await (
-        await RNFetchBlob.fetch(
-          'POST',
-          `${BASE_URL}/s3/post-images`,
-          {
-            'Content-Type': 'multipart/form-data',
-          },
-          fetchArray,
-        )
-      ).json();
-      console.log('result: ', result);
-
+      result = await uploadImages(uploadImgs);
       result.map(data => {
         submitImgs.shift();
         submitImgs.push(data.transforms[0].location);
@@ -73,7 +43,9 @@ const CommunityUpload = ({navigation, route}) => {
 
   //upload post to server process
   const onSubmitPost = async () => {
-    await submitPhotos();
+    if (uploadImgs?.path) {
+      await submitPhotos();
+    }
     await uploadPost(
       myProfileData,
       locationName,
@@ -81,8 +53,7 @@ const CommunityUpload = ({navigation, route}) => {
       postContent,
       submitImgs,
     );
-
-    navigation.goBack('TabBar', {screen: 'Community'});
+    navigation.push('TabBar', {screen: 'Community'});
   };
 
   return (

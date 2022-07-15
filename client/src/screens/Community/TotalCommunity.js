@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import getPostTime from '../../functions/getPostTime';
@@ -10,21 +10,13 @@ import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import {checkIsFriend} from '../../api/Friend';
 import {useQuery} from 'react-query';
-import {DeviceEventEmitter} from 'react-native';
 import {deletePost, postLike} from '../../api/Posts';
 import sendAlarm from '../../functions/sendAlarm';
 
-//
 const TotalCommunity = ({navigation}) => {
   const BASE_URL = Config.BASE_URL;
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {myProfileData} = useSelector(state => state.myProfile);
-
-  useEffect(() => {
-    DeviceEventEmitter.addListener('refetch community', () => {
-      refetch();
-    });
-  }, []);
 
   // 전체 게시글 가져오기
   const {

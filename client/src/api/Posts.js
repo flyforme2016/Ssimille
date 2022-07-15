@@ -3,15 +3,31 @@ import Config from 'react-native-config';
 
 const BASE_URL = Config.BASE_URL;
 
-export const deletePost = async (kakaoUid, seq) => {
+export const uploadImages = async uploadImgs => {
   try {
-    await axios.delete(`${BASE_URL}/post`, {
-      data: {key: kakaoUid, postSeq: seq},
+    const formdata = new FormData();
+    await uploadImgs.map(image => {
+      formdata.append('multipleImg', {
+        uri: image.path.includes(':') ? image.path : 'file://' + image.path,
+        type: image.mime,
+        name: image.fileName,
+      });
     });
-  } catch {
-    err => console.log(err);
+    const result = await axios.post(`${BASE_URL}/s3/post-images`, formdata, {
+      redirect: 'follow',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      transformRequest: (data, headers) => {
+        return data;
+      },
+    });
+    return result.data;
+  } catch (error) {
+    console.log(error);
   }
 };
+
 export const uploadPost = async (
   myProfileData,
   locationName,
@@ -35,6 +51,16 @@ export const uploadPost = async (
     });
   } catch (e) {
     console.log(e.code, e.message);
+  }
+};
+
+export const deletePost = async (kakaoUid, seq) => {
+  try {
+    await axios.delete(`${BASE_URL}/post`, {
+      data: {key: kakaoUid, postSeq: seq},
+    });
+  } catch {
+    err => console.log(err);
   }
 };
 

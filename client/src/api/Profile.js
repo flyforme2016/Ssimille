@@ -4,39 +4,29 @@ import Config from 'react-native-config';
 const BASE_URL = Config.BASE_URL;
 
 export const postProfileImgToS3 = async profileImgData => {
-  const formdata = new FormData();
-  console.log('profileImgData.path', profileImgData.path);
-  formdata.append('profileImg', {
-    uri: 'file://' + profileImgData.path,
-    type: profileImgData.mime,
-    name: profileImgData.fileName,
-  });
-  const requestOptions = {
-    method: 'PUT',
-    body: formdata,
-    redirect: 'follow',
-  };
-  const result = await (
-    await fetch(`${BASE_URL}/s3/profile-image`, requestOptions)
-  ).json();
-
-  // const result = await (
-  //   await RNFetchBlob.fetch(
-  //     'PUT',
-  //     `${BASE_URL}/s3/profile-image`,
-  //     {
-  //       'Content-Type': 'multipart/form-data',
-  //     },
-  //     [
-  //       {
-  //         name: 'profileImg',
-  //         filename: profileImgData.fileName,
-  //         data: RNFetchBlob.wrap(profileImgData.path),
-  //       },
-  //     ],
-  //   )
-  // ).json();
-  return result;
+  try {
+    const formdata = new FormData();
+    formdata.append('profileImg', {
+      uri: profileImgData.path.includes(':')
+        ? profileImgData.path
+        : 'file://' + profileImgData.path,
+      type: profileImgData.mime,
+      name: profileImgData.fileName,
+    });
+    console.log(formdata);
+    const result = await axios.put(`${BASE_URL}/s3/profile-image`, formdata, {
+      redirect: 'follow',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      transformRequest: (data, headers) => {
+        return data;
+      },
+    });
+    return result.data.imgUrl;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const updateProfile = async (
@@ -50,10 +40,11 @@ export const updateProfile = async (
   artistUri,
 ) => {
   try {
+    console.log('api result', result);
     const res = await axios.put(`${BASE_URL}/users/profile`, {
       key: kakaoUid,
       nickname: changeName ? changeName : routeDatas.nickname,
-      profileImg: result ? result.imgUrl : routeDatas.profileImg,
+      profileImg: result ? result : routeDatas.profileImg,
       profileMusicUri: routeDatas.musicUri
         ? routeDatas.musicUri
         : myProfileData.profile_music_uri,
