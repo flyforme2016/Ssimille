@@ -43,7 +43,7 @@ const CommunityUpload = ({navigation, route}) => {
 
   //upload post to server process
   const onSubmitPost = async () => {
-    if (uploadImgs?.path) {
+    if (uploadImgs[0]?.path) {
       await submitPhotos();
     }
     await uploadPost(
