@@ -5,15 +5,11 @@ const BASE_URL = Config.BASE_URL;
 
 export const uploadComment = async (kakaoUid, postSeq, comment) => {
   try {
-    await axios
-      .post(`${BASE_URL}/post/post-comments`, {
-        key: kakaoUid,
-        postSeq: postSeq,
-        comment: comment,
-      })
-      .then(result => {
-        console.log(result, '업로드 완료');
-      });
+    await axios.post(`${BASE_URL}/post/post-comments`, {
+      key: kakaoUid,
+      postSeq: postSeq,
+      comment: comment,
+    });
   } catch {
     err => console.log(err);
   }

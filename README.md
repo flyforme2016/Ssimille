@@ -6,8 +6,6 @@
 
 ## 👨🏻‍💻 개발 환경
 
----
-
 ✔️시스템 도식
 
 <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcpapGC%2FbtrAKjwMtuS%2FL0tZO8KhKcx74MnRwDCkyk%2Fimg.png" width="600">
@@ -23,8 +21,6 @@
 - <img src="https://img.shields.io/badge/Java-007396?style=flat&logo=OpenJDK&logoColor=white"/> 1.8.0.31
 
 ## ⚒️ 사용한 기술스택
-
----
 
 ✔️ **프론트엔드**
 

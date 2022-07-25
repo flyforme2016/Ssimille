@@ -98,13 +98,13 @@ const Home = ({navigation: {navigate, push}}) => {
         <MyzoneContainer>
           <Btn onPress={() => push('Stack', {screen: 'Myzone'})}>
             <Text>MY ZONE </Text>
-            <Text> {locationName ? locationName.address_name : null}</Text>
+            <Text>{locationName ? locationName.address_name : '설정하기'}</Text>
           </Btn>
         </MyzoneContainer>
 
         {locationPlaylist && (
           <>
-            <RecommendText>음악 추천</RecommendText>
+            <RecommendText>주변 사용자가 듣고있는 음악</RecommendText>
             <RecommendPlaylist
               nestedScrollEnabled={true}
               horizontal={true}
@@ -148,7 +148,9 @@ const Home = ({navigation: {navigate, push}}) => {
         )}
         {RecommendMusic && (
           <>
-            <RecommendText>음악 추천</RecommendText>
+            <RecommendText>
+              {myProfileData.nickname}님을 위한 음악 추천
+            </RecommendText>
             <RecommendPlaylist
               nestedScrollEnabled={true}
               horizontal={true}
@@ -164,7 +166,6 @@ const Home = ({navigation: {navigate, push}}) => {
                       }}>
                       <AlbumContainer
                         onPress={async () => {
-                          console.log('clicked', item.uri);
                           await remote.playUri(item.uri);
                         }}>
                         <InfoText>{item.album.name}</InfoText>
@@ -177,7 +178,7 @@ const Home = ({navigation: {navigate, push}}) => {
             />
           </>
         )}
-        {RecommendMusic && (
+        {/* {RecommendMusic && (
           <>
             <RecommendText>친구 추천</RecommendText>
             <RecommendPlaylist
@@ -204,7 +205,7 @@ const Home = ({navigation: {navigate, push}}) => {
               )}
             />
           </>
-        )}
+        )} */}
       </Container>
       <SpotifyTab />
     </>

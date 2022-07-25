@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Styled from 'styled-components/native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {Alert} from 'react-native';
@@ -51,29 +51,42 @@ const Myzone = ({navigation}) => {
       );
       return data;
     },
-    {
-      onSuccess: res => console.log(res),
-      onError: err => console.log(err),
-      refetchInterval: 30000,
-      refetchIntervalInBackground: true,
-    },
+    // {
+    //   refetchInterval: 30000,
+    //   refetchIntervalInBackground: true,
+    // },
   );
 
   const postLocation = async () => {
-    console.log('지도에서 마커 눌림');
-
-    Alert.alert('My Zone 설정', '현재 위치로 MYZONE이 설정되었습니다', [
+    Alert.alert('My Zone 설정', '현재 위치로 MYZONE을 설정하시겠습니까?', [
       {
         text: 'Cancel',
         onPress: () => {
-          console.log('cancel');
+          Alert.alert(
+            'My Zone 설정 안함',
+            '위치를 설정하지 않을 경우 일부 기능에 제한이 있습니다. 정말로 취소하시겠습니까?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => {
+                  console.log('cancel');
+                },
+              },
+
+              {
+                text: 'OK',
+                onPress: async () => {
+                  navigation.replace('TabBar', {screen: 'Home'});
+                },
+              },
+            ],
+          );
         },
       },
 
       {
         text: 'OK',
         onPress: async () => {
-          console.log('OK Pressed');
           await axios.put(`${BASE_URL}/users/region`, {
             key: kakaoUid,
             regionCode: locationData.documents[0].code / 1,

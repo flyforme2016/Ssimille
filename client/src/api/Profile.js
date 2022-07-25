@@ -13,7 +13,6 @@ export const postProfileImgToS3 = async profileImgData => {
       type: profileImgData.mime,
       name: profileImgData.fileName,
     });
-    console.log(formdata);
     const result = await axios.put(`${BASE_URL}/s3/profile-image`, formdata, {
       redirect: 'follow',
       headers: {

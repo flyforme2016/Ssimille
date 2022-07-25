@@ -13,7 +13,6 @@ export const uploadImages = async uploadImgs => {
         name: image.fileName,
       });
     });
-    console.log(formdata);
     const result = await axios.post(`${BASE_URL}/s3/post-images`, formdata, {
       redirect: 'follow',
       headers: {

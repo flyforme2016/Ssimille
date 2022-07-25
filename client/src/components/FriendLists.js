@@ -42,7 +42,6 @@ const FriendLists = ({data, listType, screenName}) => {
                       }
                     }
                   : async () => {
-                      console.log('item.', item, 'listType', listType);
                       const flag = await checkIsFriend(
                         kakaoUid,
                         item.friend_kakao_user_number,

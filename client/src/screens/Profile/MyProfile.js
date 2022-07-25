@@ -16,7 +16,6 @@ const MyProfile = ({navigation}) => {
     myProfileData.tag4_cd,
     myProfileData.tag5_cd,
   ].filter(tag => tag !== null);
-  console.log(myProfileData);
 
   return (
     myProfileData && (
@@ -47,7 +46,6 @@ const MyProfile = ({navigation}) => {
             <UserInfo>
               <ProfileImage
                 onPress={() => {
-                  console.log('clicked');
                   navigation.push('Stack', {
                     screen: 'BigPicture',
                     params: {

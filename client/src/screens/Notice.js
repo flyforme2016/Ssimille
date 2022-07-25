@@ -38,7 +38,6 @@ const Notice = ({navigation}) => {
       );
       return subscribe;
     });
-    console.log('alarmList : ', alarmList);
   };
 
   return (

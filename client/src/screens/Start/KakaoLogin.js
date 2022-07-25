@@ -11,7 +11,7 @@ import Geolocation from '@react-native-community/geolocation';
 
 const runFirst = `window.ReactNativeWebView.postMessage("this is message from web");`;
 
-const KakaoLogin = ({navigation: {replace}}) => {
+const KakaoLogin = ({navigation: {navigate, replace}}) => {
   const BASE_URL = Config.BASE_URL;
   const dispatch = useDispatch();
   const getCurrentLocation = async () => {
@@ -40,8 +40,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
             })
             .then(async res => {
               // 스포티파이 연동
-              const spotifyToken = await SpotifyAuthentication();
-              dispatch(actions.saveSpotifyTokenAction(spotifyToken));
+              navigate('Stack', {screen: 'SpotifyAuthentication'});
               await getCurrentLocation();
               if (res.data.userId) {
                 // 최초로그인 시 진입
