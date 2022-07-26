@@ -40,7 +40,7 @@ const Home = ({navigation: {navigate, push}}) => {
     onSnapshot(stackAlarmDocRef, doc => {
       if (doc.exists()) {
         setAlarmStack(doc.data().stack);
-      }
+      } else setAlarmStack(0);
     });
   };
 

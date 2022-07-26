@@ -77,7 +77,7 @@ const Notice = ({navigation}) => {
                 });
               }
             }}
-            onLongPress={async () => {
+            onLongPress={() => {
               setModalVisible(true);
             }}>
             <Contents>

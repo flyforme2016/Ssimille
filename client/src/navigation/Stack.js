@@ -14,6 +14,7 @@ import EditFavoriteSongs from '../screens/Profile/EditFavoriteSongs';
 import BigPicture from '../components/BigPicture';
 import Introduce from '../screens/Start/Introduce';
 import KakaoLogin from '../screens/Start/KakaoLogin';
+import EditMyPosts from '../screens/Profile/EditMyPosts';
 
 const NativeStack = createNativeStackNavigator();
 
@@ -47,6 +48,7 @@ const Stack = () => {
         name="EditFavoriteSongs"
         component={EditFavoriteSongs}
       />
+      <NativeStack.Screen name="EditMyPosts" component={EditMyPosts} />
     </NativeStack.Navigator>
   );
 };

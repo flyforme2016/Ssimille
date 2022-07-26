@@ -22,9 +22,10 @@ export const uploadImages = async uploadImgs => {
         return data;
       },
     });
+    console.log('upload img result', result);
     return result.data;
   } catch (error) {
-    console.log(error);
+    console.log(error.response.data);
   }
 };
 
