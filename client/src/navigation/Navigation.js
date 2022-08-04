@@ -34,7 +34,6 @@ const Navigation = () => {
           headerShown: false,
         }}>
         <Nav.Screen name="Login" component={Start} />
-        <Nav.Screen name="KakaoLogin" component={KakaoLogin} />
         <Nav.Screen name="TabBar" component={TabBar} />
         <Nav.Screen name="Stack" component={Stack} />
       </Nav.Navigator>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Styled from 'styled-components/native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {Alert} from 'react-native';
@@ -66,7 +66,25 @@ const Myzone = ({navigation}) => {
       {
         text: 'Cancel',
         onPress: () => {
-          console.log('cancel');
+          Alert.alert(
+            'My Zone 설정 안함',
+            '위치를 설정하지 않을 경우 일부 기능에 제한이 있습니다. 정말로 취소하시겠습니까?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => {
+                  console.log('cancel');
+                },
+              },
+
+              {
+                text: 'OK',
+                onPress: async () => {
+                  navigation.replace('TabBar', {screen: 'Home'});
+                },
+              },
+            ],
+          );
         },
       },
 

@@ -38,7 +38,6 @@ const Notice = ({navigation}) => {
       );
       return subscribe;
     });
-    console.log('alarmList : ', alarmList);
   };
 
   return (
@@ -56,7 +55,7 @@ const Notice = ({navigation}) => {
                 : {backgroundColor: '#b7b4df'}
             }
             width={width}
-            delayLongPress={200}
+            delayLongPress={2000}
             onPress={async () => {
               if (!item.readState) {
                 //읽지 않은 알림인 경우

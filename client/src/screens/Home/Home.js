@@ -10,6 +10,8 @@ import {query, onSnapshot, where} from 'firebase/firestore';
 import TopNavBar from '../../components/TopNavBar';
 import {remote} from 'react-native-spotify-remote';
 import {checkIsFriend} from '../../api/Friend';
+import checkEvent from '../../functions/checkEvent';
+import Modal from 'react-native-modal';
 
 const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
@@ -27,6 +29,9 @@ const Home = ({navigation: {navigate, push}}) => {
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {locationName} = useSelector(state => state.locationName);
   const {spotifyToken} = useSelector(state => state.spotifyToken);
+  const [modalData, setModalData] = useState([]);
+  const [modalIndex, setModalIndex] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
   const [alarmStack, setAlarmStack] = useState(0);
   const [locationPlaylist, setLocationPlaylist] = useState([]);
 
@@ -38,9 +43,8 @@ const Home = ({navigation: {navigate, push}}) => {
   const getAlarmStack = async () => {
     const stackAlarmDocRef = getRef.alarmStackDocRef(String(kakaoUid));
     onSnapshot(stackAlarmDocRef, doc => {
-      if (doc.exists()) {
-        setAlarmStack(doc.data().stack);
-      }
+      if (doc.exists()) setAlarmStack(doc.data().stack);
+      else setAlarmStack(0);
     });
   };
 
@@ -48,9 +52,18 @@ const Home = ({navigation: {navigate, push}}) => {
     const currentMusicListRef = getRef.currentMusicColRef(locationName.code); //my alarmList
     const q = query(
       currentMusicListRef,
-      where('uid', 'not-in', [kakaoUid / 1]),
+      // where('uid', 'not-in', [kakaoUid / 1]),
     );
-    const subscribe = onSnapshot(q, querySnapshot => {
+    const subscribe = onSnapshot(q, async querySnapshot => {
+      const result = await checkEvent(
+        currentMusicListRef,
+        querySnapshot,
+        myProfileData,
+      );
+      setModalData(result);
+      if (result.length !== 0) {
+        setModalVisible(true);
+      }
       setLocationPlaylist(
         querySnapshot.docs.map(doc => ({
           uid: doc.data().uid,
@@ -98,57 +111,64 @@ const Home = ({navigation: {navigate, push}}) => {
         <MyzoneContainer>
           <Btn onPress={() => push('Stack', {screen: 'Myzone'})}>
             <Text>MY ZONE </Text>
-            <Text> {locationName ? locationName.address_name : null}</Text>
+            <Text>{locationName ? locationName.address_name : '설정하기'}</Text>
           </Btn>
         </MyzoneContainer>
 
         {locationPlaylist && (
           <>
-            <RecommendText>음악 추천</RecommendText>
+            <RecommendText>주변 사용자가 듣고있는 음악</RecommendText>
             <RecommendPlaylist
               nestedScrollEnabled={true}
               horizontal={true}
               data={locationPlaylist}
               keyExtractor={item => item.uid + ''}
-              renderItem={({item}) => (
-                <>
-                  <AlbumRecommendContainer>
-                    <ImgBackground
-                      resizeMode="stretch"
-                      source={{
-                        uri: item.albumImg,
-                      }}>
-                      <ProfileContainer
-                        onPress={async () => {
-                          const flag = await checkIsFriend(kakaoUid, item.uid);
-                          navigate('Stack', {
-                            screen: 'OtherUserProfile',
-                            params: {
-                              otherUid: item.uid,
-                              isFriend: flag,
-                            },
-                          });
+              renderItem={({item}) =>
+                item.uid === kakaoUid / 1 ? null : (
+                  <>
+                    <AlbumRecommendContainer>
+                      <ImgBackground
+                        resizeMode="stretch"
+                        source={{
+                          uri: item.albumImg,
                         }}>
-                        <ProfileImg source={{uri: item.profileImg}} />
-                        {/* <InfoText>{item.nickname}</InfoText> */}
-                      </ProfileContainer>
-                      <AlbumContainer
-                        onPress={async () => {
-                          await remote.playUri(item.musicUri);
-                        }}>
-                        <InfoText>{item.albumTitle}</InfoText>
-                        <InfoText>{item.albumArtistName}</InfoText>
-                      </AlbumContainer>
-                    </ImgBackground>
-                  </AlbumRecommendContainer>
-                </>
-              )}
+                        <ProfileContainer
+                          onPress={async () => {
+                            const flag = await checkIsFriend(
+                              kakaoUid,
+                              item.uid,
+                            );
+                            navigate('Stack', {
+                              screen: 'OtherUserProfile',
+                              params: {
+                                otherUid: item.uid,
+                                isFriend: flag,
+                              },
+                            });
+                          }}>
+                          <ProfileImg source={{uri: item.profileImg}} />
+                          {/* <InfoText>{item.nickname}</InfoText> */}
+                        </ProfileContainer>
+                        <AlbumContainer
+                          onPress={async () => {
+                            await remote.playUri(item.musicUri);
+                          }}>
+                          <InfoText>{item.albumTitle}</InfoText>
+                          <InfoText>{item.albumArtistName}</InfoText>
+                        </AlbumContainer>
+                      </ImgBackground>
+                    </AlbumRecommendContainer>
+                  </>
+                )
+              }
             />
           </>
         )}
         {RecommendMusic && (
           <>
-            <RecommendText>음악 추천</RecommendText>
+            <RecommendText>
+              {myProfileData.nickname}님을 위한 음악 추천
+            </RecommendText>
             <RecommendPlaylist
               nestedScrollEnabled={true}
               horizontal={true}
@@ -164,7 +184,6 @@ const Home = ({navigation: {navigate, push}}) => {
                       }}>
                       <AlbumContainer
                         onPress={async () => {
-                          console.log('clicked', item.uri);
                           await remote.playUri(item.uri);
                         }}>
                         <InfoText>{item.album.name}</InfoText>
@@ -177,7 +196,7 @@ const Home = ({navigation: {navigate, push}}) => {
             />
           </>
         )}
-        {RecommendMusic && (
+        {/* {RecommendMusic && (
           <>
             <RecommendText>친구 추천</RecommendText>
             <RecommendPlaylist
@@ -204,7 +223,32 @@ const Home = ({navigation: {navigate, push}}) => {
               )}
             />
           </>
-        )}
+        )} */}
+        <Modal
+          onBackButtonPress={() => setModalVisible(false)}
+          //isVisible Props에 State 값을 물려주어 On/off control
+          isVisible={modalVisible}
+          //아이폰에서 모달창 동작시 깜박임이 있었는데, useNativeDriver Props를 True로 주니 해결되었다.
+          useNativeDriver={true}
+          hideModalContentWhileAnimating={true}
+          style={{flex: 1, justifyContent: 'flex-end'}}>
+          <ModalContentsWrapper>
+            <ModalButton
+              onPress={() => {
+                delteAlarm(kakaoUid);
+                setModalVisible(false);
+              }}>
+              <ModalText>전체 삭제</ModalText>
+            </ModalButton>
+            <ModalButton
+              onPress={() => {
+                delteAlarm(kakaoUid, item.deleteKey);
+                setModalVisible(false);
+              }}>
+              <ModalText>삭제</ModalText>
+            </ModalButton>
+          </ModalContentsWrapper>
+        </Modal>
       </Container>
       <SpotifyTab />
     </>
@@ -333,6 +377,29 @@ const UserName = styled.Text`
 const UserMusic = styled.Text`
   font-size: 10px;
   color: black;
+`;
+
+const ModalContentsWrapper = styled.View`
+  flex-direction: row;
+`;
+
+const ModalButton = styled.TouchableOpacity`
+  /* Modal Button들의 모달창 내의 높이를 균일하게 하기 위하여 flex를 줌 */
+  flex: 1;
+  flex-direction: row;
+  height: 70;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border: 1px white;
+  border-radius: 10px;
+  margin: 30px;
+  margin-bottom: 10px;
+`;
+
+const ModalText = styled.Text`
+  color: red;
+  font-size: 15px;
 `;
 
 export default Home;

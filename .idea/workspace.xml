@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="07.09 CommunityUpload">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/navigation/Navigation.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/navigation/Navigation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/screens/Start/KakaoLogin.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Start/KakaoLogin.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +47,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.24108241" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="settings.editor.splitter.proportion" value="0.21384929" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

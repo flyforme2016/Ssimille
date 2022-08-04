@@ -5,12 +5,14 @@ import updateAlarmStack from './updateAlarmStack';
 //type 1 : 친구신청, 0:게시글
 //dataObject : userData/postData
 const sendAlarm = (myData, dataObject, text, type) => {
+  console.log('Enter sendAlarm');
   const alarmRef = getRef.alarmColRef(dataObject.kakao_user_number.toString()); //상대방 uid
   const stackAlarmRef = getRef.alarmStackDocRef(
     dataObject.kakao_user_number.toString(),
   );
-  if (type) {
+  if (type === 1) {
     //친구요청 알람인 경우
+    console.log('check alarm type');
     addFriend(myData.uid, dataObject.kakao_user_number);
   }
 

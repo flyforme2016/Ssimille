@@ -11,7 +11,7 @@ import Geolocation from '@react-native-community/geolocation';
 
 const runFirst = `window.ReactNativeWebView.postMessage("this is message from web");`;
 
-const KakaoLogin = ({navigation: {replace}}) => {
+const KakaoLogin = ({navigation: {navigate, replace}}) => {
   const BASE_URL = Config.BASE_URL;
   const dispatch = useDispatch();
   const getCurrentLocation = async () => {
@@ -27,12 +27,13 @@ const KakaoLogin = ({navigation: {replace}}) => {
     }
   };
 
-  const parseAuthCode = async url => {
+  const parseAuthCode = async nativeEvent => {
     const exp = 'code='; //url에 붙어 날라오는 인가코드는 code=뒤부터 parse하여 get
-    if (url) {
-      const startIndex = url.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
+    console.log('Check: ', nativeEvent);
+    if (nativeEvent.title) {
+      const startIndex = nativeEvent.title.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
       if (startIndex !== -1) {
-        const authCode = url.substring(startIndex + exp.length);
+        const authCode = nativeEvent.title.substring(startIndex + exp.length);
         try {
           await axios
             .post(`${BASE_URL}/kakao/oauth`, {
@@ -40,8 +41,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
             })
             .then(async res => {
               // 스포티파이 연동
-              const spotifyToken = await SpotifyAuthentication();
-              dispatch(actions.saveSpotifyTokenAction(spotifyToken));
+              navigate('Stack', {screen: 'SpotifyAuthentication'});
               await getCurrentLocation();
               if (res.data.userId) {
                 // 최초로그인 시 진입
@@ -76,7 +76,7 @@ const KakaoLogin = ({navigation: {replace}}) => {
         injectedJavaScript={runFirst}
         javaScriptEnabled={true}
         onMessage={event => {
-          parseAuthCode(event.nativeEvent['url']);
+          parseAuthCode(event.nativeEvent);
         }}
         // onMessage ... :: webview에서 온 데이터를 event handler로 잡아서 logInProgress로 전달
       />
