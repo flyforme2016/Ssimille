@@ -55,8 +55,6 @@ const SearchMusic = ({navigation, route}) => {
           <Card>
             <MusicInfoContainer
               onPress={() => {
-                console.log(item);
-
                 navigation.navigate({
                   name: route.params.page,
                   params: {

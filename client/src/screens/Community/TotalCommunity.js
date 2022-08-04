@@ -177,7 +177,6 @@ const TotalCommunity = ({navigation}) => {
                 </Interaction>
                 <Interaction
                   onPress={() => {
-                    console.log('data', item);
                     navigation.push('Stack', {
                       screen: 'CommunityPost',
                       params: {

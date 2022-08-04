@@ -1,14 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import ProfileTabBar from './ProfileTapBar';
 import SpotifyTab from '../../components/SpotifyTab';
 import {useSelector} from 'react-redux';
 import {remote} from 'react-native-spotify-remote';
 import {MusicControlBtn} from '../../components/CustomButtons';
 import TopNavBar from '../../components/TopNavBar';
+import GridPosts from '../../components/GridPosts';
+import EditMyPosts from './EditMyPosts';
+import {deletePost} from '../../api/Posts';
+import {useQuery} from 'react-query';
+import Config from 'react-native-config';
+import axios from 'axios';
 
 const MyProfile = ({navigation}) => {
+  const BASE_URL = Config.BASE_URL;
   const {myProfileData} = useSelector(state => state.myProfile);
+  const [editPost, setEditPost] = useState(false);
+  const [postCheck, setPostCheck] = useState([]);
   const HashTag = [
     myProfileData.tag1_cd,
     myProfileData.tag2_cd,
@@ -16,9 +24,23 @@ const MyProfile = ({navigation}) => {
     myProfileData.tag4_cd,
     myProfileData.tag5_cd,
   ].filter(tag => tag !== null);
-  console.log(myProfileData);
-
+  const {
+    isLoading: postLoading,
+    data: postDatas,
+    refetch,
+  } = useQuery('myPostDatas', async () => {
+    const {data} = await axios(`${BASE_URL}/post/my-posts`, {
+      params: {
+        key: myProfileData.kakao_user_number,
+      },
+    });
+    return data;
+  });
+  const getDeleteList = list => {
+    setPostCheck(list);
+  };
   return (
+    !postLoading &&
     myProfileData && (
       <>
         <Container>
@@ -47,7 +69,6 @@ const MyProfile = ({navigation}) => {
             <UserInfo>
               <ProfileImage
                 onPress={() => {
-                  console.log('clicked');
                   navigation.push('Stack', {
                     screen: 'BigPicture',
                     params: {
@@ -119,7 +140,36 @@ const MyProfile = ({navigation}) => {
               </MusicInfoContainer>
             </Card>
           ) : null}
-          <ProfileTabBar userId={myProfileData.kakao_user_number} />
+          <TopNavBar
+            name="ios-apps-sharp"
+            iconName={
+              !editPost
+                ? 'settings-outline'
+                : postCheck.length > 0
+                ? 'trash-outline'
+                : 'checkmark-circle'
+            }
+            size={20}
+            onPress={
+              !editPost
+                ? () => setEditPost(prev => !prev)
+                : async () => {
+                    deletePost(myProfileData.kakao_user_number, postCheck);
+                    await refetch();
+                    setEditPost(prev => !prev);
+                  }
+            }
+          />
+
+          {editPost ? (
+            <EditMyPosts
+              getDeleteList={getDeleteList}
+              postDatas={postDatas}
+              userId={myProfileData.kakao_user_number}
+            />
+          ) : (
+            <GridPosts userId={myProfileData.kakao_user_number} />
+          )}
         </Container>
         <SpotifyTab />
       </>

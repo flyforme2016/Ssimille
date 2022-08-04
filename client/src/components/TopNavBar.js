@@ -2,12 +2,13 @@ import React from 'react';
 import styled from 'styled-components/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const TopNavBar = ({navText, iconName, onPress}) => {
+const TopNavBar = ({navText, name, size, iconName, onPress}) => {
   return (
     <NavBar>
       <NavText>{navText}</NavText>
+      <Ionicons name={name} size={size ? size : 30} color="#b7b4df" />
       <Btn onPress={onPress}>
-        <Ionicons name={iconName} size={30} color="#b7b4df" />
+        <Ionicons name={iconName} size={size ? size : 30} color="#b7b4df" />
       </Btn>
     </NavBar>
   );

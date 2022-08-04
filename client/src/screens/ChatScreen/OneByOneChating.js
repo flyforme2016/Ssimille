@@ -31,8 +31,6 @@ export default function Chat({route}) {
 
   useLayoutEffect(() => {
     const getChattingLog = async () => {
-      console.log('start getChattingLog');
-
       const myChatListDocSnap = await getDoc(myChatListRef); //채팅방 입장 시 stack = 0 으로 초기화
       if (myChatListDocSnap.exists() && myChatListDocSnap.data().stack !== 0) {
         updateDoc(myChatListRef, {
@@ -42,7 +40,6 @@ export default function Chat({route}) {
 
       const q2 = query(myChatsRef, orderBy('createdAt', 'desc'));
       const unsubscribe = onSnapshot(q2, querySnapshot => {
-        console.log('Second onSnapshot');
         setMessages(
           querySnapshot.docs.map(doc => ({
             _id: doc.data()._id,
@@ -66,7 +63,6 @@ export default function Chat({route}) {
     const q = query(myChatListCollectionRef, orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(q, querySnapshot => {
-      console.log('First onSnapshot');
       querySnapshot.docChanges().map(change => {
         //실시간으로 대화하는 중에 상대방에게 메세지를 받을 경우에도
         if (change.type === 'modified') {
