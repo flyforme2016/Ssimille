@@ -11,7 +11,6 @@ const {width} = Dimensions.get('window');
 const GridPosts = ({userId}) => {
   const navigation = useNavigation();
   const BASE_URL = Config.BASE_URL;
-
   const {isLoading: postDataLoading, data: postDatas} = useQuery(
     'myPostDatas',
     async () => {
@@ -23,7 +22,6 @@ const GridPosts = ({userId}) => {
       return data;
     },
   );
-
   return (
     <GridList>
       <Container>
@@ -40,8 +38,11 @@ const GridPosts = ({userId}) => {
                     },
                   });
                 }}>
-                {item.album_image ? (
-                  <PostImg width={width} source={{uri: item.album_image}} />
+                {item.album_image || item.image1 ? (
+                  <PostImg
+                    width={width}
+                    source={{uri: item.album_image || item.image1}}
+                  />
                 ) : (
                   <PostText>{item.input_text}</PostText>
                 )}

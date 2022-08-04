@@ -23,7 +23,6 @@ const ChatingList = ({navigation}) => {
 
   //chatList 입장시 한번만 채팅목록 가져오기 실시간
   async function getChatList() {
-    console.log('start getChatList');
     const subscribe = onSnapshot(q, querySnapshot => {
       setMessages(
         querySnapshot.docs.map(doc => ({

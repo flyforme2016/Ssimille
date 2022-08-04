@@ -4,8 +4,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="07.09 CommunityUpload">
+    <list default="true" id="e4543050-e663-482c-ad13-c356d7b66282" name="Changes" comment="08.04 Modify error which call SpotifyAuthentication twice caused cancelled error">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/SpotifyTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/SpotifyTab.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/functions/checkEvent.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/functions/checkEvent.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/functions/sendAlarm.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/functions/sendAlarm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Home/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Notice.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Notice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/screens/Start/KakaoLogin.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/screens/Start/KakaoLogin.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,7 +198,21 @@
       <option name="project" value="LOCAL" />
       <updated>1657363546480</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="08.04 Modify error which call SpotifyAuthentication twice caused cancelled error">
+      <created>1659606612742</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1659606612742</updated>
+    </task>
+    <task id="LOCAL-00021" summary="08.04 Modify error which call SpotifyAuthentication twice caused cancelled error">
+      <created>1659607079748</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1659607079748</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -223,6 +243,7 @@
     <MESSAGE value="06.29 Complete deleteAlarm &amp; homeAlarm" />
     <MESSAGE value="07.01 CurrentMusic" />
     <MESSAGE value="07.09 CommunityUpload" />
-    <option name="LAST_COMMIT_MESSAGE" value="07.09 CommunityUpload" />
+    <MESSAGE value="08.04 Modify error which call SpotifyAuthentication twice caused cancelled error" />
+    <option name="LAST_COMMIT_MESSAGE" value="08.04 Modify error which call SpotifyAuthentication twice caused cancelled error" />
   </component>
 </project>

@@ -29,14 +29,13 @@ const KakaoLogin = ({navigation: {navigate, replace}}) => {
 
   const parseAuthCode = async nativeEvent => {
     const exp = 'code='; //url에 붙어 날라오는 인가코드는 code=뒤부터 parse하여 get
-    console.log('Check: ', nativeEvent);
     if (nativeEvent.title) {
       const startIndex = nativeEvent.title.indexOf(exp); //url에서 "code="으로 시작하는 index를 찾지 못하면 -1반환
       if (startIndex !== -1) {
         const authCode = nativeEvent.title.substring(startIndex + exp.length);
         try {
           await axios
-            .post(`${BASE_URL}/kakao/oauth`, {
+            .post(`${BASE_URL}/kakao/oauth/callback`, {
               code: authCode,
             })
             .then(async res => {

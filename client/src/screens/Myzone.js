@@ -51,18 +51,14 @@ const Myzone = ({navigation}) => {
       );
       return data;
     },
-    {
-      onSuccess: res => console.log(res),
-      onError: err => console.log(err),
-      refetchInterval: 30000,
-      refetchIntervalInBackground: true,
-    },
+    // {
+    //   refetchInterval: 30000,
+    //   refetchIntervalInBackground: true,
+    // },
   );
 
   const postLocation = async () => {
-    console.log('지도에서 마커 눌림');
-
-    Alert.alert('My Zone 설정', '현재 위치로 MYZONE이 설정되었습니다', [
+    Alert.alert('My Zone 설정', '현재 위치로 MYZONE을 설정하시겠습니까?', [
       {
         text: 'Cancel',
         onPress: () => {
@@ -72,9 +68,6 @@ const Myzone = ({navigation}) => {
             [
               {
                 text: 'Cancel',
-                onPress: () => {
-                  console.log('cancel');
-                },
               },
 
               {
@@ -91,7 +84,6 @@ const Myzone = ({navigation}) => {
       {
         text: 'OK',
         onPress: async () => {
-          console.log('OK Pressed');
           await axios.put(`${BASE_URL}/users/region`, {
             key: kakaoUid,
             regionCode: locationData.documents[0].code / 1,

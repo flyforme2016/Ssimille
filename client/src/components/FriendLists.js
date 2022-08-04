@@ -25,6 +25,15 @@ const FriendLists = ({data, listType, screenName}) => {
               onPress={
                 screenName === 'following'
                   ? async () => {
+                      navigation.push('Stack', {
+                        screen: 'OtherUserProfile',
+                        params: {
+                          otherUid: item.kakao_user_number,
+                          isFriend: 1,
+                        },
+                      });
+                    }
+                  : async () => {
                       const flag = await checkIsFriend(
                         kakaoUid,
                         item.kakao_user_number,
@@ -36,24 +45,6 @@ const FriendLists = ({data, listType, screenName}) => {
                           screen: 'OtherUserProfile',
                           params: {
                             otherUid: item.kakao_user_number,
-                            isFriend: flag,
-                          },
-                        });
-                      }
-                    }
-                  : async () => {
-                      console.log('item.', item, 'listType', listType);
-                      const flag = await checkIsFriend(
-                        kakaoUid,
-                        item.friend_kakao_user_number,
-                      );
-                      if (flag === -1) {
-                        navigation.push('TabBar', {screen: 'MyProfile'});
-                      } else {
-                        navigation.push('Stack', {
-                          screen: 'OtherUserProfile',
-                          params: {
-                            otherUid: item.friend_kakao_user_number,
                             isFriend: listType === 'otherUserList' ? flag : 1,
                           },
                         });

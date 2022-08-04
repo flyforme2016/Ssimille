@@ -43,7 +43,7 @@ const FriendListTabBar = ({listType, paramsKey}) => {
         name="팔로잉"
         children={() => (
           <FriendLists
-            data={MyFollwerList}
+            data={MyFollowingList}
             listType={listType}
             screenName="following"
           />
@@ -54,7 +54,7 @@ const FriendListTabBar = ({listType, paramsKey}) => {
         name="팔로워"
         children={() => (
           <FriendLists
-            data={MyFollowingList}
+            data={MyFollwerList}
             listType={listType}
             screenName="follower"
           />

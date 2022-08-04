@@ -115,7 +115,6 @@ const ProfileEdit = ({navigation, route}) => {
 
             <ProfileMusicBtn
               onPress={async () => {
-                console.log('clicked');
                 navigation.navigate('Stack', {
                   screen: 'SearchMusic',
                   params: {
@@ -146,7 +145,6 @@ const ProfileEdit = ({navigation, route}) => {
             <SelectedMusic>프로필 뮤직을 설정해주세요</SelectedMusic>
             <ProfileMusicBtn
               onPress={async () => {
-                console.log('clicked');
                 setVisible(true);
                 navigation.navigate('Stack', {
                   screen: 'SearchMusic',

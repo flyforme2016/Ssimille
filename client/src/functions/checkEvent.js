@@ -4,6 +4,9 @@ import sendAlarm from './sendAlarm';
 const checkEvent = async (currentMusicListRef, querySnapshot, myData) => {
   let myCurrentMusic;
   let eventUserArray = [];
+
+  //사용자가 현재 듣고 있는 노래 get
+  //추후 SpotifyTab에서 사용자 현재 재생곡 redux관리 고려
   const q = query(
     currentMusicListRef,
     where('uid', '==', myData.kakao_user_number),
@@ -41,7 +44,7 @@ const checkEvent = async (currentMusicListRef, querySnapshot, myData) => {
           '을 듣고 있어요~!.',
         2,
       );
-      //본인에게 전송하는 알림
+      //본인에게 전송하는 알림 본인에게 전송하는 알림 부분은 추후 삭제 요망
       sendAlarm(
         {
           uid: doc.data().uid,
@@ -59,7 +62,6 @@ const checkEvent = async (currentMusicListRef, querySnapshot, myData) => {
           '을 듣고 있어요~!.',
         2,
       );
-      console.log('Event music title: ', doc.data().albumTitle);
     }
   });
   return eventUserArray;

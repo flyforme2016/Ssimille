@@ -22,13 +22,11 @@ const spotifyWebApi = new SpotifyWebApi({
 const SpotifyTab = () => {
   const {spotifyToken} = useSelector(state => state.spotifyToken);
   const {myProfileData} = useSelector(state => state.myProfile);
-
   useEffect(() => {
     //useQuery 이후 useEffect에 두번 진입하여
     //listener가 쌓이기 때문에 listener가 없을 경우에만 생성하도록 수정.
     if (remote.listenerCount('playerStateChanged') === 0) {
       remote.addListener('playerStateChanged', () => {
-        console.log('Enter addListener');
         /*
         remote.addListener가 생성 뿐만 아니라 emit역할을 동시에 수행함.
         playerStateChanged가 발생할 때 마다 listener를 생성하여 여러개의 listener가 쌓임
@@ -62,6 +60,7 @@ const SpotifyTab = () => {
 
       return data;
     },
+
     {
       staleTime: Infinity,
     },
@@ -110,7 +109,6 @@ const SpotifyTab = () => {
             <MusicControlBtn //다음 곡으로
               onPress={async () => {
                 await remote.skipToNext();
-                //remote.emit('playerStateChanged');
               }}
               type="play-forward"
             />

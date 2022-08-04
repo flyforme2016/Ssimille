@@ -80,7 +80,6 @@ const CommunityUpload = ({navigation, route}) => {
             <Divider />
             <MusicUploadBtn
               onPress={async () => {
-                console.log('clicked');
                 navigation.navigate('Stack', {
                   screen: 'SearchMusic',
                   params: {

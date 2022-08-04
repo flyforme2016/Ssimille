@@ -13,7 +13,6 @@ export const postProfileImgToS3 = async profileImgData => {
       type: profileImgData.mime,
       name: profileImgData.fileName,
     });
-    console.log(formdata);
     const result = await axios.put(`${BASE_URL}/s3/profile-image`, formdata, {
       redirect: 'follow',
       headers: {
@@ -40,7 +39,6 @@ export const updateProfile = async (
   artistUri,
 ) => {
   try {
-    console.log('api result', result);
     const res = await axios.put(`${BASE_URL}/users/profile`, {
       key: kakaoUid,
       nickname: changeName ? changeName : routeDatas.nickname,

@@ -60,12 +60,10 @@ const EditFavoriteSongs = ({navigation, route}) => {
       });
     });
     try {
-      await axios
-        .put(`${BASE_URL}/users/genre-matrix`, {
-          key: kakaoUid,
-          genreMatrixObj: songGenres,
-        })
-        .then(console.log('업로드 완료'));
+      await axios.put(`${BASE_URL}/users/genre-matrix`, {
+        key: kakaoUid,
+        genreMatrixObj: songGenres,
+      });
     } catch (error) {
       console.log('error: ', error);
     }

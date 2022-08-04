@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import axios from 'axios';
-import ProfileTabBar from './ProfileTapBar';
 import {
   MusicControlBtn,
   CustomButton,
@@ -15,6 +14,7 @@ import {remote} from 'react-native-spotify-remote';
 import {useQuery} from 'react-query';
 import TopNavBar from '../../components/TopNavBar';
 import {deleteFriend} from '../../api/Friend';
+import GridPosts from '../../components/GridPosts';
 
 const OtherUserProfile = ({navigation, route}) => {
   const [isFollow, setIsFollow] = useState(route.params.isFriend);
@@ -172,7 +172,8 @@ const OtherUserProfile = ({navigation, route}) => {
           </BtnContainer>
         </>
       )}
-      <ProfileTabBar userId={otherUserUid} />
+      <TopNavBar name="ios-apps-sharp" size={20} />
+      <GridPosts userId={otherUserUid} />
     </Container>
   );
 };
@@ -190,16 +191,6 @@ const Divider = styled.View`
   elevation: 3;
 `;
 
-const NavBar = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-const NavText = styled.Text`
-  color: #9b59b6;
-  font-size: 24;
-  padding: 5px;
-`;
 const BtnContainer = styled.TouchableOpacity`
   align-items: center;
   flex-direction: row;
@@ -293,4 +284,5 @@ const TagText = styled.Text`
   margin: 2px 0;
   color: #b7b4df;
 `;
+
 export default OtherUserProfile;

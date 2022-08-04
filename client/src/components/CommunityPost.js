@@ -26,7 +26,6 @@ const CommunityPost = ({navigation, route}) => {
         postSeq: route.params.data.post_seq,
       },
     });
-    console.log(data);
     return data;
   });
 

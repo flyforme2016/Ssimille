@@ -5,16 +5,12 @@ const BASE_URL = Config.BASE_URL;
 
 export const deleteMusic = async (favoriteSongSeq, kakaoUid) => {
   try {
-    await axios
-      .delete(`${BASE_URL}/users/favorite-songs`, {
-        data: {
-          favoriteSongSeq: favoriteSongSeq,
-          key: kakaoUid,
-        },
-      })
-      .then(result => {
-        console.log(result, '삭제 완료');
-      });
+    await axios.delete(`${BASE_URL}/users/favorite-songs`, {
+      data: {
+        favoriteSongSeq: favoriteSongSeq,
+        key: kakaoUid,
+      },
+    });
   } catch {
     err => console.log(err);
   }

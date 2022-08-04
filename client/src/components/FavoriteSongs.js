@@ -16,7 +16,6 @@ const FavoriteSongs = ({navigation, route}) => {
         key: route.params.userId,
       },
     });
-    console.log(data);
     return data;
   });
 

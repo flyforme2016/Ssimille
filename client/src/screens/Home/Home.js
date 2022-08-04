@@ -12,6 +12,7 @@ import {remote} from 'react-native-spotify-remote';
 import {checkIsFriend} from '../../api/Friend';
 import checkEvent from '../../functions/checkEvent';
 import Modal from 'react-native-modal';
+import {useIsFocused} from '@react-navigation/native';
 
 const SPOTIFY_CLIENT_ID = Config.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
@@ -29,16 +30,30 @@ const Home = ({navigation: {navigate, push}}) => {
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {locationName} = useSelector(state => state.locationName);
   const {spotifyToken} = useSelector(state => state.spotifyToken);
-  const [modalData, setModalData] = useState([]);
-  const [modalIndex, setModalIndex] = useState(0);
+  const [modalData, setModalData] = useState([{}]);
   const [modalVisible, setModalVisible] = useState(false);
   const [alarmStack, setAlarmStack] = useState(0);
   const [locationPlaylist, setLocationPlaylist] = useState([]);
+  const isFocused = useIsFocused();
 
   useLayoutEffect(() => {
-    getLocationPlaylist();
     getAlarmStack();
+    getLocationPlaylist();
   }, []);
+
+  useLayoutEffect(() => {
+    if (isFocused) {
+      if (modalData.length > 1 && !modalVisible) {
+        //아직 이벤트 유저가 남은 경우
+        setModalData(prev =>
+          prev.filter(data => {
+            return data.uid !== prev[prev.length - 1].uid;
+          }),
+        );
+        setModalVisible(true);
+      }
+    }
+  }, [isFocused]);
 
   const getAlarmStack = async () => {
     const stackAlarmDocRef = getRef.alarmStackDocRef(String(kakaoUid));
@@ -49,21 +64,18 @@ const Home = ({navigation: {navigate, push}}) => {
   };
 
   const getLocationPlaylist = async () => {
-    const currentMusicListRef = getRef.currentMusicColRef(locationName.code); //my alarmList
-    const q = query(
-      currentMusicListRef,
-      // where('uid', 'not-in', [kakaoUid / 1]),
-    );
+    const currentMusicListRef = getRef.currentMusicColRef(locationName.code);
+    const q = query(currentMusicListRef);
     const subscribe = onSnapshot(q, async querySnapshot => {
       const result = await checkEvent(
         currentMusicListRef,
         querySnapshot,
         myProfileData,
       );
+
       setModalData(result);
-      if (result.length !== 0) {
-        setModalVisible(true);
-      }
+      setModalVisible(true);
+
       setLocationPlaylist(
         querySnapshot.docs.map(doc => ({
           uid: doc.data().uid,
@@ -78,10 +90,12 @@ const Home = ({navigation: {navigate, push}}) => {
       return subscribe;
     });
   };
+
   const {isLoading, data: RecommendMusic} = useQuery(
     ['RecommendMusic'],
     async () => {
       await spotifyWebApi.setAccessToken(spotifyToken);
+      //Cannot read properties of null error 발생 지점
       const {body} = await spotifyWebApi.getRecommendations({
         min_energy: 0.4,
         seed_artists: [myProfileData.artist_uri],
@@ -231,23 +245,58 @@ const Home = ({navigation: {navigate, push}}) => {
           //아이폰에서 모달창 동작시 깜박임이 있었는데, useNativeDriver Props를 True로 주니 해결되었다.
           useNativeDriver={true}
           hideModalContentWhileAnimating={true}
-          style={{flex: 1, justifyContent: 'flex-end'}}>
-          <ModalContentsWrapper>
-            <ModalButton
-              onPress={() => {
-                delteAlarm(kakaoUid);
-                setModalVisible(false);
-              }}>
-              <ModalText>전체 삭제</ModalText>
-            </ModalButton>
-            <ModalButton
-              onPress={() => {
-                delteAlarm(kakaoUid, item.deleteKey);
-                setModalVisible(false);
-              }}>
-              <ModalText>삭제</ModalText>
-            </ModalButton>
-          </ModalContentsWrapper>
+          style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ModalWrapper>
+            <ModalText>
+              {myProfileData.nickname}님과 같은 노래를 듣고 있는 유저가 있어요!
+            </ModalText>
+            <ModalContentsWrapper>
+              <OtherInfoWrapper>
+                <AvatarWrapper>
+                  <Avatar
+                    source={{uri: modalData[modalData.length - 1].profileImg}}
+                  />
+                </AvatarWrapper>
+                <ModalText>
+                  {modalData[modalData.length - 1].nickname}
+                </ModalText>
+              </OtherInfoWrapper>
+              <ModalButtonWrapper>
+                <ModalButton
+                  onPress={async () => {
+                    setModalVisible(false);
+                    const flag = await checkIsFriend(
+                      kakaoUid,
+                      modalData[modalData.length - 1].uid,
+                    );
+                    push('Stack', {
+                      screen: 'OtherUserProfile',
+                      params: {
+                        otherUid: modalData[modalData.length - 1].uid,
+                        isFriend: flag,
+                      },
+                    });
+                  }}>
+                  <ModalText>이동</ModalText>
+                </ModalButton>
+                <ModalButton
+                  onPress={() => {
+                    if (modalData.length > 1) {
+                      //아직 이벤트 유저가 남은 경우
+                      setModalData(prev =>
+                        prev.filter(data => {
+                          return data.uid !== prev[prev.length - 1].uid;
+                        }),
+                      );
+                    } else {
+                      setModalVisible(false);
+                    }
+                  }}>
+                  <ModalText>무시</ModalText>
+                </ModalButton>
+              </ModalButtonWrapper>
+            </ModalContentsWrapper>
+          </ModalWrapper>
         </Modal>
       </Container>
       <SpotifyTab />
@@ -358,14 +407,8 @@ const MusicPlay = styled.TouchableOpacity``;
 
 const UserImg = styled.View`
   margin-right: 5px;
-  padding: 5px;
 `;
 
-const Avatar = styled.Image`
-  width: 55;
-  height: 55;
-  border-radius: 25px;
-`;
 const InfoBox = styled.View`
   margin: 5px;
 `;
@@ -379,26 +422,56 @@ const UserMusic = styled.Text`
   color: black;
 `;
 
+const ModalWrapper = styled.View`
+  flex-direction: column;
+  width: 90%;
+  height: 100px;
+  padding: 5px;
+  border: 1px white;
+  border-radius: 10px;
+`;
+
 const ModalContentsWrapper = styled.View`
+  flex: 1;
   flex-direction: row;
+`;
+
+const OtherInfoWrapper = styled.View`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const AvatarWrapper = styled.View`
+  margin-right: 5px;
+`;
+
+const Avatar = styled.Image`
+  width: 40;
+  height: 40;
+  border-radius: 25px;
+`;
+
+const ModalButtonWrapper = styled.View`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
 `;
 
 const ModalButton = styled.TouchableOpacity`
   /* Modal Button들의 모달창 내의 높이를 균일하게 하기 위하여 flex를 줌 */
-  flex: 1;
-  flex-direction: row;
-  height: 70;
+  width: 50px;
+  height: 30px;
   justify-content: center;
   align-items: center;
-  background-color: white;
   border: 1px white;
   border-radius: 10px;
-  margin: 30px;
-  margin-bottom: 10px;
+  background-color: #b7b4df;
 `;
 
 const ModalText = styled.Text`
-  color: red;
+  color: white;
   font-size: 15px;
 `;
 

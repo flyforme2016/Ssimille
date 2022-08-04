@@ -65,13 +65,7 @@ const TabBar = () => {
           unmountOnBlur: true,
         }}
       />
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          unmountOnBlur: true,
-        }}
-      />
+      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen
         name="Community"
         component={Community}

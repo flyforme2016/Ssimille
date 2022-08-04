@@ -11,14 +11,13 @@ const SPOTIFY_CLIENT_SECRET = Config.SPOTIFY_CLIENT_SECRET;
 const BASE_URL = Config.BASE_URL;
 
 const SpotifyAuthentication = ({navigation}) => {
-  console.log('Enter SpotifyAuthentication');
   const dispatch = useDispatch();
   const spotifyConfig = {
     clientID: `${SPOTIFY_CLIENT_ID}`,
     clientSecret: `${SPOTIFY_CLIENT_SECRET}`,
     redirectURL: `${BASE_URL}/spotify/oauth/callback`,
-    tokenRefreshURL: `${BASE_URL}/spotify/refresh`,
-    tokenSwapURL: `${BASE_URL}/spotify/swap`,
+    tokenRefreshURL: `${BASE_URL}/spotify/oauth/callback`,
+    tokenSwapURL: `${BASE_URL}/spotify/oauth/callback`,
     scopes: [ApiScope.AppRemoteControlScope, ApiScope.UserFollowReadScope],
   };
   const getToken = async () => {
