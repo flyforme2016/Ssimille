@@ -51,13 +51,14 @@ const SpotifyTab = () => {
       await spotifyWebApi.getAlbum(albumUri).then(img => {
         data.albumImg = img.body.images[0].url;
       });
-      if (!data.isPaused) {
-        const regionCode = myProfileData.region_code.toString();
-        const myUid = myProfileData.kakao_user_number.toString();
-        const currentMusicDocRef = getRef.currentMusicDocRef(regionCode, myUid);
-        updateCurrentMusic(currentMusicDocRef, myProfileData, data);
+      //재생 혹은 정지 시 업데이트 X
+      if (CurrentMusic?.track?.uri === data.track.uri) {
+        return data;
       }
-
+      const regionCode = myProfileData.region_code.toString();
+      const myUid = myProfileData.kakao_user_number.toString();
+      const currentMusicDocRef = getRef.currentMusicDocRef(regionCode, myUid);
+      updateCurrentMusic(currentMusicDocRef, myProfileData, data);
       return data;
     },
 

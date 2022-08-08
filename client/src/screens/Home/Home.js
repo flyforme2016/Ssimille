@@ -72,9 +72,10 @@ const Home = ({navigation: {navigate, push}}) => {
         querySnapshot,
         myProfileData,
       );
-
-      setModalData(result);
-      setModalVisible(true);
+      if (result.length) {
+        setModalData(result);
+        setModalVisible(true);
+      }
 
       setLocationPlaylist(
         querySnapshot.docs.map(doc => ({
@@ -269,6 +270,7 @@ const Home = ({navigation: {navigate, push}}) => {
                       kakaoUid,
                       modalData[modalData.length - 1].uid,
                     );
+                    console.log('flag: ', flag);
                     push('Stack', {
                       screen: 'OtherUserProfile',
                       params: {

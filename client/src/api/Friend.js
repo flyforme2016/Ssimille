@@ -26,6 +26,7 @@ export const deleteFriend = async (myUid, otherUid) => {
 
 export const checkIsFriend = async (myUid, otherUid) => {
   //친구 = 1, 친구x = 0, 나 = -1
+  console.log(myUid, otherUid);
   if (myUid === String(otherUid)) {
     return -1;
   } else {
@@ -33,7 +34,8 @@ export const checkIsFriend = async (myUid, otherUid) => {
       const result = await axios.get(
         `${BASE_URL}/friend/flag?myUid=${myUid}&otherUid=${otherUid}`,
       );
-      return result.isFriend;
+      console.log('result: ', result);
+      return result.data.isFriend;
     } catch {
       err => console.log(err);
     }
