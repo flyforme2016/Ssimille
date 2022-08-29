@@ -72,4 +72,4 @@ AWS
 - AWS EC2 배포
 - Git 버전 관리
 - Realtime database
-- Redux 전역 state 관리
+- Redux server state 관리
