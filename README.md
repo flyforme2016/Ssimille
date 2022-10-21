@@ -73,3 +73,5 @@ AWS
 - Git 버전 관리
 - Realtime database
 - Redux server state 관리
+
+https://user-images.githubusercontent.com/86703264/197113223-b1aed3ed-f795-4b27-8a34-1229fbd8b0d0.png
