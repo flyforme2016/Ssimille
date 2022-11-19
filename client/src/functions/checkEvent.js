@@ -44,24 +44,6 @@ const checkEvent = async (currentMusicListRef, querySnapshot, myData) => {
           '을 듣고 있어요~!.',
         2,
       );
-      //본인에게 전송하는 알림 본인에게 전송하는 알림 부분은 추후 삭제 요망
-      sendAlarm(
-        {
-          uid: doc.data().uid,
-          nickname: doc.data().nickname,
-          profile_image: doc.data().profileImg,
-        },
-        {
-          kakao_user_number: myData.kakao_user_number.toString(),
-        },
-        myData.nickname +
-          '님과 같은 음악' +
-          '(' +
-          doc.data().albumTitle +
-          ')' +
-          '을 듣고 있어요~!.',
-        2,
-      );
     }
   });
   return eventUserArray;
