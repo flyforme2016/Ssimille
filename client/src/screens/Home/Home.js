@@ -346,7 +346,7 @@ const Btn = styled.TouchableOpacity`
 `;
 const Text = styled.Text`
   font-size: 12px;
-  font-family: 'Jua-Regular';
+  /* font-family: 'Jua-Regular'; */
 `;
 
 const RecommendPlaylist = styled.FlatList``;
@@ -354,7 +354,7 @@ const RecommendPlaylist = styled.FlatList``;
 const RecommendText = styled.Text`
   margin: 5px;
   font-size: 16px;
-  font-family: 'Jua-Regular';
+  /* font-family: 'Jua-Regular'; */
 `;
 const ProfileImg = styled.Image`
   width: 30;

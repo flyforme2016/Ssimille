@@ -1,6 +1,10 @@
 import React from 'react';
 import Styled from 'styled-components/native';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {
+  Marker,
+  PROVIDER_GOOGLE,
+  PROVIDER_DEFAULT,
+} from 'react-native-maps';
 import {Alert} from 'react-native';
 import axios from 'axios';
 import {useDispatch, useSelector} from 'react-redux';
@@ -42,6 +46,7 @@ const Myzone = ({navigation}) => {
     async () => {
       const {data} = await axios.get(
         `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${userLocation.longitude}&y=${userLocation.latitude}`,
+        //`https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=127.1086228&y=37.4012191`,
         {
           headers: {
             Host: 'dapi.kakao.com',
@@ -100,7 +105,9 @@ const Myzone = ({navigation}) => {
       {!location && (
         <MapView
           style={{flex: 1}}
-          provider={PROVIDER_GOOGLE}
+          provider={
+            Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
+          }
           initialRegion={{
             latitude: userLocation.latitude,
             longitude: userLocation.longitude,
