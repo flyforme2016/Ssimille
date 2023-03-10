@@ -19,7 +19,6 @@ const Myzone = ({navigation}) => {
   const {kakaoUid} = useSelector(state => state.kakaoUid);
   const {userLocation} = useSelector(state => state.userLocation);
   const dispatch = useDispatch();
-
   //내 프로필 가져오기
   const {isLoading: profile} = useQuery('getMyProfile', async () => {
     const {data} = await axios.get(`${BASE_URL}/users/profile`, {
@@ -44,9 +43,10 @@ const Myzone = ({navigation}) => {
   const {isLoading: location, data: locationData} = useQuery(
     'locationData',
     async () => {
-      const {data} = await axios.get(
-        `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${userLocation.longitude}&y=${userLocation.latitude}`,
-        //`https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=127.1086228&y=37.4012191`,
+      console.log("userLocation : ", userLocation);
+      const { data } = await axios.get(
+        // `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${userLocation.longitude}&y=${userLocation.latitude}`,
+        `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=127.1086228&y=37.4012191`,
         {
           headers: {
             Host: 'dapi.kakao.com',

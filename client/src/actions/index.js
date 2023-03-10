@@ -20,6 +20,7 @@ exports.saveUserProfileAction = parameter => {
   };
 };
 exports.saveUserLocation = parameter => {
+  console.log("parameter : ", parameter)
   return {
     type: types.SAVE_USER_LOCATION,
     payload: parameter,

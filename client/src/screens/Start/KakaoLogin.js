@@ -24,6 +24,7 @@ const KakaoLogin = ({navigation: {navigate, replace}}) => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         //위도 & 경도 불러오는 함수
         Geolocation.getCurrentPosition(position => {
+          console.log("position.coords : ", position.coords)
           dispatch(actions.saveUserLocation(position.coords));
         });
       }
@@ -49,12 +50,14 @@ const KakaoLogin = ({navigation: {navigate, replace}}) => {
         if (startIndex !== -1) {
           const authCode = nativeEvent.url.substring(startIndex + exp.length);
           try {
+            console.log("check");
             await axios
-              .post(`${BASE_URL}/kakao/oauth/callback`, {
+              .post(`${BASE_URL}/kakao/oauth`, {
                 code: authCode,
               })
               .then(async res => {
                 // 스포티파이 연동
+                console.log("res.data.userId : ", res.data.userId);
                 navigate('Stack', {screen: 'SpotifyAuthentication'});
                 await getCurrentLocation();
                 if (res.data.userId) {
@@ -84,7 +87,7 @@ const KakaoLogin = ({navigation: {navigate, replace}}) => {
         const authCode = nativeEvent.title.substring(startIndex + exp.length);
         try {
           await axios
-            .post(`${BASE_URL}/kakao/oauth/callback`, {
+            .post(`${BASE_URL}/kakao/oauth`, {
               code: authCode,
             })
             .then(async res => {
